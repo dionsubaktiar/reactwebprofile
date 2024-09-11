@@ -4,6 +4,7 @@ import { AiFillInstagram, AiFillGithub, AiFillLinkedin } from "react-icons/ai";
 import Link from "next/link";
 import Image from "next/image";
 import TwoColumnLayout from "./components/twoColumns";
+import { useState } from "react";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -11,15 +12,19 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
+  const [darkMode, setDarkMode] = useState(false);
   return (
-    <div>
+    <div className={darkMode ? "dark" : ""}>
       <main className="bg-white px-10 font-poppins">
         <section className="min-h-screen">
           <nav className="py-10 mb-4 flex justify-between">
             <h1 className="text-xl font-poppins">Subaktiar</h1>
             <ul className="flex items-center">
               <li>
-                <BsFillMoonStarsFill className="cursor-pointer text-2xl" />
+                <BsFillMoonStarsFill
+                  className="cursor-pointer text-2xl"
+                  onClick={() => setDarkMode(!darkMode)}
+                />
               </li>
               <li>
                 <Link
