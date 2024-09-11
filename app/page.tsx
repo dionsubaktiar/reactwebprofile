@@ -1,42 +1,25 @@
-"use client";
-import { BsFillMoonStarsFill } from "react-icons/bs";
 import { AiFillInstagram, AiFillGithub, AiFillLinkedin } from "react-icons/ai";
 import Link from "next/link";
 import Image from "next/image";
 import TwoColumnLayout from "./components/twoColumns";
-import { useState } from "react";
+import ToggleDarkModeButton from "./components/toggleDarkMode";
 
 export default function Home() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  // Toggle dark mode
-  const toggleDarkMode = () => {
-    setIsDarkMode((prevMode) => {
-      console.log("Previous Mode:", prevMode); // Log previous state value
-      const newMode = !prevMode; // Toggle the state
-      console.log("New Mode:", newMode); // Log the new state value
-      return newMode; // Return the new state value
-    });
-  };
-
   return (
     <div
-      className={`min-h-screen flex items-center justify-center ${
-        isDarkMode ? "bg-gray-800 text-gray-200" : "bg-white text-black"
-      }`}
+      className={
+        "min-h-screen flex items-center justify-center dark:text-gray-200 dark:bg-gray-800"
+      }
     >
       <main className="px-10 font-poppins">
         <section className="min-h-screen">
-          <nav className="py-10 mb-4 flex justify-between dark:text-white">
+          <nav className="py-10 mb-4 flex justify-between dark:text-grey-200">
             <h1 className="text-xl font-poppins dark:text-gray-200">
               Subaktiar
             </h1>
             <ul className="flex items-center">
               <li>
-                <BsFillMoonStarsFill
-                  className="cursor-pointer text-2xl"
-                  onClick={toggleDarkMode}
-                />
+                <ToggleDarkModeButton />
               </li>
               <li>
                 <Link
