@@ -15,9 +15,9 @@ export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
   return (
     <div className={darkMode ? "dark" : ""}>
-      <main className="bg-white px-10 font-poppins">
+      <main className="bg-white dark:bg-gray-900 px-10 font-poppins">
         <section className="min-h-screen">
-          <nav className="py-10 mb-4 flex justify-between">
+          <nav className="py-10 mb-4 flex justify-between dark:text-white">
             <h1 className="text-xl font-poppins">Subaktiar</h1>
             <ul className="flex items-center">
               <li>
@@ -37,7 +37,7 @@ export default function Home() {
             </ul>
           </nav>
           <div className="text-center p-10">
-            <h2 className="text-5xl py-2 text-teal-500 font-medium">
+            <h2 className="text-5xl py-2 text-teal-500 font-medium dark:text-teal-400 md:text-6xl">
               Dion subaktiar
             </h2>
             <h3 className="text-2xl py-2">Developer and Software Engineer</h3>
@@ -50,7 +50,7 @@ export default function Home() {
               in software engineering.
             </p>
           </div>
-          <div className="text-3xl flex justify-center gap-14 py-3 text-gray-600">
+          <div className="text-3xl flex justify-center gap-14 py-3 text-gray-600 dark:text-gray-400">
             <AiFillInstagram />
             <AiFillGithub />
             <AiFillLinkedin />
