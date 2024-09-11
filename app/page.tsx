@@ -1,101 +1,168 @@
+import type { Metadata } from "next";
+import { BsFillMoonStarsFill } from "react-icons/bs";
+import { AiFillInstagram, AiFillGithub, AiFillLinkedin } from "react-icons/ai";
+import Link from "next/link";
 import Image from "next/image";
+import TwoColumnLayout from "./components/twoColumns";
+
+export const metadata: Metadata = {
+  title: "Home",
+  description: "Welcome to Dion subaktiar's Web Profile.",
+};
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+    <div>
+      <main className="bg-white px-10 font-poppins">
+        <section className="min-h-screen">
+          <nav className="py-10 mb-4 flex justify-between">
+            <h1 className="text-xl font-poppins">Subaktiar</h1>
+            <ul className="flex items-center">
+              <li>
+                <BsFillMoonStarsFill className="cursor-pointer text-2xl" />
+              </li>
+              <li>
+                <Link
+                  className="bg-gradient-to-r from-cyan-500 to-teal-500 text-white px-4 py-2 rounded-md ml-8"
+                  href="/resume"
+                >
+                  Resume
+                </Link>
+              </li>
+            </ul>
+          </nav>
+          <div className="text-center p-10">
+            <h2 className="text-5xl py-2 text-teal-500 font-medium">
+              Dion subaktiar
+            </h2>
+            <h3 className="text-2xl py-2">Developer and Software Engineer</h3>
+            <p className="text-md py-5 leading-8 text-gray-700">
+              I am a skilled developer with a Bachelor’s degree in Information
+              Engineering from the University of 17 August 1945 Surabaya,
+              graduating with a GPA of 3.40. I specialize in building efficient
+              and scalable solutions using tools such as Laravel, Next.js, and
+              MATLAB, combining my technical expertise with a strong foundation
+              in software engineering.
+            </p>
+          </div>
+          <div className="text-3xl flex justify-center gap-14 py-3 text-gray-600">
+            <AiFillInstagram />
+            <AiFillGithub />
+            <AiFillLinkedin />
+          </div>
+          <div className="mx-auto bg-gradient-to-b from-teal-500 to-cyan-300 rounded-full w-60 h-60 relative overflow-hidden mt-5 mb-16 md:h-96 md:w-96">
             <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              src="/assets/images/profile.png"
+              fill
+              objectFit="contain"
+              alt="profile"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+          </div>
+        </section>
+        <section>
+          <TwoColumnLayout
+            column1title="Career"
+            column2title="Skills"
+            column1content={
+              <div>
+                <p className="text-md py-2 leading-8 text-gray-800">
+                  Here is a list of my career highlights:
+                </p>
+                <ul className="list-disc ml-4">
+                  <li>
+                    <strong>Admin at CV. Nusantara Trans</strong> (February 2022
+                    - May 2023)
+                    <br />
+                    Responsibilities included:
+                    <ul className="list-disc ml-4">
+                      <li>Creating invoices and financial documentation</li>
+                      <li>Recording and managing spending and income</li>
+                      <li>
+                        Drafting official correspondence for partner companies
+                      </li>
+                      <li>
+                        Coordinating administrative tasks and office management
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <strong>Freelance Full Stack Developer</strong> (June 2023 -
+                    January 2024)
+                    <br />
+                    Key projects and technologies used:
+                    <ul className="list-disc ml-4">
+                      <li>Developed over 5 projects of web applications</li>
+                      <li>
+                        Used Laravel for backend development and HTML for
+                        frontend
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <strong>IT Specialist at PT Nusantara Trans Sentosa</strong>{" "}
+                    (January 2024 - Present)
+                    <br />
+                    Current responsibilities include:
+                    <ul className="list-disc ml-4">
+                      <li>Managing IT infrastructure and support</li>
+                      <li>Overseeing system maintenance and upgrades</li>
+                      <li>
+                        Providing technical support to staff and resolving
+                        issues
+                      </li>
+                      <li>
+                        Implementing security measures and data protection
+                        protocols
+                      </li>
+                      <li>
+                        Developed 3 major projects to enhance company operations
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            }
+            column2content={
+              <div>
+                <p className="text-md py-2 leading-8 text-gray-800">
+                  My key skills include:
+                </p>
+                <ul className="list-disc ml-4">
+                  <li>
+                    <strong>Adaptive</strong> - Eager to embrace new challenges,
+                    consistently learning and growing.
+                  </li>
+                  <li>
+                    <strong>MS Excel</strong> - Advanced data analysis and
+                    visualization
+                  </li>
+                  <li>
+                    <strong>MS Word</strong> - Professional document creation
+                    and formatting
+                  </li>
+                  <li>
+                    <strong>Next.js</strong> - Building dynamic and
+                    server-rendered React applications
+                  </li>
+                  <li>
+                    <strong>Laravel</strong> - Developing robust and scalable
+                    PHP applications
+                  </li>
+                  <li>
+                    <strong>MATLAB</strong> - Image segmentation and
+                    classification for medical Images
+                  </li>
+                  <li>
+                    <strong>Device Repair</strong> - Expertise in repairing
+                    phones and laptops, including both software troubleshooting
+                    and hardware component replacement
+                  </li>
+                </ul>
+              </div>
+            }
+          />
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
