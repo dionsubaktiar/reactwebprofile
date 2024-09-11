@@ -70,7 +70,10 @@ export default function Home() {
             <AiFillGithub />
             <AiFillLinkedin />
           </div>
-          <div className="mx-auto bg-gradient-to-b from-teal-500 to-cyan-300 rounded-full w-60 h-60 relative overflow-hidden mt-5 mb-16 md:h-96 md:w-96">
+          <div
+            className="mx-auto bg-gradient-to-b from-teal-500 to-cyan-300 rounded-full 
+          w-60 h-60 relative overflow-hidden mt-5 mb-16 md:h-96 md:w-96"
+          >
             <Image
               src="/assets/images/profile.png"
               fill
