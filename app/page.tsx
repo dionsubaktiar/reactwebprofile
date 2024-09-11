@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+"use client";
 import { BsFillMoonStarsFill } from "react-icons/bs";
 import { AiFillInstagram, AiFillGithub, AiFillLinkedin } from "react-icons/ai";
 import Link from "next/link";
@@ -6,29 +6,42 @@ import Image from "next/image";
 import TwoColumnLayout from "./components/twoColumns";
 import { useState } from "react";
 
-export const metadata: Metadata = {
-  title: "Home",
-  description: "Welcome to Dion subaktiar's Web Profile.",
-};
-
 export default function Home() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Toggle dark mode
+  const toggleDarkMode = () => {
+    setIsDarkMode((prevMode) => {
+      console.log("Previous Mode:", prevMode); // Log previous state value
+      const newMode = !prevMode; // Toggle the state
+      console.log("New Mode:", newMode); // Log the new state value
+      return newMode; // Return the new state value
+    });
+  };
+
   return (
-    <div className={darkMode ? "dark" : ""}>
-      <main className="bg-white dark:bg-gray-900 px-10 font-poppins">
+    <div
+      className={`min-h-screen flex items-center justify-center ${
+        isDarkMode ? "bg-gray-800 text-gray-200" : "bg-white text-black"
+      }`}
+    >
+      <main className="px-10 font-poppins">
         <section className="min-h-screen">
           <nav className="py-10 mb-4 flex justify-between dark:text-white">
-            <h1 className="text-xl font-poppins">Subaktiar</h1>
+            <h1 className="text-xl font-poppins dark:text-gray-200">
+              Subaktiar
+            </h1>
             <ul className="flex items-center">
               <li>
                 <BsFillMoonStarsFill
                   className="cursor-pointer text-2xl"
-                  onClick={() => setDarkMode(!darkMode)}
+                  onClick={toggleDarkMode}
                 />
               </li>
               <li>
                 <Link
-                  className="bg-gradient-to-r from-cyan-500 to-teal-500 text-white px-4 py-2 rounded-md ml-8"
+                  className="bg-gradient-to-r from-cyan-500 to-teal-500
+                  px-4 py-2 rounded-md ml-8"
                   href="/resume"
                 >
                   Resume
@@ -36,12 +49,14 @@ export default function Home() {
               </li>
             </ul>
           </nav>
-          <div className="text-center p-10">
+          <div className="text-center p-6">
             <h2 className="text-5xl py-2 text-teal-500 font-medium dark:text-teal-400 md:text-6xl">
-              Dion subaktiar
+              Dion Subaktiar
             </h2>
-            <h3 className="text-2xl py-2">Developer and Software Engineer</h3>
-            <p className="text-md py-5 leading-8 text-gray-700">
+            <h3 className="text-2xl py-2 dark:text-gray-200">
+              Developer and Software Engineer
+            </h3>
+            <p className="text-md py-5 leading-8 dark:text-gray-20k">
               I am a skilled developer with a Bachelor’s degree in Information
               Engineering from the University of 17 August 1945 Surabaya,
               graduating with a GPA of 3.40. I specialize in building efficient
@@ -50,7 +65,7 @@ export default function Home() {
               in software engineering.
             </p>
           </div>
-          <div className="text-3xl flex justify-center gap-14 py-3 text-gray-600 dark:text-gray-400">
+          <div className="text-3xl flex justify-center gap-14 py-3 dark:text-gray-400">
             <AiFillInstagram />
             <AiFillGithub />
             <AiFillLinkedin />
@@ -59,7 +74,7 @@ export default function Home() {
             <Image
               src="/assets/images/profile.png"
               fill
-              objectFit="contain"
+              style={{ objectFit: "contain" }}
               alt="profile"
             />
           </div>
@@ -70,7 +85,7 @@ export default function Home() {
             column2title="Skills"
             column1content={
               <div>
-                <p className="text-md py-2 leading-8 text-gray-800">
+                <p className="text-md py-2 leading-8 dark:text-gray-200">
                   Here is a list of my career highlights:
                 </p>
                 <ul className="list-disc ml-4">
@@ -129,7 +144,7 @@ export default function Home() {
             }
             column2content={
               <div>
-                <p className="text-md py-2 leading-8 text-gray-800">
+                <p className="text-md py-2 leading-8 dark:text-gray-200">
                   My key skills include:
                 </p>
                 <ul className="list-disc ml-4">
@@ -155,7 +170,7 @@ export default function Home() {
                   </li>
                   <li>
                     <strong>MATLAB</strong> - Image segmentation and
-                    classification for medical Images
+                    classification for medical images
                   </li>
                   <li>
                     <strong>Device Repair</strong> - Expertise in repairing

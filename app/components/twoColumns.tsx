@@ -15,16 +15,20 @@ const TwoColumnLayout: React.FC<Props> = ({
 }) => {
   return (
     <div className="container mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5 dark:text-gray-200">
         {/* First Column */}
         <div className="bg-gradient-to-bl from-teal-400 to-transparent rounded-lg p-6">
-          <h2 className="text-2xl font-bold">{column1title}</h2>
+          <h2 className="text-2xl font-bold  dark:text-gray-200">
+            {column1title}
+          </h2>
           {column1content}
         </div>
 
         {/* Second Column */}
-        <div className="bg-gradient-to-tr  from-teal-400 to-transparent rounded-lg p-6">
-          <h2 className="text-2xl font-bold">{column2title}</h2>
+        <div className="bg-gradient-to-tr  from-teal-400 to-transparent  dark:text-gray-200 rounded-lg p-6">
+          <h2 className="text-2xl font-bold  dark:text-gray-200">
+            {column2title}
+          </h2>
           {column2content}
         </div>
       </div>
