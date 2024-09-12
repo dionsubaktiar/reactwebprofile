@@ -24,7 +24,7 @@ const ToggleDarkModeButton = () => {
     <div className="flex justify-end">
       <BsFillMoonStarsFill
         onClick={toggleDarkMode}
-        className={`cursor-pointer text-2xl ${
+        className={`cursor-pointer text-2xl  ${
           isDarkMode ? "text-honeyDew" : "text-eggplant"
         }`}
       />

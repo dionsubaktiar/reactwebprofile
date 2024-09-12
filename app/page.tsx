@@ -23,7 +23,10 @@ export default function Home() {
               </li>
               <li>
                 <Link
-                  className="bg-customGreen-default text-eggplant dark:text-honeyDew
+                  className="bg-customGreen-light dark:bg-customGreen-default
+                   hover:bg-customGreen-default hover:dark:bg-customGreen-light
+                   transition duration-200 ease-in-out
+                   text-eggplant dark:text-honeyDew
                   px-4 py-2 rounded-md ml-8"
                   href="/resume"
                 >
@@ -48,10 +51,31 @@ export default function Home() {
               in software engineering.
             </p>
           </div>
-          <div className="text-3xl flex justify-center gap-14 py-3 text-eggplant dark:text-customGreen-light">
-            <AiFillInstagram />
-            <AiFillGithub />
-            <AiFillLinkedin />
+          <div
+            className="text-3xl flex justify-center gap-14 py-3 text-eggplant dark:text-customGreen-light
+          "
+          >
+            <a
+              href="https://www.instagram.com/dionsubaktiar"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <AiFillInstagram className="hover:text-customGreen-default transition duration-150 ease-in-out" />
+            </a>
+            <a
+              href="https://github.com/dionsubaktiar"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <AiFillGithub className="hover:text-customGreen-default transition duration-150 ease-in-out" />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/dionsubaktiar"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <AiFillLinkedin className="hover:text-customGreen-default transition duration-150 ease-in-out" />
+            </a>
           </div>
           <div
             className="mx-auto bg-gradient-to-b from-customGreen-dark to-customGreen-light rounded-full 
