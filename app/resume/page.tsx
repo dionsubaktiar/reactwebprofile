@@ -11,7 +11,12 @@ const Resume = () => {
           <CardResume
             title="Fake Posts API"
             href="/posts"
-            description="This project was build using React TSX and Tailwind as Front-End, API are provided by JSON Placeholder at https://jsonplaceholder.typicode.com/posts"
+            description="This project is build using React TSX and Tailwind as Front-End, API are provided by JSON Placeholder"
+          ></CardResume>
+          <CardResume
+            title="PokeAPI"
+            href="/pokeapi"
+            description="This Project is build using React TSX and Tailwind as Front-End, API are provided by PokeAPI V2"
           ></CardResume>
         </section>
       </main>
