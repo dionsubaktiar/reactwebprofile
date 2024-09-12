@@ -25,7 +25,7 @@ const ToggleDarkModeButton = () => {
       <BsFillMoonStarsFill
         onClick={toggleDarkMode}
         className={`cursor-pointer text-2xl ${
-          isDarkMode ? "text-gray-200" : "text-black"
+          isDarkMode ? "text-honeyDew" : "text-eggplant"
         }`}
       />
     </div>

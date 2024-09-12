@@ -8,13 +8,13 @@ export default function Home() {
   return (
     <div
       className={
-        "min-h-screen flex items-center justify-center dark:text-gray-200 dark:bg-gray-800"
+        "min-h-screen flex items-center justify-center bg-honeyDew dark:text-customGreen-light dark:bg-eggplant"
       }
     >
       <main className="px-10 font-poppins">
         <section className="min-h-screen">
-          <nav className="py-10 mb-4 flex justify-between dark:text-grey-200">
-            <h1 className="text-xl font-poppins dark:text-gray-200">
+          <nav className="py-10 mb-4 flex justify-between dark:text-customGreen-light">
+            <h1 className="text-xl font-poppins text-eggplant dark:text-customGreen-light">
               Subaktiar
             </h1>
             <ul className="flex items-center">
@@ -23,7 +23,7 @@ export default function Home() {
               </li>
               <li>
                 <Link
-                  className="bg-gradient-to-r from-cyan-500 to-teal-500
+                  className="bg-customGreen-default text-eggplant dark:text-honeyDew
                   px-4 py-2 rounded-md ml-8"
                   href="/resume"
                 >
@@ -33,13 +33,13 @@ export default function Home() {
             </ul>
           </nav>
           <div className="text-center p-6">
-            <h2 className="text-5xl py-2 text-teal-500 font-medium dark:text-teal-400 md:text-6xl">
+            <h2 className="text-4xl py-2 text-customGreen-dark font-medium dark:text-honeyDew ">
               Dion Subaktiar
             </h2>
-            <h3 className="text-2xl py-2 dark:text-gray-200">
+            <h3 className="text-2xl py-2 text-eggplant dark:text-customGreen-light">
               Developer and Software Engineer
             </h3>
-            <p className="text-md py-5 leading-8 dark:text-gray-20k">
+            <p className="text-md py-5 leading-8 text-eggplant dark:text-customGreen-light">
               I am a skilled developer with a Bachelor’s degree in Information
               Engineering from the University of 17 August 1945 Surabaya,
               graduating with a GPA of 3.40. I specialize in building efficient
@@ -48,13 +48,13 @@ export default function Home() {
               in software engineering.
             </p>
           </div>
-          <div className="text-3xl flex justify-center gap-14 py-3 dark:text-gray-400">
+          <div className="text-3xl flex justify-center gap-14 py-3 text-eggplant dark:text-customGreen-light">
             <AiFillInstagram />
             <AiFillGithub />
             <AiFillLinkedin />
           </div>
           <div
-            className="mx-auto bg-gradient-to-b from-teal-500 to-cyan-300 rounded-full 
+            className="mx-auto bg-gradient-to-b from-customGreen-dark to-customGreen-light rounded-full 
           w-60 h-60 relative overflow-hidden mt-5 mb-16 md:h-96 md:w-96"
           >
             <Image
@@ -71,7 +71,7 @@ export default function Home() {
             column2title="Skills"
             column1content={
               <div>
-                <p className="text-md py-2 leading-8 dark:text-gray-200">
+                <p className="text-md py-2 leading-8 text-eggplant dark:text-customGreen-light">
                   Here is a list of my career highlights:
                 </p>
                 <ul className="list-disc ml-4">
@@ -130,7 +130,7 @@ export default function Home() {
             }
             column2content={
               <div>
-                <p className="text-md py-2 leading-8 dark:text-gray-200">
+                <p className="text-md py-2 leading-8 text-eggplant dark:text-customGreen-light">
                   My key skills include:
                 </p>
                 <ul className="list-disc ml-4">

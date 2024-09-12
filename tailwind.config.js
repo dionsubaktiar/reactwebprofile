@@ -15,6 +15,15 @@ module.exports = {
         burtons: "burtons",
         poppins: ["Poppins", "sans-serif"],
       },
+      colors: {
+        honeyDew: "#F1FFE7",
+        customGreen: {
+          light: "#A9FDAC",
+          default: "#44CF6C",
+          dark: "#32A287",
+        },
+        eggplant: "#6C464E",
+      },
     },
   },
   plugins: [],

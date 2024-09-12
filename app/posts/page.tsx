@@ -14,7 +14,7 @@ const Posts = async () => {
   const response = await fetch(base_url);
   const posts: Iposts[] = await response.json();
   return (
-    <div className="min-h-screen flex flex-col dark:bg-gradient-to-br from-teal-600 to-black dark:text-gray-200">
+    <div className="min-h-screen flex flex-col bg-honeyDew dark:bg-eggplant text-eggplant dark:text-honeyDew">
       <Navbar title="Fake Posts API" />
       <main className="flex-col items-center justify-center px-10 font-poppins">
         {posts.map((post) => {
