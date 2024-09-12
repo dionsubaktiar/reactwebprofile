@@ -70,7 +70,7 @@ export default function Home() {
               <AiFillGithub className="hover:text-customGreen-default transition duration-150 ease-in-out" />
             </a>
             <a
-              href="https://www.linkedin.com/in/dionsubaktiar"
+              href="https://www.linkedin.com/in/dion-subaktiar-767a94279"
               target="_blank"
               rel="noopener noreferrer"
             >
