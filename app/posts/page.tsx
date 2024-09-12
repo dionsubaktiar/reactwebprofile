@@ -16,7 +16,7 @@ const Posts = async () => {
   return (
     <div className="min-h-screen flex flex-col bg-honeyDew dark:bg-eggplant text-eggplant dark:text-honeyDew">
       <Navbar title="Fake Posts API" />
-      <main className="flex-col items-center justify-center px-10 font-poppins">
+      <main className="flex-col items-center justify-center px-5 font-poppins">
         {posts.map((post) => {
           return (
             <CardPosts
