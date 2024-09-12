@@ -48,6 +48,7 @@ const PokemonPage = () => {
 
   const handlePageChange = (url: string) => {
     fetchPokemonData(url);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
