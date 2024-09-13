@@ -51,10 +51,7 @@ export default function Home() {
               in software engineering.
             </p>
           </div>
-          <div
-            className="text-3xl flex justify-center gap-14 py-3 text-eggplant dark:text-customGreen-light
-          "
-          >
+          <div className="text-3xl flex justify-center gap-14 py-3 text-eggplant dark:text-customGreen-light">
             <a
               href="https://www.instagram.com/dionsubaktiar"
               target="_blank"
