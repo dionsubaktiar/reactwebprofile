@@ -1,10 +1,12 @@
 "use client";
 
 import Image from "next/image";
+// import Router from "next/router";
 import EmptyProfilePic from "../../public/assets/images/emptyprofile.png";
 import BasicModal from "./modal"; // Assuming BasicModal is your modal component
-import { LuPencil } from "react-icons/lu";
+import { LuPencil, LuTrash2 } from "react-icons/lu";
 import { useState } from "react";
+import { Dialog } from "@headlessui/react";
 import axios from "axios";
 import InputForm from "./input";
 
@@ -17,10 +19,14 @@ interface UserProfileProps {
 }
 
 const ProfileCard = ({ name, email, bio, image, id }: UserProfileProps) => {
-  // Open and close modal
+  // Open and close modal edit
   const [isOpen, setIsOpen] = useState(false);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
+  //Open and close modal delete
+  const [isDeleteOpen, setIsDelete] = useState(false);
+  const openDelete = () => setIsDelete(true);
+  const closeDelete = () => setIsDelete(false);
 
   // State to hold user data for editing
   const [user, setUser] = useState<UserProfileProps>({
@@ -64,6 +70,25 @@ const ProfileCard = ({ name, email, bio, image, id }: UserProfileProps) => {
     }
   };
 
+  //handle delete
+  const handleDeleteSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await axios.delete(`http://localhost:2000/users/${id}`);
+      if (response.status === 200 || response.status === 204) {
+        console.log(
+          "User deleted successfully: ",
+          response.status,
+          response.data
+        );
+        window.location.href = `/users`;
+        closeDelete();
+      }
+    } catch (error) {
+      console.error("Error deleting user data:", error);
+    }
+  };
+
   return (
     <div className="items-center justify-center flex flex-col">
       <div className="flex flex-col px-3 py-3 my-3 mx-3">
@@ -85,18 +110,31 @@ const ProfileCard = ({ name, email, bio, image, id }: UserProfileProps) => {
             />
           )}
         </div>
-        <div className="flex justify-between rounded-xl border border-eggplant px-3 py-3 shadow-lg items-center">
+        <div className="flex justify-between rounded-xl border border-eggplant px-3 py-3 shadow-lg items-center dark:border-white">
           <div className="text-left">
             {/* <p>{id}</p> */}
             <p className="font-bold text-lg">{name}</p>
             <p className="text-sm">{email}</p>
             <p className="text-sm">{bio || "No bio available"}</p>
           </div>
-          <LuPencil onClick={openModal} />
+          <div className="flex justify-between flex-col gap-3">
+            <div className="border-2 rounded-lg px-2 py-1 border-eggplant dark:border-white">
+              <LuPencil
+                onClick={openModal}
+                className="hover:animate-bounce cursor-pointer"
+              />
+            </div>
+            <div className="border-2 rounded-lg px-2 py-1 border-eggplant dark:border-white">
+              <LuTrash2
+                className="hover:animate-bounce cursor-pointer"
+                onClick={openDelete}
+              ></LuTrash2>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Basic Modal for Editing Profile */}
+      {/* Modal for Editing Profile */}
       <BasicModal
         isOpen={isOpen}
         closeModal={closeModal}
@@ -144,6 +182,32 @@ const ProfileCard = ({ name, email, bio, image, id }: UserProfileProps) => {
           </form>
         }
       />
+      {/* Modal for Deleting Profile */}
+      <BasicModal
+        isOpen={isDeleteOpen}
+        closeModal={closeDelete}
+        modalTitle="Delete Profile"
+        content={
+          <div className="flex-col items-center">
+            <Dialog.Description>
+              are you sure you want to delete this user? <br />
+              this action cannot be undone.
+            </Dialog.Description>
+            <form onSubmit={handleDeleteSubmit}>
+              <button
+                type="submit"
+                className="bg-brandColor-mainRed border-2 border-brandColor-mainRed
+                text-white hover:bg-transparent px-3 rounded-lg mt-3
+                hover:border-brandColor-mainRed hover:text-brandColor-mainRed
+                transition ease-in-out duration-300
+                "
+              >
+                Delete
+              </button>
+            </form>
+          </div>
+        }
+      ></BasicModal>
     </div>
   );
 };

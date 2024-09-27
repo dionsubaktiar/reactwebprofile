@@ -60,7 +60,7 @@ const UserDetails = () => {
       <main className="flex flex-col px-10 font-poppins items-center justify-center">
         <section>
           <ProfileCard
-            id=""
+            id={user.id}
             name={user.name}
             email={user.email}
             bio={user.bio}
