@@ -1,10 +1,10 @@
 // app/users/[id]/page.tsx
 "use client";
 
+import { Suspense, useEffect, useState } from "react";
 import Navbar from "@/app/components/navbar";
 import ProfileCard from "@/app/components/profile";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 
 interface User {
   id: string;
@@ -30,7 +30,6 @@ const UserDetails = () => {
 
     const fetchData = async () => {
       try {
-        // console.log(`http://localhost:2000/users/${id}`);
         const response = await fetch(`http://localhost:2000/users/${id}`);
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -67,4 +66,12 @@ const UserDetails = () => {
   );
 };
 
-export default UserDetails;
+const UserPage = () => {
+  return (
+    <Suspense fallback={<div>Loading user details...</div>}>
+      <UserDetails />
+    </Suspense>
+  );
+};
+
+export default UserPage;
