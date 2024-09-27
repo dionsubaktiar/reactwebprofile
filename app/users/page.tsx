@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/navbar";
 import UserCard from "../components/userCard";
+import CreateUserButton from "../components/createButton";
 import axios from "axios";
 
 const profileUrl = "http://localhost:2000/users";
@@ -54,6 +55,11 @@ const UserPage = () => {
               id={user.id}
             />
           ))}
+        </section>
+        <section>
+          <div>
+            <CreateUserButton></CreateUserButton>
+          </div>
         </section>
       </main>
     </div>

@@ -21,21 +21,9 @@ export default function Home() {
               <li>
                 <ToggleDarkModeButton />
               </li>
-              <li>
-                <Link
-                  className="bg-customGreen-light dark:bg-customGreen-default
-                   hover:bg-customGreen-default hover:dark:bg-customGreen-light
-                   transition duration-200 ease-in-out
-                   text-eggplant dark:text-honeyDew
-                  px-4 py-2 rounded-md ml-8"
-                  href="/resume"
-                >
-                  Resume
-                </Link>
-              </li>
             </ul>
           </nav>
-          <div className="text-center p-6">
+          <div className="text-center flex-col items-center justify-evenly p-6">
             <h2 className="text-4xl py-2 text-customGreen-dark font-medium dark:text-honeyDew ">
               Dion Subaktiar
             </h2>
@@ -50,6 +38,16 @@ export default function Home() {
               MATLAB, combining my technical expertise with a strong foundation
               in software engineering.
             </p>
+            <Link
+              className="bg-customGreen-light dark:bg-customGreen-default
+                   hover:bg-customGreen-default hover:dark:bg-customGreen-light
+                   transition duration-200 ease-in-out
+                   text-eggplant dark:text-honeyDew
+                  px-7 py-2 rounded-md w-full"
+              href="/resume"
+            >
+              Resume
+            </Link>
           </div>
           <div className="text-3xl flex justify-center gap-14 py-3 text-eggplant dark:text-customGreen-light">
             <a

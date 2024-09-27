@@ -5,6 +5,7 @@ import { Suspense, useEffect, useState } from "react";
 import Navbar from "@/app/components/navbar";
 import ProfileCard from "@/app/components/profile";
 import { useSearchParams } from "next/navigation";
+import axios from "axios";
 
 interface User {
   id: string;
@@ -30,12 +31,11 @@ const UserDetails = () => {
 
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:2000/users/${id}`);
-        if (!response.ok) {
+        const response = await axios.get(`http://localhost:2000/users/${id}`);
+        if (!response) {
           throw new Error("Network response was not ok");
         }
-        const data = await response.json();
-        setUser(data);
+        setUser(response.data);
       } catch (error) {
         setError(error instanceof Error ? error.message : "An error occurred");
       } finally {
@@ -45,7 +45,12 @@ const UserDetails = () => {
     fetchData();
   }, [id]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-eggplant dark:border-honeyDew"></div>
+      </div>
+    );
   if (error) return <div>Error: {error}</div>;
   if (!user) return <div>No user found</div>;
 
@@ -55,6 +60,7 @@ const UserDetails = () => {
       <main className="flex flex-col px-10 font-poppins items-center justify-center">
         <section>
           <ProfileCard
+            id=""
             name={user.name}
             email={user.email}
             bio={user.bio}
