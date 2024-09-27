@@ -7,7 +7,7 @@ interface TitleProps {
 
 const Navbar: React.FC<TitleProps> = ({ title }) => {
   return (
-    <nav className="pt-7 pb-3 px-5 flex justify-between items-center">
+    <nav className="py-5 px-5 flex justify-between items-center">
       <div className="flex items-center">
         <BackButton />
       </div>

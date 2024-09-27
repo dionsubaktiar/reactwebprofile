@@ -3,8 +3,15 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'Poppins';
-  src: url(/assets/fonts/Poppins-Regular.ttf);
+  font-family: "Poppins";
+  src: url(../public/assets/fonts/Poppins-Regular.ttf);
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "ProductSans";
+  src: url(../public/assets/fonts/ProductSans-Regular.ttf);
   font-weight: normal;
   font-style: normal;
 }

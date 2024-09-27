@@ -18,6 +18,11 @@ const Resume = () => {
             href="/pokeapi"
             description="This Project is build using React TSX and Tailwind as Front-End, API are provided by PokeAPI V2"
           ></CardResume>
+          <CardResume
+            title="User CRUD API"
+            description="This Project is build using ExpressJS as backend and Prisma as the ORM. The data is fetched via API"
+            href="/users"
+          ></CardResume>
         </section>
       </main>
     </div>
