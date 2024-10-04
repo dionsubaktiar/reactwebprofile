@@ -23,6 +23,11 @@ const Resume = () => {
             description="This Project is build using ExpressJS as backend and Prisma as the ORM. The data is fetched via API"
             href="/users"
           ></CardResume>
+          <CardResume
+            title="Nusantara Trans Sentosa"
+            description="Landing Page for PT Nusantara Trans Sentosa using SwiperJS"
+            href="/nusantaratrans"
+          ></CardResume>
         </section>
       </main>
     </div>

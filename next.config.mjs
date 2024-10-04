@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["raw.githubusercontent.com"], // Add the external domain here
+    domains: ["raw.githubusercontent.com", "nusantaratranssentosa.co.id"], // Add the external domain here
   },
 };
 
