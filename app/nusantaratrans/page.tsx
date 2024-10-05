@@ -595,13 +595,6 @@ const NusantaraPage = () => {
                     width={512}
                     height={487}
                   ></Image>
-                  <Image
-                    className="w-72 h-auto"
-                    alt="siantar"
-                    src="https://nusantaratranssentosa.co.id/css/img/siantar.png"
-                    width={512}
-                    height={487}
-                  ></Image>
                 </div>
                 <div className="flex-col gap-3">
                   <Image
@@ -622,6 +615,13 @@ const NusantaraPage = () => {
                     className="w-72 h-auto"
                     alt="otgroup"
                     src="https://nusantaratranssentosa.co.id/css/img/otgroup-removebg-preview.png"
+                    width={512}
+                    height={487}
+                  ></Image>
+                  <Image
+                    className="w-72 h-auto"
+                    alt="siantar"
+                    src="https://nusantaratranssentosa.co.id/css/img/siantar.png"
                     width={512}
                     height={487}
                   ></Image>
