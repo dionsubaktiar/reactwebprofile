@@ -589,22 +589,6 @@ const NusantaraPage = () => {
                     height={487}
                   ></Image>
                   <Image
-                    className="w-full h-auto"
-                    alt="tanaga"
-                    src="https://nusantaratranssentosa.co.id/css/img/tanaga.png"
-                    width={512}
-                    height={487}
-                  ></Image>
-                  <Image
-                    className="w-full h-auto"
-                    alt="jnt"
-                    src="https://nusantaratranssentosa.co.id/css/img/jnt.png"
-                    width={512}
-                    height={487}
-                  ></Image>
-                </div>
-                <div className="flex-col gap-3">
-                  <Image
                     className="w-72 h-auto"
                     alt="benteng"
                     src="https://nusantaratranssentosa.co.id/css/img/benteng.png"
@@ -615,6 +599,22 @@ const NusantaraPage = () => {
                     className="w-72 h-auto"
                     alt="siantar"
                     src="https://nusantaratranssentosa.co.id/css/img/siantar.png"
+                    width={512}
+                    height={487}
+                  ></Image>
+                </div>
+                <div className="flex-col gap-3">
+                  <Image
+                    className="w-full h-auto"
+                    alt="tanaga"
+                    src="https://nusantaratranssentosa.co.id/css/img/tanaga.png"
+                    width={512}
+                    height={487}
+                  ></Image>
+                  <Image
+                    className="w-full h-auto"
+                    alt="jnt"
+                    src="https://nusantaratranssentosa.co.id/css/img/jnt.png"
                     width={512}
                     height={487}
                   ></Image>
