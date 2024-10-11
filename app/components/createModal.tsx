@@ -30,7 +30,7 @@ const CreateUserModal: React.FC<ModalProps> = ({ isOpen, closeModal }) => {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:2000/users", user);
+      await axios.post("http://192.168.0.103:2000/users", user);
       window.location.reload();
       setMessage(`User created: ${user.name}`);
       closeModal(); // Close modal on success

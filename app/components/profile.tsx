@@ -54,7 +54,7 @@ const ProfileCard = ({ name, email, bio, image, id }: UserProfileProps) => {
     try {
       console.log("Submitting data:", user);
       const response = await axios.put(
-        `http://localhost:2000/users/${id}`,
+        `http://192.168.0.103:2000/users/${id}`,
         user
       );
 
@@ -74,7 +74,9 @@ const ProfileCard = ({ name, email, bio, image, id }: UserProfileProps) => {
   const handleDeleteSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.delete(`http://localhost:2000/users/${id}`);
+      const response = await axios.delete(
+        `http://192.168.0.103:2000/users/${id}`
+      );
       if (response.status === 200 || response.status === 204) {
         console.log(
           "User deleted successfully: ",
