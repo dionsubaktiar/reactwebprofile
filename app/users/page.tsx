@@ -6,7 +6,7 @@ import UserCard from "../components/userCard";
 import CreateUserButton from "../components/createButton";
 import axios from "axios";
 
-const profileUrl = "http://192.168.0.103:2000/users";
+const profileUrl = "https://api.dionsubaktiar.site/users";
 
 interface User {
   id: string;

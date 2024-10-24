@@ -54,7 +54,7 @@ const ProfileCard = ({ name, email, bio, image, id }: UserProfileProps) => {
     try {
       console.log("Submitting data:", user);
       const response = await axios.put(
-        `http://192.168.0.103:2000/users/${id}`,
+        `https://api.dionsubaktiar.site/users/${id}`,
         user
       );
 
@@ -75,7 +75,7 @@ const ProfileCard = ({ name, email, bio, image, id }: UserProfileProps) => {
     e.preventDefault();
     try {
       const response = await axios.delete(
-        `http://192.168.0.103:2000/users/${id}`
+        `https://api.dionsubaktiar.site/users/${id}`
       );
       if (response.status === 200 || response.status === 204) {
         console.log(

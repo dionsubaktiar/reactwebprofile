@@ -32,7 +32,7 @@ const UserDetails = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://192.168.0.103:2000/users/${id}`
+          `https://api.dionsubaktiar.site/users/${id}`
         );
         if (!response) {
           throw new Error("Network response was not ok");
