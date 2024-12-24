@@ -9,6 +9,11 @@ const Resume = () => {
       <main className="flex flex-1 items-center justify-center px-10 font-poppins">
         <section>
           <CardResume
+            title="Auth and CRUD using Laravel"
+            href="/auth-crud"
+            description="This project is build using Laravel for backend, Socialite as Social Auth, Role permission, and also traditional Auth, The Frontend for Auth is still being developed"
+          ></CardResume>
+          <CardResume
             title="Fake Posts API"
             href="/posts"
             description="This project is build using React TSX and Tailwind as Front-End, API are provided by JSON Placeholder"
@@ -19,7 +24,7 @@ const Resume = () => {
             description="This Project is build using React TSX and Tailwind as Front-End, API are provided by PokeAPI V2"
           ></CardResume>
           <CardResume
-            title="User CRUD API"
+            title="User CRUD API (UNDER MAINTENANCE)"
             description="This Project is build using ExpressJS as backend and Prisma as the ORM. The data is fetched via API"
             href="/users"
           ></CardResume>
