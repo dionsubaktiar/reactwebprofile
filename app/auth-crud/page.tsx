@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import CreateArticleButton from "../components/createArticleButton";
 import Navbar from "../components/navbar";
+import Dropdown from "../components/dropdownButton"; // Import the custom dropdown component
 
 interface User {
   id: number;
@@ -55,6 +56,11 @@ const ArticlesPage = () => {
     fetchArticles();
   }, []);
 
+  const handleManageAction = (action: string, articleId: number) => {
+    console.log(`Action: ${action}, Article ID: ${articleId}`);
+    // Add your logic here for each action (e.g., delete, edit, etc.)
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-honeyDew text-customGreen-dark dark:bg-gray-800 dark:text-honeyDew">
@@ -80,16 +86,8 @@ const ArticlesPage = () => {
   return (
     <div className="min-h-screen bg-honeyDew text-customGreen-dark dark:bg-gray-900 dark:text-honeyDew">
       <div className="max-w-4xl mx-auto p-6">
-        {/* <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-customGreen-default dark:text-customGreen-light">
-            Articles
-          </h1>
-          <ToggleDarkModeButton />
-        </div> */}
-
         <Navbar title="Article"></Navbar>
 
-        {/* Articles list */}
         {articles.length > 0 ? (
           <ul className="space-y-6">
             {articles.map((article) => (
@@ -97,19 +95,36 @@ const ArticlesPage = () => {
                 key={article.id}
                 className="p-4 bg-white rounded shadow border-l-4 border-customGreen-light dark:bg-gray-800 dark:border-customGreen-default dark:shadow-md"
               >
-                <h2 className="text-xl font-bold text-customGreen-default dark:text-customGreen-light mb-2">
-                  {article.title}
-                </h2>
-                <p className="text-gray-700 dark:text-gray-300 mb-4">
-                  {article.article}
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  <strong>Author:</strong> {article.user.name}
-                </p>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  <strong>Date:</strong>{" "}
-                  {new Date(article.tanggal).toLocaleDateString()}
-                </p>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h2 className="text-xl font-bold text-customGreen-default dark:text-customGreen-light mb-2">
+                      {article.title}
+                    </h2>
+                    <p className="text-gray-700 dark:text-gray-300 mb-4">
+                      {article.article}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <strong>Author:</strong> {article.user.name}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <strong>Date:</strong>{" "}
+                      {new Date(article.tanggal).toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </div>
+                  <div>
+                    {/* Use the custom Dropdown component */}
+                    <Dropdown
+                      onAction={(action) =>
+                        handleManageAction(action, article.id)
+                      }
+                      articleId={article.id}
+                    />
+                  </div>
+                </div>
               </li>
             ))}
           </ul>

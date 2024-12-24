@@ -9,7 +9,7 @@ import { FaWhatsapp } from "react-icons/fa";
 import { SiGmail } from "react-icons/si";
 import Image from "next/image";
 import SectionCardNusantara from "../components/sectionCardNusantara";
-import NusantaraNav from "../components/dropDownmenu";
+import NusantaraNav from "../components/nusantaraNav";
 import {
   Navigation,
   Pagination,
