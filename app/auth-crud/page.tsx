@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import ToggleDarkModeButton from "../components/toggleDarkMode";
 import CreateArticleButton from "../components/createArticleButton";
+import Navbar from "../components/navbar";
 
 interface User {
   id: number;
@@ -80,12 +80,14 @@ const ArticlesPage = () => {
   return (
     <div className="min-h-screen bg-honeyDew text-customGreen-dark dark:bg-gray-900 dark:text-honeyDew">
       <div className="max-w-4xl mx-auto p-6">
-        <div className="flex justify-between items-center mb-6">
+        {/* <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-customGreen-default dark:text-customGreen-light">
             Articles
           </h1>
           <ToggleDarkModeButton />
-        </div>
+        </div> */}
+
+        <Navbar title="Article"></Navbar>
 
         {/* Articles list */}
         {articles.length > 0 ? (

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import axios from "axios";
-import ToggleDarkModeButton from "../../components/toggleDarkMode";
+import Navbar from "@/app/components/navbar";
 
 const CreateArticlePage = () => {
   const [formData, setFormData] = useState({
@@ -32,7 +32,7 @@ const CreateArticlePage = () => {
 
     try {
       await axios.get(
-        "https://personalproject.nusantaratranssentosa.co.id/api/article",
+        "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie",
         { withCredentials: true }
       );
       await axios.post(
@@ -54,13 +54,7 @@ const CreateArticlePage = () => {
   return (
     <div className="min-h-screen bg-honeyDew text-customGreen-dark dark:bg-gray-900 dark:text-honeyDew">
       <div className="max-w-3xl mx-auto p-6">
-        {/* Header with dark mode toggle */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-customGreen-default dark:text-customGreen-light">
-            Create New Article
-          </h1>
-          <ToggleDarkModeButton />
-        </div>
+        <Navbar title="Create Article"></Navbar>
 
         {/* Form */}
         <form
