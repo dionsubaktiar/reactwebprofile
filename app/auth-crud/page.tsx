@@ -4,6 +4,7 @@ import axios from "axios";
 import CreateArticleButton from "../components/createArticleButton";
 import Navbar from "../components/navbar";
 import Dropdown from "../components/dropdownButton"; // Import the custom dropdown component
+import { useRouter } from "next/navigation"; // Import Next.js router
 
 interface User {
   id: number;
@@ -32,33 +33,52 @@ const ArticlesPage = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const router = useRouter(); // Initialize Next.js router
+
+  // Function to fetch articles
+  const fetchArticles = async () => {
+    try {
+      const response = await axios.get<{ data: Article[] }>(
+        "https://personalproject.nusantaratranssentosa.co.id/api/article"
+      );
+
+      const validArticles = response.data.data.filter(
+        (article) => article.id && article.title && article.article
+      );
+
+      setArticles(validArticles);
+    } catch (err) {
+      setError("Failed to load articles.");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const response = await axios.get<{ data: Article[] }>(
-          "https://personalproject.nusantaratranssentosa.co.id/api/article"
-        );
-
-        const validArticles = response.data.data.filter(
-          (article) => article.id && article.title && article.article
-        );
-
-        setArticles(validArticles);
-      } catch (err) {
-        setError("Failed to load articles.");
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchArticles();
+    fetchArticles(); // Fetch articles when the component mounts
   }, []);
 
-  const handleManageAction = (action: string, articleId: number) => {
+  // Handle actions like edit, delete, etc.
+  const handleManageAction = async (action: string, articleId: number) => {
     console.log(`Action: ${action}, Article ID: ${articleId}`);
-    // Add your logic here for each action (e.g., delete, edit, etc.)
+
+    if (action === "edit") {
+      // Navigate to the edit page with the article ID as a query parameter
+      router.push(`/auth-crud/edit?pageId=${articleId}`);
+    } else if (action === "delete") {
+      try {
+        await axios.delete(
+          `https://personalproject.nusantaratranssentosa.co.id/api/article/${articleId}`
+        );
+        console.log("Article deleted successfully");
+
+        // Refetch articles after deletion
+        fetchArticles();
+      } catch (error) {
+        console.error("Failed to delete article:", error);
+      }
+    }
   };
 
   if (isLoading) {
