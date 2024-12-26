@@ -40,7 +40,10 @@ const CreateArticlePage = () => {
     setErrorMessage(null);
     setSuccessMessage(null);
 
-    if (!user || !token) {
+    // Retrieve the user ID from context or localStorage
+    const userId = user?.id || localStorage.getItem("user_id");
+
+    if (!userId || !token) {
       setErrorMessage("You must be logged in to create an article.");
       setIsSubmitting(false);
       return;
@@ -56,7 +59,7 @@ const CreateArticlePage = () => {
       // Send API request to create an article
       await axios.post(
         "https://personalproject.nusantaratranssentosa.co.id/api/article",
-        { ...formData, user_id: user.id }, // Dynamically set user_id from the user object
+        { ...formData, user_id: userId }, // Dynamically set user_id
         {
           headers: {
             Authorization: `Bearer ${token}`,
