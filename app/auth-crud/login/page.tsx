@@ -15,6 +15,12 @@ const LoginPage = () => {
   const router = useRouter();
   const { setAuth } = useAuth(); // Access setAuth function from context
 
+  const handleOAuthLogin = (provider: "google" | "github") => {
+    router.push(
+      `https://personalproject.nusantaratranssentosa.co.id/api/auth/${provider}/redirect`
+    );
+  };
+
   const handleLogin = async (role: "admin" | "user" | "custom") => {
     const credentials =
       role === "admin"
@@ -70,9 +76,7 @@ const LoginPage = () => {
           <button
             className="flex items-center justify-center w-full px-4 py-2 bg-white text-gray-700 rounded shadow hover:bg-gray-100 transition dark:bg-gray-800 dark:text-gray-300"
             onClick={() => {
-              router.push(
-                "https://personalproject.nusantaratranssentosa.co.id/api/auth/google/redirect"
-              );
+              handleOAuthLogin("google");
             }}
           >
             <Image
@@ -89,9 +93,7 @@ const LoginPage = () => {
           <button
             className="flex items-center justify-center w-full px-4 py-2 bg-white text-gray-700 rounded shadow hover:bg-gray-100 transition dark:bg-gray-800 dark:text-gray-300"
             onClick={() => {
-              router.push(
-                "https://personalproject.nusantaratranssentosa.co.id/api/auth/github/redirect"
-              );
+              handleOAuthLogin("github");
             }}
           >
             <Image
