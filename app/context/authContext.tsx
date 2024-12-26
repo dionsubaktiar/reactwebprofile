@@ -38,9 +38,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const storedToken = localStorage.getItem("authToken");
     const storedUser = localStorage.getItem("authUser");
 
+    console.log("Restoring state from localStorage");
+    console.log("Stored Token:", storedToken);
+    console.log("Stored User:", storedUser);
+
     if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      try {
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+        console.log("Auth state restored successfully.");
+      } catch (error) {
+        console.error("Failed to parse stored user:", error);
+        logout(); // Clear invalid data
+      }
     }
   }, []);
 
@@ -49,6 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(token);
     localStorage.setItem("authToken", token);
     localStorage.setItem("authUser", JSON.stringify(user));
+    console.log("Auth state updated and persisted.");
   };
 
   const logout = () => {
@@ -56,6 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(null);
     localStorage.removeItem("authToken");
     localStorage.removeItem("authUser");
+    console.log("Auth state cleared.");
   };
 
   return (
