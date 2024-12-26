@@ -122,7 +122,7 @@ const ArticlesPage = () => {
   return (
     <div className="min-h-screen bg-honeyDew text-customGreen-dark dark:bg-gray-900 dark:text-honeyDew">
       <div className="max-w-4xl mx-auto p-6">
-        <div className="flex flex-col">
+        <div className="flex">
           <Navbar title="Article" />
           <button
             onClick={handleLogout}
