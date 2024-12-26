@@ -73,7 +73,7 @@ const ArticlesPage = () => {
     } else {
       fetchArticles(); // Fetch articles when the component mounts
     }
-  }, [isAuthenticated, router]); // Add isAuthenticated as a dependency to trigger rerender when auth changes
+  }); // Add isAuthenticated as a dependency to trigger rerender when auth changes
 
   // Handle actions like edit, delete, etc.
   const handleManageAction = async (action: string, articleId: number) => {
