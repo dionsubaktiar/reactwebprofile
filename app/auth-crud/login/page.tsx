@@ -70,7 +70,7 @@ const LoginPage = () => {
           <button
             className="flex items-center justify-center w-full px-4 py-2 bg-white text-gray-700 rounded shadow hover:bg-gray-100 transition dark:bg-gray-800 dark:text-gray-300"
             onClick={() => {
-              axios.get(
+              router.push(
                 "https://personalproject.nusantaratranssentosa.co.id/api/auth/google/redirect"
               );
             }}
@@ -89,7 +89,7 @@ const LoginPage = () => {
           <button
             className="flex items-center justify-center w-full px-4 py-2 bg-white text-gray-700 rounded shadow hover:bg-gray-100 transition dark:bg-gray-800 dark:text-gray-300"
             onClick={() => {
-              axios.get(
+              router.push(
                 "https://personalproject.nusantaratranssentosa.co.id/api/auth/github/redirect"
               );
             }}
