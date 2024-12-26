@@ -4,8 +4,8 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "@/app/components/navbar";
+import { useAuth } from "@/app/context/authContext"; // Import the useAuth hook
 
-// Define the Article type
 interface Article {
   id: number;
   title: string;
@@ -18,11 +18,21 @@ interface Article {
 
 const EditArticlePage = () => {
   const searchParams = useSearchParams();
-  const articleId = searchParams.get("pageId"); // Get the query parameter
+  const articleId = searchParams.get("pageId");
   const [article, setArticle] = useState<Article | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const { user, token } = useAuth(); // Access user and token from context
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!user || !token) {
+      // Redirect to login page or handle accordingly
+      window.location.href = "/login";
+    }
+  }, [user, token]);
 
   // Fetch the article for editing
   useEffect(() => {
@@ -32,7 +42,7 @@ const EditArticlePage = () => {
           `https://personalproject.nusantaratranssentosa.co.id/api/article/${articleId}`
         )
         .then((response) => {
-          setArticle(response.data.data); // Set the fetched article
+          setArticle(response.data.data);
         })
         .catch(() => {
           setErrorMessage("Failed to load the article for editing.");
@@ -98,7 +108,7 @@ const EditArticlePage = () => {
   return (
     <div className="min-h-screen bg-honeyDew text-customGreen-dark dark:bg-gray-900 dark:text-honeyDew">
       <div className="max-w-3xl mx-auto p-6">
-        <Navbar title="Edit Article"></Navbar>
+        <Navbar title="Edit Article" />
 
         {/* Form */}
         <form

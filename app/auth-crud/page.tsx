@@ -1,10 +1,12 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 import CreateArticleButton from "../components/createArticleButton";
 import Navbar from "../components/navbar";
 import Dropdown from "../components/dropdownButton"; // Import the custom dropdown component
 import { useRouter } from "next/navigation"; // Import Next.js router
+import { useAuth } from "../context/authContext"; // Import the custom useAuth hook
 
 interface User {
   id: number;
@@ -30,16 +32,25 @@ interface Article {
 }
 
 const ArticlesPage = () => {
+  const { user, token } = useAuth(); // Get authentication status from useAuth
   const [articles, setArticles] = useState<Article[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter(); // Initialize Next.js router
 
+  // Check if the user is authenticated by checking if user is null or not
+  const isAuthenticated = user !== null;
+
   // Function to fetch articles
   const fetchArticles = async () => {
     try {
       const response = await axios.get<{ data: Article[] }>(
-        "https://personalproject.nusantaratranssentosa.co.id/api/article"
+        "https://personalproject.nusantaratranssentosa.co.id/api/article",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Use token from useAuth
+          },
+        }
       );
 
       const validArticles = response.data.data.filter(
@@ -56,8 +67,13 @@ const ArticlesPage = () => {
   };
 
   useEffect(() => {
-    fetchArticles(); // Fetch articles when the component mounts
-  }, []);
+    if (!isAuthenticated) {
+      // Redirect to login page if not authenticated
+      router.push("/login");
+    } else {
+      fetchArticles(); // Fetch articles when the component mounts
+    }
+  }, [isAuthenticated, router]); // Add isAuthenticated as a dependency to trigger rerender when auth changes
 
   // Handle actions like edit, delete, etc.
   const handleManageAction = async (action: string, articleId: number) => {
@@ -69,7 +85,12 @@ const ArticlesPage = () => {
     } else if (action === "delete") {
       try {
         await axios.delete(
-          `https://personalproject.nusantaratranssentosa.co.id/api/article/${articleId}`
+          `https://personalproject.nusantaratranssentosa.co.id/api/article/${articleId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Use token from useAuth
+            },
+          }
         );
         console.log("Article deleted successfully");
 

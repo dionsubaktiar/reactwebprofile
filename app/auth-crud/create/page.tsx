@@ -3,8 +3,10 @@
 import { useState } from "react";
 import axios from "axios";
 import Navbar from "@/app/components/navbar";
+import { useAuth } from "../../context/authContext"; // Import the Auth hook
 
 const CreateArticlePage = () => {
+  const { user, token } = useAuth(); // Get the user and token
   const [formData, setFormData] = useState({
     title: "",
     article: "",
@@ -30,6 +32,12 @@ const CreateArticlePage = () => {
     setErrorMessage(null);
     setSuccessMessage(null);
 
+    if (!user || !token) {
+      setErrorMessage("You must be logged in to create an article.");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       await axios.get(
         "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie",
@@ -38,7 +46,12 @@ const CreateArticlePage = () => {
       await axios.post(
         "https://personalproject.nusantaratranssentosa.co.id/api/article",
         formData,
-        { withCredentials: true }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
       );
 
       setSuccessMessage("Article created successfully!");
