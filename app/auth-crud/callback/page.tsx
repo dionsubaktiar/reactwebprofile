@@ -31,12 +31,6 @@ const AuthCallback = () => {
 
         const user = response.data;
 
-        if (!user || !user.id) {
-          console.error("No valid user data or userId found.");
-          router.replace("/auth-crud/login?error=invalid_user_data");
-          return;
-        }
-
         // Save token and user data in the context
         setAuth(user, token);
         localStorage.setItem("token", token);
