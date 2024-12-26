@@ -7,6 +7,8 @@ import {
   ReactNode,
   useEffect,
 } from "react";
+import { useRouter } from "next/navigation";
+// import axios from "axios";
 
 interface User {
   id: number;
@@ -26,6 +28,7 @@ interface AuthContextType {
   isRestoringAuth: boolean;
   setAuth: (user: User, token: string) => void;
   logout: () => void;
+  loginWithOAuth: (provider: "google" | "github") => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -34,15 +37,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isRestoringAuth, setIsRestoringAuth] = useState<boolean>(true);
+  const router = useRouter();
 
   // Restore authentication state from localStorage on initialization
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
     const storedUser = localStorage.getItem("authUser");
-
-    console.log("Restoring state from localStorage");
-    console.log("Stored Token:", storedToken);
-    console.log("Stored User:", storedUser);
 
     if (storedToken && storedUser) {
       try {
@@ -72,11 +72,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("authUser");
     console.log("Auth state cleared.");
+    router.push("/auth-crud/login");
+  };
+
+  const loginWithOAuth = async (provider: "google" | "github") => {
+    try {
+      const redirectUrl = `https://personalproject.nusantaratranssentosa.co.id/api/auth/${provider}/redirect`;
+      window.location.href = redirectUrl; // Redirect to OAuth login
+    } catch (error) {
+      console.error("OAuth login failed:", error);
+    }
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, token, isRestoringAuth, setAuth, logout }}
+      value={{
+        user,
+        token,
+        isRestoringAuth,
+        setAuth,
+        logout,
+        loginWithOAuth,
+      }}
     >
       {children}
     </AuthContext.Provider>
