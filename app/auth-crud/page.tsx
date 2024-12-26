@@ -32,7 +32,7 @@ interface Article {
 }
 
 const ArticlesPage = () => {
-  const { user, token, logout } = useAuth(); // Add logout
+  const { user, token, logout, isRestoringAuth } = useAuth(); // Added isRestoringAuth
   const [articles, setArticles] = useState<Article[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -63,6 +63,8 @@ const ArticlesPage = () => {
   };
 
   useEffect(() => {
+    if (isRestoringAuth) return; // Don't proceed while restoring auth state
+
     if (!isAuthenticated) {
       router.push("/auth-crud/login");
     } else {
@@ -70,11 +72,11 @@ const ArticlesPage = () => {
     }
 
     const interval = setInterval(() => {
-      if (isAuthenticated) fetchArticles(); // Fetch every X seconds
+      if (isAuthenticated) fetchArticles(); // Fetch every 10 seconds
     }, 10000); // 10 seconds
 
     return () => clearInterval(interval); // Cleanup on unmount
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, isRestoringAuth, router]);
 
   const handleManageAction = async (action: string, articleId: number) => {
     if (action === "edit") {
@@ -129,7 +131,7 @@ const ArticlesPage = () => {
     <div className="min-h-screen bg-honeyDew text-customGreen-dark dark:bg-gray-900 dark:text-honeyDew">
       <div className="max-w-4xl mx-auto p-6">
         <div className="flex justify-between items-center">
-          <Navbar title="Article" />
+          <Navbar title="Articles" />
           <button
             onClick={handleLogout}
             className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition dark:bg-red-400 dark:hover:bg-red-500"
