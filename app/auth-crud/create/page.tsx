@@ -55,7 +55,9 @@ const CreateArticlePage = () => {
         "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie",
         { withCredentials: true }
       );
-      console.log(userId);
+      console.log(
+        "user id:" + userId + "Local storage:" + localStorage.getItem("user_id")
+      );
       // Send API request to create an article
       await axios.post(
         "https://personalproject.nusantaratranssentosa.co.id/api/article",
