@@ -33,6 +33,7 @@ const AuthCallback = () => {
 
         // Save token and user data in the context
         setAuth(user, token);
+        console.log(response.data);
         localStorage.setItem("token", token);
         localStorage.setItem("user_id", user.id); // Save user_id in localStorage
 
