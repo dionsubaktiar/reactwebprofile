@@ -6,7 +6,7 @@ import CreateArticleButton from "../components/createArticleButton";
 import Navbar from "../components/navbar";
 import Dropdown from "../components/dropdownButton"; // Import the custom dropdown component
 import { useRouter } from "next/navigation"; // Import Next.js router
-import { useAuth } from "../context/authContext"; // Import the custom useAuth hook
+import { useAuth } from "../context/authContext";
 
 interface User {
   id: number;
@@ -69,7 +69,7 @@ const ArticlesPage = () => {
   useEffect(() => {
     if (!isAuthenticated) {
       // Redirect to login page if not authenticated
-      router.push("/login");
+      router.push("/auth-crud/login");
     } else {
       fetchArticles(); // Fetch articles when the component mounts
     }

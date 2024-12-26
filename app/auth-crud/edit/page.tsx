@@ -1,10 +1,11 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "@/app/components/navbar";
-import { useAuth } from "@/app/context/authContext"; // Import the useAuth hook
+import { useAuth } from "@/app/context/authContext";
 
 interface Article {
   id: number;
@@ -29,7 +30,6 @@ const EditArticlePage = () => {
   // Redirect if not authenticated
   useEffect(() => {
     if (!user || !token) {
-      // Redirect to login page or handle accordingly
       window.location.href = "/login";
     }
   }, [user, token]);
@@ -180,4 +180,11 @@ const EditArticlePage = () => {
   );
 };
 
-export default EditArticlePage;
+// Wrap the component in Suspense
+const SuspenseEditArticlePage = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <EditArticlePage />
+  </Suspense>
+);
+
+export default SuspenseEditArticlePage;
