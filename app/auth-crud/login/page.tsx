@@ -110,7 +110,7 @@ const LoginPage = () => {
             <span className="bg-honeyDew px-4 text-gray-500 dark:bg-gray-900 dark:text-gray-400">
               or
             </span>
-            <div className="absolute inset-x-0 top-1/2 border-t border-gray-300 dark:border-gray-700"></div>
+            <div className="absolute inset-x-0 top-1 border-t border-gray-300 dark:border-gray-700"></div>
           </div>
 
           {/* Login as Admin */}

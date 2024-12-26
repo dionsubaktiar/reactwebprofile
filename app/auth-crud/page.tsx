@@ -32,7 +32,7 @@ interface Article {
 }
 
 const ArticlesPage = () => {
-  const { user, token } = useAuth();
+  const { user, token, logout } = useAuth(); // Added `logout` from context
   const [articles, setArticles] = useState<Article[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -91,6 +91,11 @@ const ArticlesPage = () => {
     }
   };
 
+  const handleLogout = () => {
+    logout(); // Clear authentication state and localStorage
+    router.push("/auth-crud/login"); // Redirect to login page
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-honeyDew text-customGreen-dark dark:bg-gray-800 dark:text-honeyDew">
@@ -117,7 +122,15 @@ const ArticlesPage = () => {
   return (
     <div className="min-h-screen bg-honeyDew text-customGreen-dark dark:bg-gray-900 dark:text-honeyDew">
       <div className="max-w-4xl mx-auto p-6">
-        <Navbar title="Article"></Navbar>
+        <div className="flex flex-col">
+          <Navbar title="Article" />
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition dark:bg-red-400 dark:hover:bg-red-500"
+          >
+            Logout
+          </button>
+        </div>
 
         {articles.length > 0 ? (
           <ul className="space-y-6">

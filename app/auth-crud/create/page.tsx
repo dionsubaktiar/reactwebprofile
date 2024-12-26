@@ -1,20 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation"; // Import the router for redirection
 import axios from "axios";
 import Navbar from "@/app/components/navbar";
 import { useAuth } from "../../context/authContext"; // Import the Auth hook
 
 const CreateArticlePage = () => {
   const { user, token } = useAuth(); // Get the user and token
+  const router = useRouter(); // Use Next.js router for navigation
   const [formData, setFormData] = useState({
     title: "",
     article: "",
-    user_id: 1, // Default user ID (can be dynamically set based on the application)
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Redirect to login if the user is not authenticated
+    if (!user || !token) {
+      router.push("/auth-crud/login");
+    }
+  }, [user, token, router]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -39,13 +47,16 @@ const CreateArticlePage = () => {
     }
 
     try {
+      // Ensure CSRF token is set
       await axios.get(
         "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie",
         { withCredentials: true }
       );
+
+      // Send API request to create an article
       await axios.post(
         "https://personalproject.nusantaratranssentosa.co.id/api/article",
-        formData,
+        { ...formData, user_id: user.id }, // Dynamically set user_id from the user object
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -55,7 +66,7 @@ const CreateArticlePage = () => {
       );
 
       setSuccessMessage("Article created successfully!");
-      setFormData({ title: "", article: "", user_id: 1 });
+      setFormData({ title: "", article: "" });
     } catch (err) {
       console.error(err);
       setErrorMessage("Failed to create the article. Please try again.");

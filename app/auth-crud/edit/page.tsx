@@ -1,8 +1,7 @@
 "use client";
 
-import { Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import axios from "axios";
 import Navbar from "@/app/components/navbar";
 import { useAuth } from "@/app/context/authContext";
@@ -19,6 +18,7 @@ interface Article {
 
 const EditArticlePage = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const articleId = searchParams.get("pageId");
   const [article, setArticle] = useState<Article | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,23 +30,26 @@ const EditArticlePage = () => {
   // Redirect if not authenticated
   useEffect(() => {
     if (!user || !token) {
-      window.location.href = "/login";
+      router.push("/auth-crud/login"); // Redirects to login if unauthenticated
     }
-  }, [user, token]);
+  }, [user, token, router]);
 
   // Fetch the article for editing
   useEffect(() => {
-    if (articleId) {
-      axios
-        .get(
+    const fetchArticle = async () => {
+      try {
+        const response = await axios.get(
           `https://personalproject.nusantaratranssentosa.co.id/api/article/${articleId}`
-        )
-        .then((response) => {
-          setArticle(response.data.data);
-        })
-        .catch(() => {
-          setErrorMessage("Failed to load the article for editing.");
-        });
+        );
+        setArticle(response.data.data);
+      } catch (error) {
+        console.error(error);
+        setErrorMessage("Failed to load the article for editing.");
+      }
+    };
+
+    if (articleId) {
+      fetchArticle();
     }
   }, [articleId]);
 
@@ -70,12 +73,17 @@ const EditArticlePage = () => {
       await axios.put(
         `https://personalproject.nusantaratranssentosa.co.id/api/article/${articleId}`,
         article,
-        { withCredentials: true }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
       );
 
       setSuccessMessage("Article updated successfully!");
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
       setErrorMessage("Failed to update the article. Please try again.");
     } finally {
       setIsSubmitting(false);
