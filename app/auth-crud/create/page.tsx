@@ -7,7 +7,7 @@ import Navbar from "@/app/components/navbar";
 import { useAuth } from "../../context/authContext"; // Import the Auth hook
 
 const CreateArticlePage = () => {
-  const { user, token } = useAuth(); // Get the user and token
+  const { user, token, isRestoringAuth } = useAuth(); // Get the user, token, and restoring status
   const router = useRouter(); // Use Next.js router for navigation
   const [formData, setFormData] = useState({
     title: "",
@@ -19,10 +19,10 @@ const CreateArticlePage = () => {
 
   useEffect(() => {
     // Redirect to login if the user is not authenticated
-    if (!user || !token) {
+    if (!isRestoringAuth && (!user || !token)) {
       router.push("/auth-crud/login");
     }
-  }, [user, token, router]);
+  }, [user, token, isRestoringAuth, router]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -74,6 +74,10 @@ const CreateArticlePage = () => {
       setIsSubmitting(false);
     }
   };
+
+  if (isRestoringAuth) {
+    return <div className="text-center mt-6">Restoring authentication...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-honeyDew text-customGreen-dark dark:bg-gray-900 dark:text-honeyDew">

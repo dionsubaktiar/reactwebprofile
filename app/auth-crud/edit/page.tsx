@@ -25,14 +25,14 @@ const EditArticlePage = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const { user, token } = useAuth(); // Access user and token from context
+  const { user, token, isRestoringAuth } = useAuth(); // Include isRestoringAuth
 
   // Redirect if not authenticated
   useEffect(() => {
-    if (!user || !token) {
-      router.push("/auth-crud/login"); // Redirects to login if unauthenticated
+    if (!isRestoringAuth && (!user || !token)) {
+      router.push("/auth-crud/login");
     }
-  }, [user, token, router]);
+  }, [isRestoringAuth, user, token, router]);
 
   // Fetch the article for editing
   useEffect(() => {
@@ -96,6 +96,14 @@ const EditArticlePage = () => {
     const { name, value } = e.target;
     setArticle((prev) => (prev ? { ...prev, [name]: value } : null));
   };
+
+  if (isRestoringAuth) {
+    return (
+      <div className="text-center mt-6">
+        <p>Restoring authentication...</p>
+      </div>
+    );
+  }
 
   if (!articleId) {
     return (

@@ -31,9 +31,10 @@ const AuthCallback = () => {
 
         const user = response.data;
 
-        // Save token and user data in the context
-        setAuth(user, token);
+        // Save token and user data (including user ID) in the context
+        setAuth({ ...user, id: user.id }, token);
         localStorage.setItem("token", token);
+        localStorage.setItem("userId", user.id); // Save userId for persistence
 
         // Redirect to dashboard
         router.replace("/auth-crud/");
