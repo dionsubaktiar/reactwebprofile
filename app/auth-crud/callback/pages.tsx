@@ -11,14 +11,17 @@ const AuthCallback = () => {
 
   useEffect(() => {
     const handleCallback = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+
+      if (!token) {
+        console.error("No token found in the callback URL.");
+        router.replace("/auth-crud/login?error=missing_token");
+        return;
+      }
+
       try {
-        const params = new URLSearchParams(window.location.search);
-        const token = params.get("token");
-
-        if (!token) {
-          throw new Error("No token found in the callback URL.");
-        }
-
+        // Fetch authenticated user data
         const response = await axios.get(
           "https://personalproject.nusantaratranssentosa.co.id/api/me",
           {
@@ -28,11 +31,15 @@ const AuthCallback = () => {
 
         const user = response.data;
 
-        setAuth(user, token); // Save user and token in the context
-        router.replace("/auth-crud/"); // Redirect to dashboard or another page
+        // Save token and user data in the context
+        setAuth(user, token);
+        localStorage.setItem("token", token);
+
+        // Redirect to dashboard
+        router.replace("/auth-crud/");
       } catch (error) {
-        console.error("Error handling callback:", error);
-        router.replace("/auth-crud/login"); // Redirect to login on failure
+        console.error("Error fetching user data:", error);
+        router.replace("/auth-crud/login?error=callback_failed");
       }
     };
 
@@ -41,7 +48,7 @@ const AuthCallback = () => {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <p>Authenticating, please wait...</p>
+      <p className="text-lg font-medium">Authenticating, please wait...</p>
     </div>
   );
 };
