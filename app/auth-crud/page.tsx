@@ -32,7 +32,7 @@ interface Article {
 }
 
 const ArticlesPage = () => {
-  const { user, token, logout } = useAuth(); // Added `logout` from context
+  const { user, token, logout } = useAuth(); // Add logout
   const [articles, setArticles] = useState<Article[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -68,6 +68,12 @@ const ArticlesPage = () => {
     } else {
       fetchArticles();
     }
+
+    const interval = setInterval(() => {
+      if (isAuthenticated) fetchArticles(); // Fetch every X seconds
+    }, 10000); // 10 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
   }, [isAuthenticated, router]);
 
   const handleManageAction = async (action: string, articleId: number) => {
@@ -92,8 +98,8 @@ const ArticlesPage = () => {
   };
 
   const handleLogout = () => {
-    logout(); // Clear authentication state and localStorage
-    router.push("/auth-crud/login"); // Redirect to login page
+    logout(); // Clear authentication state
+    router.push("/auth-crud/login"); // Redirect to login
   };
 
   if (isLoading) {
@@ -122,7 +128,7 @@ const ArticlesPage = () => {
   return (
     <div className="min-h-screen bg-honeyDew text-customGreen-dark dark:bg-gray-900 dark:text-honeyDew">
       <div className="max-w-4xl mx-auto p-6">
-        <div className="flex">
+        <div className="flex justify-between items-center">
           <Navbar title="Article" />
           <button
             onClick={handleLogout}
