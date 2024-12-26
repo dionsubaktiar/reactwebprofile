@@ -1,16 +1,19 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Navbar from "../../components/navbar";
 import Image from "next/image";
 import Link from "next/link";
+import { useAuth } from "../../context/authContext"; // Import useAuth hook
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { setAuth } = useAuth(); // Access setAuth function from context
 
   const handleLogin = async (role: "admin" | "user" | "custom") => {
     const credentials =
@@ -23,19 +26,31 @@ const LoginPage = () => {
 
     try {
       setIsLoading(true);
+
+      // Get CSRF token
       await axios.get(
         "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie",
         { withCredentials: true }
       );
-      await axios.post(
+
+      // Perform the login request
+      const response = await axios.post(
         "https://personalproject.nusantaratranssentosa.co.id/api/login",
         credentials,
         { withCredentials: true }
       );
 
+      // Get user data and token from response
+      const user = response.data.user;
+      const token = response.data.token;
+
+      // Save user and token using context
+      setAuth(user, token);
+
       console.log(`${role} logged in successfully.`);
+
       // Redirect to dashboard or home page after login
-      router.push("/auth-crud/");
+      router.replace("/auth-crud/");
     } catch (error) {
       console.error("Login failed:", error);
     } finally {
