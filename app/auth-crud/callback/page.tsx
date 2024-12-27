@@ -6,7 +6,7 @@ import { useAuth } from "../../context/authContext";
 
 const AuthCallback = () => {
   const router = useRouter();
-  const { setAuth } = useAuth(); // Use the setAuth function from context
+  const { setAuth } = useAuth();
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -34,16 +34,13 @@ const AuthCallback = () => {
           throw new Error(`Failed to fetch user data: ${response.status}`);
         }
 
-        const { user } = await response.json(); // Extract the user object
+        const { user } = await response.json();
 
-        // Save the user and token in the context
         setAuth(user, token);
 
-        // Optionally store data in localStorage
         localStorage.setItem("authToken", token);
         localStorage.setItem("authUser", JSON.stringify(user));
 
-        // Redirect to the dashboard or home page
         router.replace("/auth-crud/");
       } catch (error) {
         console.error("Error during callback:", error);

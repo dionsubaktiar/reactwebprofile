@@ -25,9 +25,8 @@ const EditArticlePage = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const { user, token, isRestoringAuth } = useAuth(); // Include isRestoringAuth
+  const { user, token, isRestoringAuth } = useAuth();
 
-  // Redirect if not authenticated
   useEffect(() => {
     if (!isRestoringAuth && (!user || !token)) {
       router.push("/auth-crud/login");

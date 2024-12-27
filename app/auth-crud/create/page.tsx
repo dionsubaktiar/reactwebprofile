@@ -55,13 +55,9 @@ const CreateArticlePage = () => {
         "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie",
         { withCredentials: true }
       );
-      console.log(
-        "user id:" + userId + "Local storage:" + localStorage.getItem("user_id")
-      );
-      // Send API request to create an article
       await axios.post(
         "https://personalproject.nusantaratranssentosa.co.id/api/article",
-        { ...formData, user_id: userId }, // Dynamically set user_id
+        { ...formData, user_id: userId },
         {
           headers: {
             Authorization: `Bearer ${token}`,

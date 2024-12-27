@@ -13,7 +13,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { setAuth } = useAuth(); // Access setAuth function from context
+  const { setAuth } = useAuth();
 
   const handleOAuthLogin = (provider: "google" | "github") => {
     router.push(
@@ -39,23 +39,19 @@ const LoginPage = () => {
         { withCredentials: true }
       );
 
-      // Perform the login request
       const response = await axios.post(
         "https://personalproject.nusantaratranssentosa.co.id/api/login",
         credentials,
         { withCredentials: true }
       );
 
-      // Get user data and token from response
       const user = response.data.user;
       const token = response.data.token;
 
-      // Save user and token using context
       setAuth(user, token);
 
       console.log(`${role} logged in successfully.`);
 
-      // Redirect to dashboard or home page after login
       router.replace("/auth-crud/");
     } catch (error) {
       console.error("Login failed:", error);

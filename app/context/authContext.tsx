@@ -8,7 +8,6 @@ import {
   useEffect,
 } from "react";
 import { useRouter } from "next/navigation";
-// import axios from "axios";
 
 interface User {
   id: number;
@@ -78,7 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const loginWithOAuth = async (provider: "google" | "github") => {
     try {
       const redirectUrl = `https://personalproject.nusantaratranssentosa.co.id/api/auth/${provider}/redirect`;
-      window.location.href = redirectUrl; // Redirect to OAuth login
+      window.location.href = redirectUrl;
     } catch (error) {
       console.error("OAuth login failed:", error);
     }
