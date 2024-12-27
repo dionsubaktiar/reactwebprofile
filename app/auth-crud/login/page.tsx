@@ -86,7 +86,7 @@ const LoginPage = () => {
           </button>
 
           {/* GitHub Login Button */}
-          <button
+          {/* <button
             className="flex items-center justify-center w-full px-4 py-2 bg-white text-gray-700 rounded shadow hover:bg-gray-100 transition dark:bg-gray-800 dark:text-gray-300"
             onClick={() => {
               handleOAuthLogin("github");
@@ -100,7 +100,7 @@ const LoginPage = () => {
               className="mr-2"
             />
             Login with GitHub
-          </button>
+          </button> */}
 
           <div className="relative text-center mt-6">
             <span className="bg-honeyDew px-4 text-gray-500 dark:bg-gray-900 dark:text-gray-400">
