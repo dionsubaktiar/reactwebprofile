@@ -2,12 +2,11 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "../../context/authContext"; // Adjust based on your context location
-import axios from "axios";
+import { useAuth } from "../../context/authContext";
 
 const AuthCallback = () => {
   const router = useRouter();
-  const { setAuth } = useAuth(); // Your custom auth context
+  const { setAuth } = useAuth(); // Use the setAuth function from context
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -21,26 +20,33 @@ const AuthCallback = () => {
       }
 
       try {
-        // Fetch authenticated user data
-        const response = await axios.get(
+        // Fetch user data using the token
+        const response = await fetch(
           "https://personalproject.nusantaratranssentosa.co.id/api/me",
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
         );
 
-        const user = response.data;
+        if (!response.ok) {
+          throw new Error(`Failed to fetch user data: ${response.status}`);
+        }
 
-        // Save token and user data in the context
+        const { user } = await response.json(); // Extract the user object
+
+        // Save the user and token in the context
         setAuth(user, token);
-        console.log(response.data);
-        localStorage.setItem("token", token);
-        localStorage.setItem("user_id", user.id); // Save user_id in localStorage
 
-        // Redirect to dashboard
+        // Optionally store data in localStorage
+        localStorage.setItem("authToken", token);
+        localStorage.setItem("authUser", JSON.stringify(user));
+
+        // Redirect to the dashboard or home page
         router.replace("/auth-crud/");
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error during callback:", error);
         router.replace("/auth-crud/login?error=callback_failed");
       }
     };
