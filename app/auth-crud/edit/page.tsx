@@ -38,7 +38,12 @@ const EditArticlePage = () => {
     const fetchArticle = async () => {
       try {
         const response = await axios.get(
-          `https://personalproject.nusantaratranssentosa.co.id/api/article/${articleId}`
+          `https://personalproject.nusantaratranssentosa.co.id/api/article/${articleId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         setArticle(response.data.data);
       } catch (error) {
