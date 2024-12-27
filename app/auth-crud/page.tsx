@@ -73,7 +73,7 @@ const ArticlesPage = () => {
 
     const interval = setInterval(() => {
       if (isAuthenticated) fetchArticles(); // Fetch every 10 seconds
-    }, 10000); // 10 seconds
+    }, 5000); // 10 seconds
 
     return () => clearInterval(interval); // Cleanup on unmount
   }, [isAuthenticated, isRestoringAuth, router]);
@@ -94,6 +94,7 @@ const ArticlesPage = () => {
         fetchArticles();
         alert("Article deleted successfully.");
       } catch (error) {
+        console.log(`token: Bearer ${token}`);
         console.error("Failed to delete article:", error);
       }
     }
