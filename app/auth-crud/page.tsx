@@ -32,7 +32,7 @@ interface Article {
 }
 
 const ArticlesPage = () => {
-  const { user, token, logout, isRestoringAuth } = useAuth(); // Added isRestoringAuth
+  const { user, token, logout, isRestoringAuth } = useAuth();
   const [articles, setArticles] = useState<Article[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -63,7 +63,7 @@ const ArticlesPage = () => {
   };
 
   useEffect(() => {
-    if (isRestoringAuth) return; // Don't proceed while restoring auth state
+    if (isRestoringAuth) return;
 
     if (!isAuthenticated) {
       router.push("/auth-crud/login");
@@ -72,10 +72,10 @@ const ArticlesPage = () => {
     }
 
     const interval = setInterval(() => {
-      if (isAuthenticated) fetchArticles(); // Fetch every 10 seconds
-    }, 5000); // 10 seconds
+      if (isAuthenticated) fetchArticles();
+    }, 5000);
 
-    return () => clearInterval(interval); // Cleanup on unmount
+    return () => clearInterval(interval);
   }, [isAuthenticated, isRestoringAuth, router]);
 
   const handleManageAction = async (action: string, articleId: number) => {
@@ -83,7 +83,6 @@ const ArticlesPage = () => {
       router.push(`/auth-crud/edit?pageId=${articleId}`);
     } else if (action === "delete") {
       try {
-        console.log(`token: Bearer ${token}`);
         await axios.delete(
           `https://personalproject.nusantaratranssentosa.co.id/api/article/${articleId}`,
           {
@@ -97,13 +96,14 @@ const ArticlesPage = () => {
       } catch (error) {
         console.log(`token: Bearer ${token}`);
         console.error("Failed to delete article:", error);
+        alert("Failed to delete the article. Please try again.");
       }
     }
   };
 
   const handleLogout = () => {
-    logout(); // Clear authentication state
-    router.push("/auth-crud/login"); // Redirect to login
+    logout();
+    router.push("/auth-crud/login");
   };
 
   if (isLoading) {
@@ -169,14 +169,12 @@ const ArticlesPage = () => {
                       })}
                     </p>
                   </div>
-                  <div>
-                    <Dropdown
-                      onAction={(action) =>
-                        handleManageAction(action, article.id)
-                      }
-                      articleId={article.id}
-                    />
-                  </div>
+                  <Dropdown
+                    onAction={(action) =>
+                      handleManageAction(action, article.id)
+                    }
+                    articleId={article.id}
+                  />
                 </div>
               </li>
             ))}

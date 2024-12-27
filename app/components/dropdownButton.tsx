@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import axios from "axios";
 
 interface DropdownProps {
   onAction: (action: string, articleId: number) => void;
@@ -9,33 +8,27 @@ interface DropdownProps {
 
 const Dropdown = ({ onAction, articleId }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false); // To disable buttons during action
 
   const toggleDropdown = () => {
     setIsOpen((prev) => !prev);
   };
 
-  const handleAction = (action: string) => {
-    if (action === "delete") {
-      axios.get(
-        "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie",
-        { withCredentials: true }
+  const handleAction = async (action: string) => {
+    if (isProcessing) return; // Prevent double submission
+    setIsProcessing(true);
+
+    try {
+      await onAction(action, articleId);
+    } catch (error) {
+      console.error(
+        `Failed to process action ${action} for article ${articleId}:`,
+        error
       );
-      axios
-        .delete(
-          `https://personalproject.nusantaratranssentosa.co.id/api/article/${articleId}`,
-          { withCredentials: true }
-        )
-        .then((response) => {
-          console.log("Article deleted successfully:", response.data);
-          onAction(action, articleId); // Call the onAction callback to notify parent
-        })
-        .catch((error) => {
-          console.error("Failed to delete article:", error);
-        });
-    } else {
-      onAction(action, articleId); // Handle other actions
+    } finally {
+      setIsProcessing(false);
+      setIsOpen(false); // Close dropdown after the action
     }
-    setIsOpen(false); // Close dropdown after selection
   };
 
   return (
@@ -51,30 +44,23 @@ const Dropdown = ({ onAction, articleId }: DropdownProps) => {
       {isOpen && (
         <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 dark:bg-gray-800 dark:ring-gray-700 transition ease-in-out duration-200">
           <div className="py-1">
-            <div className="flex justify-center">
-              <button
-                onClick={() => handleAction("edit")}
-                className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                Edit
-              </button>
-            </div>
-            <div className="flex justify-center">
-              <button
-                onClick={() => handleAction("copy")}
-                className="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                Copy Link
-              </button>
-            </div>
-            <div className="flex justify-center">
-              <button
-                onClick={() => handleAction("delete")}
-                className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                Delete
-              </button>
-            </div>
+            {["edit", "copy", "delete"].map((action) => (
+              <div key={action} className="flex justify-center">
+                <button
+                  onClick={() => handleAction(action)}
+                  disabled={isProcessing} // Disable button while processing
+                  className={`w-full text-left px-4 py-2 text-sm ${
+                    action === "delete"
+                      ? "text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  }`}
+                >
+                  {action === "edit" && "Edit"}
+                  {action === "copy" && "Copy Link"}
+                  {action === "delete" && "Delete"}
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       )}
