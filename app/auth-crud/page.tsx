@@ -151,7 +151,7 @@ const ArticlesPage = () => {
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <h2 className="text-xl font-bold text-customGreen-default dark:text-customGreen-light mb-2">
+                    <h2 className="text-xl font-bold text-customGreen-default dark:text-customGreen-light mb-2 line-clamp-2">
                       {article.title}
                     </h2>
                     <p className="text-gray-700 dark:text-gray-300 mb-4 line-clamp-4">
