@@ -83,6 +83,7 @@ const ArticlesPage = () => {
       router.push(`/auth-crud/edit?pageId=${articleId}`);
     } else if (action === "delete") {
       try {
+        console.log(`token: Bearer ${token}`);
         await axios.delete(
           `https://personalproject.nusantaratranssentosa.co.id/api/article/${articleId}`,
           {
