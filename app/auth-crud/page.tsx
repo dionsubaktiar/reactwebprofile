@@ -154,7 +154,7 @@ const ArticlesPage = () => {
                     <h2 className="text-xl font-bold text-customGreen-default dark:text-customGreen-light mb-2">
                       {article.title}
                     </h2>
-                    <p className="text-gray-700 dark:text-gray-300 mb-4">
+                    <p className="text-gray-700 dark:text-gray-300 mb-4 line-clamp-4">
                       {article.article}
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
