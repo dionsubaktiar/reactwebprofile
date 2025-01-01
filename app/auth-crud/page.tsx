@@ -52,6 +52,7 @@ const ArticlesPage = () => {
     next: string | null;
     prev: string | null;
   }>({ next: null, prev: null });
+  const [dataHash, setDataHash] = useState<string | null>(null); // Tracking data hash
   const router = useRouter();
 
   const isAuthenticated = user !== null;
@@ -69,19 +70,25 @@ const ArticlesPage = () => {
           },
         });
 
-        // Accessing data correctly from the article_data object
-        const articlesWithClamp = response.data.article_data.data.map(
-          (article: Article) => ({
-            ...article,
-            isClamped: true,
-          })
-        );
+        // Generate a hash of the current data
+        const newDataHash = JSON.stringify(response.data.article_data.data);
 
-        setArticles(articlesWithClamp);
-        setPagination({
-          next: response.data.article_data.next_page_url,
-          prev: response.data.article_data.prev_page_url,
-        });
+        // Only update if the data is different
+        if (newDataHash !== dataHash) {
+          const articlesWithClamp = response.data.article_data.data.map(
+            (article: Article) => ({
+              ...article,
+              isClamped: true,
+            })
+          );
+
+          setArticles(articlesWithClamp);
+          setPagination({
+            next: response.data.article_data.next_page_url,
+            prev: response.data.article_data.prev_page_url,
+          });
+          setDataHash(newDataHash); // Store new data hash
+        }
       } catch (err: unknown) {
         console.error(err);
         setError("Failed to load articles.");
@@ -89,7 +96,7 @@ const ArticlesPage = () => {
         setIsLoading(false);
       }
     },
-    [token]
+    [token, dataHash] // Add dataHash as a dependency to detect changes
   );
 
   useEffect(() => {
@@ -100,12 +107,6 @@ const ArticlesPage = () => {
     } else {
       fetchArticles();
     }
-
-    const interval = setInterval(() => {
-      if (isAuthenticated) fetchArticles();
-    }, 5000);
-
-    return () => clearInterval(interval);
   }, [isAuthenticated, isRestoringAuth, router, fetchArticles]);
 
   const handleManageAction = async (action: string, articleId: number) => {
