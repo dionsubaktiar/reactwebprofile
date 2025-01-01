@@ -29,6 +29,7 @@ interface Article {
   created_at: string;
   updated_at: string;
   user: User;
+  isClamped?: boolean; // Add this line to extend the Article interface
 }
 
 interface ArticleResponse {
@@ -42,7 +43,6 @@ const ArticlesPage = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [lineClamp, setLineClamp] = useState<boolean>(true); // State for toggling line clamp
   const [pagination, setPagination] = useState<{
     next: string | null;
     prev: string | null;
@@ -63,7 +63,12 @@ const ArticlesPage = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setArticles(response.data.data);
+        // Add isClamped to each article
+        const articlesWithClamp = response.data.data.map((article) => ({
+          ...article,
+          isClamped: true, // Initialize `isClamped` to `true`
+        }));
+        setArticles(articlesWithClamp);
         setPagination({
           next: response.data.next_page_url,
           prev: response.data.prev_page_url,
@@ -125,8 +130,14 @@ const ArticlesPage = () => {
     router.push("/auth-crud/login");
   };
 
-  const toggleLineClamp = () => {
-    setLineClamp(!lineClamp); // Toggle line clamp visibility
+  const toggleClamp = (articleId: number) => {
+    setArticles((prevArticles) =>
+      prevArticles.map((article) =>
+        article.id === articleId
+          ? { ...article, isClamped: !article.isClamped }
+          : article
+      )
+    );
   };
 
   const handlePagination = (url: string | null) => {
@@ -169,15 +180,6 @@ const ArticlesPage = () => {
           </button>
         </div>
 
-        <div className="flex justify-end mb-4">
-          <button
-            onClick={toggleLineClamp}
-            className="px-4 py-2 bg-customGreen-dark text-white rounded hover:bg-customGreen-default transition dark:bg-customGreen-light dark:text-gray-800"
-          >
-            {lineClamp ? "Show More" : "Show Less"}
-          </button>
-        </div>
-
         {articles.length > 0 ? (
           <ul className="space-y-6">
             {articles.map((article) => (
@@ -187,12 +189,12 @@ const ArticlesPage = () => {
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <h2 className="text-xl font-bold text-customGreen-default dark:text-customGreen-light mb-2 line-clamp-2">
+                    <h2 className="text-xl font-bold text-customGreen-default dark:text-customGreen-light mb-2">
                       {article.title}
                     </h2>
                     <p
                       className={`text-gray-700 dark:text-gray-300 mb-4 ${
-                        lineClamp ? "line-clamp-4" : ""
+                        article.isClamped ? "line-clamp-4" : ""
                       }`}
                     >
                       {article.article}
@@ -208,6 +210,12 @@ const ArticlesPage = () => {
                         year: "numeric",
                       })}
                     </p>
+                    <button
+                      onClick={() => toggleClamp(article.id)}
+                      className="text-customGreen-default dark:text-customGreen-light mt-2"
+                    >
+                      {article.isClamped ? "Show More" : "Show Less"}
+                    </button>
                   </div>
                   <Dropdown
                     onAction={(action) =>
