@@ -29,7 +29,7 @@ interface Article {
   created_at: string;
   updated_at: string;
   user: User;
-  isClamped?: boolean; // Add this line to extend the Article interface
+  isClamped?: boolean;
 }
 
 interface ArticleResponse {
@@ -51,7 +51,7 @@ const ArticlesPage = () => {
 
   const isAuthenticated = user !== null;
 
-  // Memoize the fetchArticles function to avoid changing dependencies
+  // Fixing the map() function
   const fetchArticles = useCallback(
     async (
       url: string = "https://personalproject.nusantaratranssentosa.co.id/api/article"
@@ -63,11 +63,15 @@ const ArticlesPage = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        // Add isClamped to each article
-        const articlesWithClamp = response.data.data.map((article) => ({
-          ...article,
-          isClamped: true, // Initialize `isClamped` to `true`
-        }));
+
+        // Directly using response.data.data, not article_data
+        const articlesWithClamp = response.data.data.map(
+          (article: Article) => ({
+            ...article,
+            isClamped: true,
+          })
+        );
+
         setArticles(articlesWithClamp);
         setPagination({
           next: response.data.next_page_url,
