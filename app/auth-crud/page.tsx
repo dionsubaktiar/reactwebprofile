@@ -150,7 +150,11 @@ const ArticlesPage = () => {
   };
 
   const handlePagination = (url: string | null) => {
-    if (url) fetchArticles(url);
+    if (url) {
+      fetchArticles(url);
+    } else {
+      console.log("There is no Url:" + url);
+    }
   };
 
   if (isLoading) {
