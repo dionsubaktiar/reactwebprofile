@@ -51,17 +51,19 @@ const ArticlesPage = () => {
   const [pagination, setPagination] = useState<{
     next: string | null;
     prev: string | null;
-  }>({ next: null, prev: null });
+    current: string | null;
+  }>({ next: null, prev: null, current: null });
   const [dataHash, setDataHash] = useState<string | null>(null); // Tracking data hash
   const router = useRouter();
 
   const isAuthenticated = user !== null;
 
+  const baseUrl =
+    "https://personalproject.nusantaratranssentosa.co.id/api/article";
+
   // Updated fetchArticles function to handle the new structure
   const fetchArticles = useCallback(
-    async (
-      url: string = "https://personalproject.nusantaratranssentosa.co.id/api/article"
-    ) => {
+    async (url: string) => {
       setIsLoading(true);
       try {
         const response = await axios.get<ArticleResponse>(url, {
@@ -86,6 +88,7 @@ const ArticlesPage = () => {
           setPagination({
             next: response.data.article_data.next_page_url,
             prev: response.data.article_data.prev_page_url,
+            current: `${baseUrl}?page=${response.data.article_data.current_page}`,
           });
           setDataHash(newDataHash); // Store new data hash
         }
@@ -105,7 +108,7 @@ const ArticlesPage = () => {
     if (!isAuthenticated) {
       router.push("/auth-crud/login");
     } else {
-      fetchArticles();
+      fetchArticles(baseUrl);
     }
   }, [isAuthenticated, isRestoringAuth, router, fetchArticles]);
 
@@ -122,7 +125,7 @@ const ArticlesPage = () => {
             },
           }
         );
-        fetchArticles(); // Refresh articles after deletion
+        handlePagination(pagination.current);
         alert("Article deleted successfully.");
       } catch (error) {
         console.error("Failed to delete article:", error);
@@ -147,7 +150,7 @@ const ArticlesPage = () => {
   };
 
   const handlePagination = (url: string | null) => {
-    if (url) fetchArticles(url); // Load articles for the next or previous page
+    if (url) fetchArticles(url);
   };
 
   if (isLoading) {
