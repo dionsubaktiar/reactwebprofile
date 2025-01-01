@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import CreateArticleButton from "../components/createArticleButton";
 import Navbar from "../components/navbar";
@@ -31,36 +31,56 @@ interface Article {
   user: User;
 }
 
+interface ArticleResponse {
+  data: Article[];
+  next_page_url: string | null;
+  prev_page_url: string | null;
+}
+
 const ArticlesPage = () => {
   const { user, token, logout, isRestoringAuth } = useAuth();
   const [articles, setArticles] = useState<Article[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [lineClamp, setLineClamp] = useState<boolean>(true); // State for toggling line clamp
+  const [pagination, setPagination] = useState<{
+    next: string | null;
+    prev: string | null;
+  }>({ next: null, prev: null });
   const router = useRouter();
 
   const isAuthenticated = user !== null;
 
-  const fetchArticles = async () => {
-    try {
-      const response = await axios.get<{ data: Article[] }>(
-        "https://personalproject.nusantaratranssentosa.co.id/api/article",
-        {
+  // Memoize the fetchArticles function to avoid changing dependencies
+  const fetchArticles = useCallback(
+    async (
+      url: string = "https://personalproject.nusantaratranssentosa.co.id/api/article"
+    ) => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get<ArticleResponse>(url, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+        });
+        setArticles(response.data.data);
+        setPagination({
+          next: response.data.next_page_url,
+          prev: response.data.prev_page_url,
+        });
+      } catch (err: unknown) {
+        console.error(err);
+        if (err instanceof Error) {
+          setError("Failed to load articles.");
+        } else {
+          setError("Failed to load articles.");
         }
-      );
-      const validArticles = response.data.data.filter(
-        (article) => article.id && article.title && article.article
-      );
-      setArticles(validArticles);
-    } catch (err) {
-      setError("Failed to load articles.");
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [token] // Only re-create the function if the token changes
+  );
 
   useEffect(() => {
     if (isRestoringAuth) return;
@@ -76,7 +96,7 @@ const ArticlesPage = () => {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [isAuthenticated, isRestoringAuth, router]);
+  }, [isAuthenticated, isRestoringAuth, router, fetchArticles]);
 
   const handleManageAction = async (action: string, articleId: number) => {
     if (action === "edit") {
@@ -91,10 +111,9 @@ const ArticlesPage = () => {
             },
           }
         );
-        fetchArticles();
+        fetchArticles(); // Refresh articles after deletion
         alert("Article deleted successfully.");
       } catch (error) {
-        console.log(`token: Bearer ${token}`);
         console.error("Failed to delete article:", error);
         alert("Failed to delete the article. Please try again.");
       }
@@ -104,6 +123,14 @@ const ArticlesPage = () => {
   const handleLogout = () => {
     logout();
     router.push("/auth-crud/login");
+  };
+
+  const toggleLineClamp = () => {
+    setLineClamp(!lineClamp); // Toggle line clamp visibility
+  };
+
+  const handlePagination = (url: string | null) => {
+    if (url) fetchArticles(url); // Load articles for the next or previous page
   };
 
   if (isLoading) {
@@ -142,6 +169,15 @@ const ArticlesPage = () => {
           </button>
         </div>
 
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={toggleLineClamp}
+            className="px-4 py-2 bg-customGreen-dark text-white rounded hover:bg-customGreen-default transition dark:bg-customGreen-light dark:text-gray-800"
+          >
+            {lineClamp ? "Show More" : "Show Less"}
+          </button>
+        </div>
+
         {articles.length > 0 ? (
           <ul className="space-y-6">
             {articles.map((article) => (
@@ -154,7 +190,11 @@ const ArticlesPage = () => {
                     <h2 className="text-xl font-bold text-customGreen-default dark:text-customGreen-light mb-2 line-clamp-2">
                       {article.title}
                     </h2>
-                    <p className="text-gray-700 dark:text-gray-300 mb-4 line-clamp-4">
+                    <p
+                      className={`text-gray-700 dark:text-gray-300 mb-4 ${
+                        lineClamp ? "line-clamp-4" : ""
+                      }`}
+                    >
                       {article.article}
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -184,7 +224,27 @@ const ArticlesPage = () => {
             No valid articles available.
           </p>
         )}
+
+        <div className="flex justify-between mt-4">
+          {pagination.prev && (
+            <button
+              onClick={() => handlePagination(pagination.prev)}
+              className="px-4 py-2 bg-customGreen-dark text-white rounded hover:bg-customGreen-default transition dark:bg-customGreen-light dark:text-gray-800"
+            >
+              Previous
+            </button>
+          )}
+          {pagination.next && (
+            <button
+              onClick={() => handlePagination(pagination.next)}
+              className="px-4 py-2 bg-customGreen-dark text-white rounded hover:bg-customGreen-default transition dark:bg-customGreen-light dark:text-gray-800"
+            >
+              Next
+            </button>
+          )}
+        </div>
       </div>
+
       <CreateArticleButton />
     </div>
   );
