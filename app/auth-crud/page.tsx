@@ -32,10 +32,15 @@ interface Article {
   isClamped?: boolean;
 }
 
-interface ArticleResponse {
+interface ArticleData {
+  current_page: number;
   data: Article[];
   next_page_url: string | null;
   prev_page_url: string | null;
+}
+
+interface ArticleResponse {
+  article_data: ArticleData;
 }
 
 const ArticlesPage = () => {
@@ -51,7 +56,7 @@ const ArticlesPage = () => {
 
   const isAuthenticated = user !== null;
 
-  // Fixing the map() function
+  // Updated fetchArticles function to handle the new structure
   const fetchArticles = useCallback(
     async (
       url: string = "https://personalproject.nusantaratranssentosa.co.id/api/article"
@@ -64,8 +69,8 @@ const ArticlesPage = () => {
           },
         });
 
-        // Directly using response.data.data, not article_data
-        const articlesWithClamp = response.data.data.map(
+        // Accessing data correctly from the article_data object
+        const articlesWithClamp = response.data.article_data.data.map(
           (article: Article) => ({
             ...article,
             isClamped: true,
@@ -74,21 +79,17 @@ const ArticlesPage = () => {
 
         setArticles(articlesWithClamp);
         setPagination({
-          next: response.data.next_page_url,
-          prev: response.data.prev_page_url,
+          next: response.data.article_data.next_page_url,
+          prev: response.data.article_data.prev_page_url,
         });
       } catch (err: unknown) {
         console.error(err);
-        if (err instanceof Error) {
-          setError("Failed to load articles.");
-        } else {
-          setError("Failed to load articles.");
-        }
+        setError("Failed to load articles.");
       } finally {
         setIsLoading(false);
       }
     },
-    [token] // Only re-create the function if the token changes
+    [token]
   );
 
   useEffect(() => {
