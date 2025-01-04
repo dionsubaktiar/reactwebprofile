@@ -90,6 +90,9 @@ const ArticlesPage = () => {
             prev: response.data.article_data.prev_page_url,
             current: `${baseUrl}?page=${response.data.article_data.current_page}`,
           });
+          console.log("Next page URL:", pagination.next);
+          console.log("Previous page URL:", pagination.prev);
+          console.log("Fetching articles from:", url);
           setDataHash(newDataHash); // Store new data hash
         }
       } catch (err: unknown) {
