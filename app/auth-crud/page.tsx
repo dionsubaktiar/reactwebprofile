@@ -149,11 +149,19 @@ const ArticlesPage = () => {
     );
   };
 
-  const handlePagination = (url: string | null) => {
+  const handlePagination = async (url: string | null) => {
     if (url) {
-      fetchArticles(url);
+      setIsLoading(true); // Set loading state while navigating
+      try {
+        await fetchArticles(url); // Wait for the fetch to complete
+      } catch (error) {
+        console.error("Pagination error:", error);
+        setError("Failed to load the next page. Please try again.");
+      } finally {
+        setIsLoading(false); // Ensure loading state resets
+      }
     } else {
-      console.log("There is no Url:" + url);
+      console.log("There is no Url:", url);
     }
   };
 
