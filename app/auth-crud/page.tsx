@@ -93,7 +93,7 @@ const ArticlesPage = () => {
           console.log(response.data.article_data.next_page_url);
           console.log("Next page URL:", pagination.next);
           console.log("Previous page URL:", pagination.prev);
-          console.log("Fetching articles from:", url);
+          console.log("Fetching articles from:", pagination.current);
           setDataHash(newDataHash); // Store new data hash
         }
       } catch (err: unknown) {
