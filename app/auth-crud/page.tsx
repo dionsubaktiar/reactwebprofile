@@ -72,10 +72,8 @@ const ArticlesPage = () => {
           },
         });
 
-        // Generate a hash of the current data
+        // Check for new data and update state
         const newDataHash = JSON.stringify(response.data.article_data.data);
-
-        // Only update if the data is different
         if (newDataHash !== dataHash) {
           const articlesWithClamp = response.data.article_data.data.map(
             (article: Article) => ({
@@ -85,25 +83,29 @@ const ArticlesPage = () => {
           );
 
           setArticles(articlesWithClamp);
+
+          const nextUrl = response.data.article_data.next_page_url;
+          const prevUrl = response.data.article_data.prev_page_url;
+          const currentUrl = `${baseUrl}?page=${response.data.article_data.current_page}`;
+
+          console.log("Setting Pagination:", { nextUrl, prevUrl, currentUrl });
+
           setPagination({
-            next: response.data.article_data.next_page_url,
-            prev: response.data.article_data.prev_page_url,
-            current: `${baseUrl}?page=${response.data.article_data.current_page}`,
+            next: nextUrl,
+            prev: prevUrl,
+            current: currentUrl,
           });
-          console.log(response.data.article_data.next_page_url);
-          console.log("Next page URL:", pagination.next);
-          console.log("Previous page URL:", pagination.prev);
-          console.log("Fetching articles from:", pagination.current);
-          setDataHash(newDataHash); // Store new data hash
+
+          setDataHash(newDataHash);
         }
       } catch (err: unknown) {
-        console.error(err);
+        console.error("Error fetching articles:", err);
         setError("Failed to load articles.");
       } finally {
         setIsLoading(false);
       }
     },
-    [token, dataHash] // Add dataHash as a dependency to detect changes
+    [token, dataHash] // Add dataHash as a dependency
   );
 
   useEffect(() => {
@@ -112,9 +114,18 @@ const ArticlesPage = () => {
     if (!isAuthenticated) {
       router.push("/auth-crud/login");
     } else {
-      fetchArticles(baseUrl);
+      if (!pagination.current) {
+        // Ensure it's only set once
+        fetchArticles(baseUrl);
+      }
     }
-  }, [isAuthenticated, isRestoringAuth, router, fetchArticles]);
+  }, [
+    isAuthenticated,
+    isRestoringAuth,
+    router,
+    fetchArticles,
+    pagination.current,
+  ]);
 
   const handleManageAction = async (action: string, articleId: number) => {
     if (action === "edit") {
@@ -154,18 +165,20 @@ const ArticlesPage = () => {
   };
 
   const handlePagination = async (url: string | null) => {
-    if (url) {
-      setIsLoading(true); // Set loading state while navigating
-      try {
-        await fetchArticles(url); // Wait for the fetch to complete
-      } catch (error) {
-        console.error("Pagination error:", error);
-        setError("Failed to load the next page. Please try again.");
-      } finally {
-        setIsLoading(false); // Ensure loading state resets
-      }
-    } else {
-      console.log("There is no Url:", url);
+    if (!url) {
+      console.log("No URL available for pagination.");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      console.log("Fetching next page from URL:", url); // This log should appear only once
+      await fetchArticles(url);
+    } catch (error) {
+      console.error("Pagination error:", error);
+      setError("Failed to load the next page.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
