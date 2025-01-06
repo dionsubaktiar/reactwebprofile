@@ -8,17 +8,30 @@ interface DataPost {
 const CardPosts: React.FC<DataPost> = ({ userId, id, title, body }) => {
   return (
     <div
-      className="container mx-auto px-3 py-2 bg-customGreen-default border-eggplant border-1
-    rounded-lg shadow hover:bg-customGreen-light hover:dark:bg-customGreen-light 
-    hover:dark:text-eggplant hover:text-customGreen-dark
-     dark:bg-customGreen-dark text-eggplant dark:text-honeyDew mb-3"
+      className="p-5 bg-customGreen-default rounded-lg border border-eggplant 
+        shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out
+        hover:bg-customGreen-light dark:bg-customGreen-dark 
+        hover:dark:bg-customGreen-light text-eggplant dark:text-honeyDew"
     >
-      <div className="justify-between flex items-center">
-        <p>ID : {id}</p>
-        <p className="pr-2">User ID : {userId}</p>
+      {/* Post Header */}
+      <div className="flex justify-between items-center mb-3">
+        <span className="text-sm font-medium">
+          <strong>ID:</strong> {id}
+        </span>
+        <span className="text-sm font-medium">
+          <strong>User ID:</strong> {userId}
+        </span>
       </div>
-      <p className="uppercase">Title : {title}</p>
-      <p className="text-justify">Body : {body}</p>
+
+      {/* Post Title */}
+      <h3 className="text-lg font-semibold text-eggplant dark:text-honeyDew uppercase mb-2">
+        {title}
+      </h3>
+
+      {/* Post Body */}
+      <p className="text-sm text-gray-800 dark:text-gray-300 leading-relaxed">
+        {body}
+      </p>
     </div>
   );
 };
