@@ -32,7 +32,6 @@ const SimulasiPage = () => {
     const interestRateNumber = parseFloat(interestRate) / 100; // Convert percentage to decimal
 
     const totalInterest = loanAmount * interestRateNumber; // Total interest for the loan
-    // const totalPayable = loanAmount + totalInterest; // Total payable amount (principal + interest)
 
     const perMonthPrincipal = loanAmount / tenor; // Principal paid per month
     const perMonthInterest = totalInterest / tenor; // Interest paid per month
@@ -102,15 +101,22 @@ const SimulasiPage = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Tenor (bulan)
-            </label>
-            <input
-              type="number"
+            <label className="block text-sm font-medium mb-2">Tenor</label>
+            <select
               className="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               value={tenor}
               onChange={(e) => setTenor(Number(e.target.value))}
-            />
+            >
+              <option value={1}>1 bulan</option>
+              <option value={3}>3 bulan</option>
+              <option value={6}>6 bulan</option>
+              <option value={12}>1 tahun</option>
+              <option value={24}>2 tahun</option>
+              <option value={36}>3 tahun</option>
+              <option value={48}>4 tahun</option>
+              <option value={60}>5 tahun</option>
+              <option value={72}>6 tahun</option>
+            </select>
           </div>
           <button
             type="submit"
