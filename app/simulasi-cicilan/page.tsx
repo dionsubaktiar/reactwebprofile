@@ -33,8 +33,9 @@ const SimulasiPage = () => {
 
     const totalInterest = loanAmount * interestRateNumber; // Total interest for the loan
 
-    const perMonthPrincipal = loanAmount / tenor; // Principal paid per month
-    const perMonthInterest = totalInterest / tenor; // Interest paid per month
+    // Use rounding to prevent weird numbers
+    const perMonthPrincipal = Math.round(loanAmount / tenor); // Principal paid per month
+    const perMonthInterest = Math.round(totalInterest / tenor); // Interest paid per month
     const totalMonthlyPayment = perMonthPrincipal + perMonthInterest; // Total monthly payment
 
     setMonthlyDetails({
