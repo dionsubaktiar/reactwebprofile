@@ -4,10 +4,10 @@ import { useState } from "react";
 import Navbar from "../components/navbar";
 
 const SimulasiPage = () => {
-  const [harga, setHarga] = useState<string>(""); // Total price
-  const [dp, setDP] = useState<string>(""); // Down payment
-  const [interestRate, setInterestRate] = useState<string>(""); // Interest rate (in %)
-  const [tenor, setTenor] = useState<number>(12); // Loan term (months)
+  const [harga, setHarga] = useState<string>("");
+  const [dp, setDP] = useState<string>("");
+  const [interestRate, setInterestRate] = useState<string>("");
+  const [tenor, setTenor] = useState<number>(12);
   const [monthlyDetails, setMonthlyDetails] = useState<{
     perMonthPrincipal: number;
     perMonthInterest: number;
@@ -15,7 +15,6 @@ const SimulasiPage = () => {
   } | null>(null);
   const [untilDate, setUntilDate] = useState<Date | null>(null);
 
-  // Helper function to format numbers as currency
   const formatCurrency = (value: string): string => {
     if (!value) return "";
     const number = parseInt(value.replace(/[^0-9]/g, ""), 10);
@@ -72,6 +71,7 @@ const SimulasiPage = () => {
             </label>
             <input
               type="text"
+              required
               className="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               value={harga}
               onChange={(e) => setHarga(formatCurrency(e.target.value))}
@@ -83,6 +83,7 @@ const SimulasiPage = () => {
             </label>
             <input
               type="text"
+              required
               className="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               value={dp}
               onChange={(e) => setDP(formatCurrency(e.target.value))}
@@ -94,6 +95,7 @@ const SimulasiPage = () => {
             </label>
             <input
               type="text"
+              required
               className="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               value={interestRate}
               onChange={(e) =>
