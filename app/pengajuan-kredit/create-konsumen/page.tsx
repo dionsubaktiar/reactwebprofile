@@ -22,7 +22,7 @@ const CreateKonsumenPage = () => {
   const [success, setSuccess] = useState<string | null>(null);
 
   const apiUrl =
-    "https://personalproject.nusantaratranssentosa.co.id/api/konsumen";
+    "https://personalproject.nusantaratranssentosa.co.id/api/bcaregister";
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

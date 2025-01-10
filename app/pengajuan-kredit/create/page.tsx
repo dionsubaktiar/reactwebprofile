@@ -124,9 +124,7 @@ const CreatePinjamanPage = () => {
   return (
     <div className="min-h-screen bg-honeyDew text-customGreen-dark dark:bg-gray-900 dark:text-honeyDew">
       <div className="max-w-4xl mx-auto p-6">
-        <div className="flex justify-between items-center mb-4">
-          <Navbar title="Create Pinjaman" />
-        </div>
+        <Navbar title="Create Pinjaman" />
 
         {error && (
           <div className="bg-red-100 text-red-700 p-4 rounded mb-6">
