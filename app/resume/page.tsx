@@ -14,6 +14,11 @@ const Resume = () => {
             description="This project is build using Laravel for backend, Socialite as Social Auth, Role permission, and also traditional Auth, The Frontend for Auth is still being developed"
           ></CardResume>
           <CardResume
+            title="Pengajuan Kredit"
+            href="/pengajuan-kredit"
+            description="This project is build using Laravel for Backend. This Project is build within 90 Min."
+          ></CardResume>
+          <CardResume
             title="Simulasi Kredit"
             href="/simulasi-cicilan"
             description="This project only build within the Next.JS and simple logic, using TailwindCSS as the UI Framework."
