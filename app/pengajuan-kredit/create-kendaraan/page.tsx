@@ -54,7 +54,11 @@ const CreateKendaraanPage = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await axios.post(baseUrl, formData, {
+      const formattedData = {
+        ...formData,
+        harga_kendaraan: Number(formData.harga_kendaraan), // Convert to number here
+      };
+      await axios.post(baseUrl, formattedData, {
         withCredentials: true,
       });
       router.push("/kendaraan");
