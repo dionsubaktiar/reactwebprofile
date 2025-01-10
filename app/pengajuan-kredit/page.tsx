@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Navbar from "../components/navbar";
 import CreatePinjamanButton from "../components/createPinjamanButton";
+import CreateKendaraanButton from "../components/createKendaraanButton";
+import CreateKonsumenButton from "../components/createRegistButton";
 
 interface kendaraan {
   id: number;
@@ -60,6 +62,16 @@ const PinjamanPage = () => {
     fetchPinjamanData();
   }, []);
 
+  // Function to format numbers as currency
+  const formatCurrency = (amount: string) => {
+    const number = parseFloat(amount);
+    if (isNaN(number)) return amount;
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(number);
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-honeyDew text-customGreen-dark dark:bg-gray-800 dark:text-honeyDew">
@@ -97,69 +109,23 @@ const PinjamanPage = () => {
                 <div className="flex flex-col space-y-4">
                   <div>
                     <h2 className="text-xl font-bold text-customGreen-default dark:text-customGreen-light mb-2">
-                      Pinjaman ID: {pinjaman.id}
+                      <strong>Nama:</strong> {pinjaman.konsumen.nama}
                     </h2>
 
                     <div>
-                      <h3 className="font-semibold">Kendaraan</h3>
                       <p>
                         <strong>Dealer:</strong> {pinjaman.kendaraan.dealer}
-                      </p>
-                      <p>
-                        <strong>Merk:</strong>{" "}
-                        {pinjaman.kendaraan.merk_kendaraan}
                       </p>
                       <p>
                         <strong>Model:</strong>{" "}
                         {pinjaman.kendaraan.model_kendaraan}
                       </p>
                       <p>
-                        <strong>Warna:</strong>{" "}
-                        {pinjaman.kendaraan.warna_kendaraan}
-                      </p>
-                      <p>
-                        <strong>Harga Kendaraan:</strong>{" "}
-                        {pinjaman.kendaraan.harga_kendaraan}
-                      </p>
-                    </div>
-
-                    <div className="mt-4">
-                      <h3 className="font-semibold">Konsumen</h3>
-                      <p>
-                        <strong>Nama:</strong> {pinjaman.konsumen.nama}
-                      </p>
-                      <p>
-                        <strong>Username:</strong> {pinjaman.konsumen.username}
-                      </p>
-                      <p>
-                        <strong>Email:</strong> {pinjaman.konsumen.email}
-                      </p>
-                      <p>
-                        <strong>NIK:</strong> {pinjaman.konsumen.nik}
-                      </p>
-                      <p>
-                        <strong>Status Perkawinan:</strong>{" "}
-                        {pinjaman.konsumen.status_perkawinan}
-                      </p>
-                      <p>
-                        <strong>Tanggal Lahir:</strong>{" "}
-                        {pinjaman.konsumen.tanggal_lahir}
-                      </p>
-                    </div>
-
-                    <div className="mt-4">
-                      <h3 className="font-semibold">Pinjaman Details</h3>
-                      <p>
-                        <strong>Asuransi:</strong> {pinjaman.asuransi}
-                      </p>
-                      <p>
-                        <strong>Down Payment:</strong> {pinjaman.down_payment}
-                      </p>
-                      <p>
                         <strong>Tenor:</strong> {pinjaman.tenor} months
                       </p>
                       <p>
-                        <strong>Angsuran:</strong> {pinjaman.angsuran}
+                        <strong>Angsuran:</strong>{" "}
+                        {formatCurrency(pinjaman.angsuran)}
                       </p>
                     </div>
                   </div>
@@ -175,6 +141,8 @@ const PinjamanPage = () => {
       </div>
 
       <CreatePinjamanButton />
+      <CreateKendaraanButton />
+      <CreateKonsumenButton />
     </div>
   );
 };

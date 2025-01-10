@@ -1,29 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import Navbar from "../../components/navbar";
 import { useRouter } from "next/navigation";
 
-// Define types
-interface Kendaraan {
-  id: number;
+interface FormData {
   merk_kendaraan: string;
   model_kendaraan: string;
-}
-
-interface Konsumen {
-  id: number;
-  nama: string;
-  email: string;
-}
-
-interface FormData {
-  asuransi: number;
-  down_payment: number;
-  tenor: number;
-  id_kendaraan: number;
-  id_user: number;
+  warna_kendaraan: string;
+  harga_kendaraan: number;
+  dealer: string;
 }
 
 // Currency formatter function
@@ -33,51 +20,27 @@ const currencyFormatter = new Intl.NumberFormat("id-ID", {
   minimumFractionDigits: 0,
 });
 
-const CreatePinjamanPage = () => {
+const CreateKendaraanPage = () => {
   const [formData, setFormData] = useState<FormData>({
-    asuransi: 0,
-    down_payment: 0,
-    tenor: 0,
-    id_kendaraan: 0,
-    id_user: 1, // Assuming user id is 1 (this can be dynamically fetched if needed)
+    merk_kendaraan: "",
+    model_kendaraan: "",
+    warna_kendaraan: "",
+    harga_kendaraan: 0,
+    dealer: "",
   });
-  const [kendaraanOptions, setKendaraanOptions] = useState<Kendaraan[]>([]);
-  const [konsumenOptions, setKonsumenOptions] = useState<Konsumen[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const baseUrl =
-    "https://personalproject.nusantaratranssentosa.co.id/api/pinjaman";
-  const kendaraanUrl =
     "https://personalproject.nusantaratranssentosa.co.id/api/kendaraan";
-  const konsumenUrl =
-    "https://personalproject.nusantaratranssentosa.co.id/api/konsumen";
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const kendaraanResponse = await axios.get(kendaraanUrl);
-        const konsumenResponse = await axios.get(konsumenUrl);
-        setKendaraanOptions(kendaraanResponse.data);
-        setKonsumenOptions(konsumenResponse.data);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-        setError("Failed to load kendaraan or konsumen data.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     let updatedValue = value;
 
-    // Remove non-numeric characters and convert to number
-    if (name === "asuransi" || name === "down_payment") {
+    if (name === "harga_kendaraan" || name === "down_payment") {
+      // Convert the value to number and remove non-numeric characters
       updatedValue = value.replace(/[^\d]/g, "");
     }
 
@@ -87,28 +50,19 @@ const CreatePinjamanPage = () => {
     }));
   };
 
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: Number(value),
-    }));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
-      await axios.get(
-        "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie",
-        { withCredentials: true }
-      );
       await axios.post(baseUrl, formData, {
         withCredentials: true,
       });
-      router.push("/pengajuan-kredit"); // Redirect to the pinjaman page after submission
+      router.push("/kendaraan");
     } catch (err) {
-      console.error("Error creating pinjaman:", err);
-      setError("Failed to create pinjaman.");
+      console.error("Error creating kendaraan:", err);
+      setError("Failed to create kendaraan.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -124,9 +78,7 @@ const CreatePinjamanPage = () => {
   return (
     <div className="min-h-screen bg-honeyDew text-customGreen-dark dark:bg-gray-900 dark:text-honeyDew">
       <div className="max-w-4xl mx-auto p-6">
-        <div className="flex justify-between items-center mb-4">
-          <Navbar title="Create Pinjaman" />
-        </div>
+        <Navbar title="Create Kendaraan" />
 
         {error && (
           <div className="bg-red-100 text-red-700 p-4 rounded mb-6">
@@ -137,16 +89,16 @@ const CreatePinjamanPage = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label
-              htmlFor="asuransi"
+              htmlFor="dealer"
               className="block text-sm font-medium text-gray-700"
             >
-              Asuransi
+              Dealer
             </label>
             <input
               type="text"
-              id="asuransi"
-              name="asuransi"
-              value={currencyFormatter.format(formData.asuransi)}
+              id="dealer"
+              name="dealer"
+              value={formData.dealer}
               onChange={handleInputChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-customGreen-light dark:bg-gray-700 dark:text-honeyDew dark:border-gray-600"
               required
@@ -155,16 +107,16 @@ const CreatePinjamanPage = () => {
 
           <div>
             <label
-              htmlFor="down_payment"
+              htmlFor="merk_kendaraan"
               className="block text-sm font-medium text-gray-700"
             >
-              Down Payment
+              Merk Kendaraan
             </label>
             <input
               type="text"
-              id="down_payment"
-              name="down_payment"
-              value={currencyFormatter.format(formData.down_payment)}
+              id="merk_kendaraan"
+              name="merk_kendaraan"
+              value={formData.merk_kendaraan}
               onChange={handleInputChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-customGreen-light dark:bg-gray-700 dark:text-honeyDew dark:border-gray-600"
               required
@@ -173,16 +125,16 @@ const CreatePinjamanPage = () => {
 
           <div>
             <label
-              htmlFor="tenor"
+              htmlFor="model_kendaraan"
               className="block text-sm font-medium text-gray-700"
             >
-              Tenor (Months)
+              Model Kendaraan
             </label>
             <input
-              type="number"
-              id="tenor"
-              name="tenor"
-              value={formData.tenor}
+              type="text"
+              id="model_kendaraan"
+              name="model_kendaraan"
+              value={formData.model_kendaraan}
               onChange={handleInputChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-customGreen-light dark:bg-gray-700 dark:text-honeyDew dark:border-gray-600"
               required
@@ -191,50 +143,38 @@ const CreatePinjamanPage = () => {
 
           <div>
             <label
-              htmlFor="id_kendaraan"
+              htmlFor="warna_kendaraan"
               className="block text-sm font-medium text-gray-700"
             >
-              Kendaraan
+              Warna Kendaraan
             </label>
-            <select
-              id="id_kendaraan"
-              name="id_kendaraan"
-              value={formData.id_kendaraan}
-              onChange={handleSelectChange}
+            <input
+              type="text"
+              id="warna_kendaraan"
+              name="warna_kendaraan"
+              value={formData.warna_kendaraan}
+              onChange={handleInputChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-customGreen-light dark:bg-gray-700 dark:text-honeyDew dark:border-gray-600"
               required
-            >
-              <option value="">Select a Kendaraan</option>
-              {kendaraanOptions.map((kendaraan) => (
-                <option key={kendaraan.id} value={kendaraan.id}>
-                  {kendaraan.merk_kendaraan} {kendaraan.model_kendaraan}
-                </option>
-              ))}
-            </select>
+            />
           </div>
 
           <div>
             <label
-              htmlFor="id_user"
+              htmlFor="harga_kendaraan"
               className="block text-sm font-medium text-gray-700"
             >
-              Konsumen
+              Harga Kendaraan
             </label>
-            <select
-              id="id_user"
-              name="id_user"
-              value={formData.id_user}
-              onChange={handleSelectChange}
+            <input
+              type="text"
+              id="harga_kendaraan"
+              name="harga_kendaraan"
+              value={currencyFormatter.format(formData.harga_kendaraan)}
+              onChange={handleInputChange}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-customGreen-light dark:bg-gray-700 dark:text-honeyDew dark:border-gray-600"
               required
-            >
-              <option value="">Select a Konsumen</option>
-              {konsumenOptions.map((konsumen) => (
-                <option key={konsumen.id} value={konsumen.id}>
-                  {konsumen.nama} - {konsumen.email}
-                </option>
-              ))}
-            </select>
+            />
           </div>
 
           <div className="mt-6">
@@ -242,7 +182,7 @@ const CreatePinjamanPage = () => {
               type="submit"
               className="w-full px-4 py-2 bg-customGreen-dark text-white rounded hover:bg-customGreen-default transition dark:bg-customGreen-light dark:text-gray-800"
             >
-              Create Pinjaman
+              Create Kendaraan
             </button>
           </div>
         </form>
@@ -251,4 +191,4 @@ const CreatePinjamanPage = () => {
   );
 };
 
-export default CreatePinjamanPage;
+export default CreateKendaraanPage;
