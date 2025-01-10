@@ -3,6 +3,7 @@
 import { useState } from "react";
 import axios from "axios";
 import Navbar from "../../components/navbar";
+import { useRouter } from "next/navigation";
 
 const CreateKonsumenPage = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +21,7 @@ const CreateKonsumenPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const router = useRouter();
 
   const apiUrl =
     "https://personalproject.nusantaratranssentosa.co.id/api/bcaregister";
@@ -53,6 +55,7 @@ const CreateKonsumenPage = () => {
         { withCredentials: true }
       );
       setSuccess("Konsumen created successfully!");
+      router.push("/pengajuan-kredit");
       setFormData({
         username: "",
         email: "",

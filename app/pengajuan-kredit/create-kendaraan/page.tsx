@@ -55,7 +55,7 @@ const CreateKendaraanPage = () => {
       await axios.post(baseUrl, formattedData, {
         withCredentials: true,
       });
-      router.push("/kendaraan");
+      router.push("/pengajuan-kredit");
     } catch (err) {
       console.error("Error creating kendaraan:", err);
       setError("Failed to create kendaraan.");

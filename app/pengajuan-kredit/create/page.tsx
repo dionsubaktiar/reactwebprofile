@@ -105,7 +105,7 @@ const CreatePinjamanPage = () => {
       await axios.post(baseUrl, formData, {
         withCredentials: true,
       });
-      router.push("/pengajuan-kredit"); // Redirect to the pinjaman page after submission
+      router.push("/pengajuan-kredit");
     } catch (err) {
       console.error("Error creating pinjaman:", err);
       setError("Failed to create pinjaman.");
