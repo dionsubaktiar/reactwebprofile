@@ -37,16 +37,10 @@ const CreateKendaraanPage = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    let updatedValue = value;
-
-    if (name === "harga_kendaraan" || name === "down_payment") {
-      // Convert the value to number and remove non-numeric characters
-      updatedValue = value.replace(/[^\d]/g, "");
-    }
 
     setFormData((prev) => ({
       ...prev,
-      [name]: updatedValue ? Number(updatedValue) : 0,
+      [name]: name === "harga_kendaraan" ? value.replace(/[^\d]/g, "") : value,
     }));
   };
 
