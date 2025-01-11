@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import Navbar from "../../components/navbar";
@@ -191,4 +191,11 @@ const ViewDetailPage = () => {
   );
 };
 
-export default ViewDetailPage;
+// Wrap the page component with Suspense boundary
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ViewDetailPage />
+    </Suspense>
+  );
+}
