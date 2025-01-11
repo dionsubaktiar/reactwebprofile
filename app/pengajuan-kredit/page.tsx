@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation"; // Import useRouter for navigation
 import Navbar from "../components/navbar";
 import CreatePinjamanButton from "../components/createPinjamanButton";
 import CreateKendaraanButton from "../components/createKendaraanButton";
 import CreateKonsumenButton from "../components/createRegistButton";
 
-interface kendaraan {
+interface Kendaraan {
   id: number;
   dealer: string;
   merk_kendaraan: string;
@@ -16,7 +17,7 @@ interface kendaraan {
   harga_kendaraan: string;
 }
 
-interface konsumen {
+interface Konsumen {
   id: number;
   username: string;
   email: string;
@@ -33,14 +34,15 @@ interface Pinjaman {
   down_payment: string;
   tenor: number;
   angsuran: string;
-  kendaraan: kendaraan;
-  konsumen: konsumen;
+  kendaraan: Kendaraan;
+  konsumen: Konsumen;
 }
 
 const PinjamanPage = () => {
   const [pinjamanData, setPinjamanData] = useState<Pinjaman[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const router = useRouter(); // Initialize useRouter for navigation
 
   const baseUrl =
     "https://personalproject.nusantaratranssentosa.co.id/api/pinjaman";
@@ -129,6 +131,15 @@ const PinjamanPage = () => {
                       </p>
                     </div>
                   </div>
+
+                  <button
+                    onClick={() =>
+                      router.push(`/pengajuan-kredit/details?id=${pinjaman.id}`)
+                    }
+                    className="self-end px-4 py-2 bg-customGreen-dark text-white rounded hover:bg-customGreen-default transition dark:bg-customGreen-light dark:text-gray-800"
+                  >
+                    View Details
+                  </button>
                 </div>
               </li>
             ))}
