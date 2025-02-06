@@ -91,13 +91,9 @@ const CustomerFormPage = () => {
   };
 
   return (
-    <Suspense
-      fallback={
-        <div className="text-center text-honeyDew">
-          Loading customer data...
-        </div>
-      }
-    >
+    <div>
+      <div className="text-center text-honeyDew">Loading customer data...</div>
+
       <div className="min-h-screen bg-customGreen-light text-brown dark:bg-gray-900 dark:text-honeyDew">
         <div className="max-w-7xl mx-auto p-6">
           <Navbar title={id ? "Edit Customer" : "Create Customer"} />
@@ -203,8 +199,14 @@ const CustomerFormPage = () => {
           </form>
         </div>
       </div>
-    </Suspense>
+    </div>
   );
 };
 
-export default CustomerFormPage;
+const SuspenseCustomerFormPage = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <CustomerFormPage />
+  </Suspense>
+);
+
+export default SuspenseCustomerFormPage;
