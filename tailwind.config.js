@@ -23,6 +23,7 @@ module.exports = {
           default: "#44CF6C",
           dark: "#32A287",
         },
+        eggplant: "#6C464E",
         brandColor: {
           mainBlue: "#015AFF",
           mainRed: "#FE004F",
@@ -33,7 +34,6 @@ module.exports = {
           gradationRed: "#FF6A6F",
           // complementarybg: "#855511",
         },
-        eggplant: "#6C464E",
       },
     },
   },

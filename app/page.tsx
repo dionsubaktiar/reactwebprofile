@@ -28,7 +28,7 @@ export default function Home() {
               Dion Subaktiar
             </h2>
             <h3 className="text-2xl py-2 text-eggplant dark:text-customGreen-light">
-              Developer and Software Engineer
+              Fullstack Developer and Software Engineer
             </h3>
             <p className="text-md py-5 leading-8 text-eggplant dark:text-customGreen-light">
               I am a skilled developer with a Bachelor’s degree in Information
@@ -46,7 +46,7 @@ export default function Home() {
                   px-7 py-2 rounded-md w-full"
               href="/resume"
             >
-              Resume
+              Portofolio
             </Link>
           </div>
           <div className="text-3xl flex justify-center gap-14 py-3 text-eggplant dark:text-customGreen-light">
