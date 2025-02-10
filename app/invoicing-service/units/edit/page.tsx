@@ -332,7 +332,7 @@ const UnitEditPage = () => {
                 isSubmitting ? "bg-gray-400" : "bg-customGreen-default"
               } text-white px-4 py-2 rounded-lg shadow-md hover:bg-customGreen-dark transition duration-300`}
             >
-              {isSubmitting ? "Submitting..." : "Create Unit"}
+              {isSubmitting ? "Submitting..." : "Save"}
             </button>
           </div>
         </form>
