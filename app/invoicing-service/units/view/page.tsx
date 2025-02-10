@@ -163,19 +163,19 @@ const UnitDetailPage = () => {
             <tbody>
               <tr>
                 <td className="font-semibold">Nama Perusahaan:</td>
-                <td>{unit.customers.nama_perusahaan}</td>
+                <td className="text-right">{unit.customers.nama_perusahaan}</td>
               </tr>
               <tr>
                 <td className="font-semibold">Alamat:</td>
-                <td>{unit.customers.alamat}</td>
+                <td className="text-right">{unit.customers.alamat}</td>
               </tr>
               <tr>
                 <td className="font-semibold">PIC:</td>
-                <td>{unit.customers.pic}</td>
+                <td className="text-right">{unit.customers.pic}</td>
               </tr>
               <tr>
                 <td className="font-semibold">Kontak:</td>
-                <td>{unit.customers.kontak}</td>
+                <td className="text-right">{unit.customers.kontak}</td>
               </tr>
             </tbody>
           </table>
