@@ -60,8 +60,19 @@ const UnitEditPage = () => {
   ) => {
     const { id, type, value } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
+
     setFormData((prev) =>
-      prev ? { ...prev, [id]: type === "checkbox" ? checked : value } : null
+      prev
+        ? {
+            ...prev,
+            [id]:
+              type === "checkbox"
+                ? checked
+                : id === "id_customer"
+                ? Number(value)
+                : value,
+          }
+        : null
     );
   };
 
