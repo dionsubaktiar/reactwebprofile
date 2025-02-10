@@ -9,6 +9,11 @@ const Resume = () => {
       <main className="flex items-center justify-center px-2 py-1 font-poppins">
         <section className="gap-4">
           <CardResume
+            title="Invoicing Service"
+            href="/invoicing-service"
+            description="This project is build using Laravel for backend, inspired by Invoice Service from PT Nusantara Trans sentosa which i developed it myself. Still being developed"
+          ></CardResume>
+          <CardResume
             title="Auth and CRUD using Laravel"
             href="/auth-crud/login"
             description="This project is build using Laravel for backend, Socialite as Social Auth, Role permission, and also traditional Auth, The Frontend for Auth is still being developed"
