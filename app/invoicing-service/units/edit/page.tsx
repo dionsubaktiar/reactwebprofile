@@ -118,28 +118,36 @@ const UnitEditPage = () => {
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-2">
-          <select
-            id="id_customer"
-            value={formData.id_customer}
-            onChange={handleChange}
-            required
-            className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
-          >
-            {/* Opsi data awal yang sesuai dengan formData.id_customer */}
-            {formData.id_customer &&
-              !customers.find((c) => c.id === formData.id_customer) && (
-                <option value={formData.id_customer} disabled>
-                  {formData.customers?.nama_perusahaan || "Loading..."}
-                </option>
-              )}
+          <div>
+            <label
+              htmlFor="id_customer"
+              className="block text-sm font-medium dark:text-honeyDew"
+            >
+              Customer<span className="text-red-500">*</span>
+            </label>
+            <select
+              id="id_customer"
+              value={formData.id_customer}
+              onChange={handleChange}
+              required
+              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+            >
+              {/* Opsi data awal yang sesuai dengan formData.id_customer */}
+              {formData.id_customer &&
+                !customers.find((c) => c.id === formData.id_customer) && (
+                  <option value={formData.id_customer} disabled>
+                    {formData.customers?.nama_perusahaan || "Loading..."}
+                  </option>
+                )}
 
-            {/* Semua opsi dari API */}
-            {customers.map((customer) => (
-              <option key={customer.id} value={customer.id}>
-                {customer.nama_perusahaan}
-              </option>
-            ))}
-          </select>
+              {/* Semua opsi dari API */}
+              {customers.map((customer) => (
+                <option key={customer.id} value={customer.id}>
+                  {customer.nama_perusahaan}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div>
             <label
@@ -173,7 +181,14 @@ const UnitEditPage = () => {
               required
               className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
             >
-              <option value={formData.tipe}>{formData.tipe}</option>
+              {/* Tambahkan opsi hanya jika tipe awal tidak ada dalam daftar */}
+              {!["Pickup", "Bus", "Truck"].includes(formData.tipe) && (
+                <option value={formData.tipe} disabled>
+                  {formData.tipe}
+                </option>
+              )}
+
+              {/* Opsi yang tersedia */}
               <option value="Pickup">Pickup</option>
               <option value="Bus">Bus</option>
               <option value="Truck">Truck</option>
