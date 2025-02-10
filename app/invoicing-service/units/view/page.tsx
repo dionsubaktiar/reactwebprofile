@@ -2,7 +2,7 @@
 
 import Navbar from "@/app/components/navbar";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 interface Customer {
@@ -185,4 +185,10 @@ const UnitDetailPage = () => {
   );
 };
 
-export default UnitDetailPage;
+const SuspenseEditViewPage = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <UnitDetailPage />
+  </Suspense>
+);
+
+export default SuspenseEditViewPage;

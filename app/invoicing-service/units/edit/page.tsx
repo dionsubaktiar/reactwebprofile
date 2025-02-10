@@ -341,10 +341,10 @@ const UnitEditPage = () => {
   );
 };
 
-const SuspenseCustomerFormPage = () => (
+const SuspenseEditUnitPage = () => (
   <Suspense fallback={<div>Loading...</div>}>
     <UnitEditPage />
   </Suspense>
 );
 
-export default SuspenseCustomerFormPage;
+export default SuspenseEditUnitPage;
