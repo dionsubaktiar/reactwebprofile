@@ -90,7 +90,7 @@ export default function Home() {
             column2title="Skills"
             column1content={
               <div>
-                <p className="text-md py-2 leading-8 text-eggplant dark:text-customGreen-light">
+                <p className="text-md py-1 leading-8 text-eggplant dark:text-customGreen-light">
                   Here is a list of my career highlights:
                 </p>
                 <ul className="list-disc ml-4">

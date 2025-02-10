@@ -6,11 +6,11 @@ const Resume = () => {
   return (
     <div className="min-h-screen flex flex-col text-eggplant bg-honeyDew dark:bg-eggplant dark:text-honeyDew">
       <Navbar title="Resume" />
-      <main className="flex flex-1 items-center justify-center px-10 font-poppins">
-        <section>
+      <main className="flex items-center justify-center px-2 py-1 font-poppins">
+        <section className="gap-4">
           <CardResume
             title="Auth and CRUD using Laravel"
-            href="/auth-crud"
+            href="/auth-crud/login"
             description="This project is build using Laravel for backend, Socialite as Social Auth, Role permission, and also traditional Auth, The Frontend for Auth is still being developed"
           ></CardResume>
           <CardResume
