@@ -118,31 +118,28 @@ const UnitEditPage = () => {
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-2">
-          <div>
-            <label
-              htmlFor="id_customer"
-              className="block text-sm font-medium dark:text-honeyDew"
-            >
-              Customer<span className="text-red-500">*</span>
-            </label>
-            <select
-              id="id_customer"
-              value={formData.id_customer}
-              onChange={handleChange}
-              required
-              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
-            >
-              <option value={formData.id_customer}>
-                {formData.customers?.nama_perusahaan || "Pilih Customer"}
-              </option>
-
-              {customers.map((customer) => (
-                <option key={customer.id} value={customer.id}>
-                  {customer.nama_perusahaan}
+          <select
+            id="id_customer"
+            value={formData.id_customer}
+            onChange={handleChange}
+            required
+            className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+          >
+            {/* Opsi data awal yang sesuai dengan formData.id_customer */}
+            {formData.id_customer &&
+              !customers.find((c) => c.id === formData.id_customer) && (
+                <option value={formData.id_customer} disabled>
+                  {formData.customers?.nama_perusahaan || "Loading..."}
                 </option>
-              ))}
-            </select>
-          </div>
+              )}
+
+            {/* Semua opsi dari API */}
+            {customers.map((customer) => (
+              <option key={customer.id} value={customer.id}>
+                {customer.nama_perusahaan}
+              </option>
+            ))}
+          </select>
 
           <div>
             <label
