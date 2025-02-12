@@ -48,9 +48,11 @@ const UnitsPage = () => {
   const [pagination, setPagination] = useState<Pagination | null>(null);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchUnits = async (page = 1) => {
+      setIsLoading(true);
       try {
         const response = await axios.get<ApiResponse>(
           `https://personalproject.nusantaratranssentosa.co.id/api/unit?page=${page}`
@@ -60,6 +62,8 @@ const UnitsPage = () => {
         setCurrentPage(page);
       } catch (error) {
         console.error("Error fetching units:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -85,21 +89,24 @@ const UnitsPage = () => {
 
   return (
     <div className="min-h-screen bg-customGreen-light text-brown dark:bg-gray-900 dark:text-honeyDew">
-      <div className="max-w-7xl mx-auto p-6">
-        <Navbar title="Units" />
+      {/* <div className="max-w-7xl mx-auto p-6"> */}
+      <Navbar title="Units" />
 
-        <div className="flex justify-end mb-4">
-          <Link href="/invoicing-service/units/create">
-            <button className="bg-customGreen-default text-white px-4 py-2 rounded-lg shadow-md hover:bg-customGreen-dark transition duration-300">
-              Create New Data
-            </button>
-          </Link>
-        </div>
+      <div className="flex justify-end mb-4 mx-2">
+        <Link href="/invoicing-service/units/create">
+          <button className="bg-customGreen-default text-white px-4 py-2 rounded-lg shadow-md hover:bg-customGreen-dark transition duration-300">
+            Create New Data
+          </button>
+        </Link>
+      </div>
 
-        <div className="overflow-x-auto bg-white dark:bg-gray-800 dark:text-honeyDew rounded-lg shadow-md">
+      {isLoading ? (
+        <div className="text-center text-honeyDew">Loading...</div>
+      ) : (
+        <div className="overflow-x-auto bg-white dark:bg-gray-800 dark:text-honeyDew rounded-lg shadow-md mx-2">
           <table className="min-w-full table-auto overflow-visible">
             <thead>
-              <tr className="bg-customGreen-dark text-honeyDew">
+              <tr className="bg-white text-eggplant">
                 <th className="px-4 py-2 text-left">Nomor Polisi</th>
                 <th className="px-4 py-2 text-left">Type</th>
                 <th className="px-4 py-2 text-left">Driver</th>
@@ -161,36 +168,36 @@ const UnitsPage = () => {
             </tbody>
           </table>
         </div>
+      )}
 
-        <div className="flex justify-between mt-6">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={!pagination?.prev_page_url}
-            className={`px-4 py-2 rounded-md ${
-              pagination?.prev_page_url
-                ? "bg-customGreen-dark text-white hover:bg-customGreen-default"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
-          >
-            Previous
-          </button>
+      <div className="flex justify-between mt-6 mx-2">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={!pagination?.prev_page_url}
+          className={`px-4 py-2 rounded-md ${
+            pagination?.prev_page_url
+              ? "bg-customGreen-dark text-white hover:bg-customGreen-default"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          }`}
+        >
+          Previous
+        </button>
 
-          <span>
-            Page {pagination?.current_page} of {pagination?.last_page}
-          </span>
+        <span>
+          Page {pagination?.current_page} of {pagination?.last_page}
+        </span>
 
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={!pagination?.next_page_url}
-            className={`px-4 py-2 rounded-md ${
-              pagination?.next_page_url
-                ? "bg-customGreen-dark text-white hover:bg-customGreen-default"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
-          >
-            Next
-          </button>
-        </div>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={!pagination?.next_page_url}
+          className={`px-4 py-2 rounded-md ${
+            pagination?.next_page_url
+              ? "bg-customGreen-dark text-white hover:bg-customGreen-default"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          }`}
+        >
+          Next
+        </button>
       </div>
     </div>
   );
