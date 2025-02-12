@@ -32,7 +32,7 @@ const CreateCustomerPage = () => {
         "https://personalproject.nusantaratranssentosa.co.id/api/customer",
         newCustomer
       );
-      router.push("invoicing-service/customers"); // Redirect after successful creation
+      router.push("/invoicing-service/customers"); // Redirect after successful creation
     } catch (error) {
       console.error("Error creating customer:", error);
     } finally {
