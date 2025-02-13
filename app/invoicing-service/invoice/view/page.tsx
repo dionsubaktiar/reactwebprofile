@@ -70,7 +70,7 @@ const ViewInvoicePage = () => {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `http://personalproject.nusantaratranssentosa.co.id/api/invoice/${id}`
+          `https://personalproject.nusantaratranssentosa.co.id/api/invoice/${id}`
         );
         setInvoice(response.data.data);
       } catch (error) {
@@ -84,12 +84,19 @@ const ViewInvoicePage = () => {
   }, [id]);
 
   if (isLoading)
-    return <p className="text-center text-lg font-semibold">Loading...</p>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-customGreen-light text-brown dark:bg-gray-900 dark:text-honeyDew">
+        <p className="text-lg font-semibold">Loading...</p>
+      </div>
+    );
+
   if (!invoice)
     return (
-      <p className="text-center text-lg font-semibold text-red-500">
-        No data found
-      </p>
+      <div className="min-h-screen flex items-center justify-center bg-customGreen-light text-brown dark:bg-gray-900 dark:text-honeyDew">
+        <p className="text-center text-lg font-semibold text-red-500">
+          No data found
+        </p>
+      </div>
     );
 
   return (
