@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import Navbar from "@/app/components/navbar";
 
@@ -23,6 +23,7 @@ interface Unit {
 
 interface InvoiceData {
   id: number;
+  tanggal: string;
   kode_invoice: string;
   kilometer: number;
   status_invoice: string;
@@ -39,6 +40,7 @@ interface Parts {
 }
 
 const EditInvoicePage = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
   const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
@@ -47,6 +49,9 @@ const EditInvoicePage = () => {
   const [parts, setParts] = useState<Parts[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     axios
@@ -130,6 +135,9 @@ const EditInvoicePage = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setIsSubmitting(true);
+    setSuccessMessage(null);
+    setErrorMessage(null);
     try {
       await axios.get(
         "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie"
@@ -137,7 +145,7 @@ const EditInvoicePage = () => {
 
       const payload = {
         kilometer: invoiceData?.kilometer,
-        tanggal: "2025-02-01", // Adjust if needed
+        tanggal: invoiceData?.tanggal, // Adjust if needed
         id_package: invoiceData?.id_package,
         id_unit: invoiceData?.id_unit,
         id_part: invoiceData?.parts.map((part) => ({
@@ -150,9 +158,13 @@ const EditInvoicePage = () => {
         `https://personalproject.nusantaratranssentosa.co.id/api/invoice/${id}`,
         payload
       );
-      alert("Invoice updated successfully!");
+      setSuccessMessage("Unit updated successfully!");
+      router.push("/invoicing-service/units");
     } catch (error) {
+      setErrorMessage("Error updating unit");
       console.error("Error updating invoice:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -177,6 +189,8 @@ const EditInvoicePage = () => {
     <div className="min-h-screen bg-customGreen-light text-brown dark:bg-gray-900 dark:text-honeyDew">
       <div className="max-w-7xl mx-auto p-6">
         <Navbar title="Edit Invoice" />
+        {successMessage && <p className="text-green-500">{successMessage}</p>}
+        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <label className="block">
@@ -186,16 +200,6 @@ const EditInvoicePage = () => {
               name="kode_invoice"
               value={invoiceData?.kode_invoice || ""}
               disabled
-              className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
-            />
-          </label>
-          <label className="block">
-            Kilometer:
-            <input
-              type="number"
-              name="kilometer"
-              value={invoiceData?.kilometer || ""}
-              onChange={handleChange}
               className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
             />
           </label>
@@ -213,6 +217,29 @@ const EditInvoicePage = () => {
               ))}
             </select>
           </label>
+
+          <label>
+            Tanggal:
+            <input
+              type="date"
+              name="tanggal"
+              value={invoiceData?.tanggal || ""}
+              onChange={handleChange}
+              className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+            />
+          </label>
+
+          <label>
+            Kilometer:
+            <input
+              type="number"
+              name="kilometer"
+              value={invoiceData?.kilometer || ""}
+              onChange={handleChange}
+              className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+            />
+          </label>
+
           <label>
             Select Package:
             <select
@@ -285,9 +312,12 @@ const EditInvoicePage = () => {
           <div className="flex justify-end">
             <button
               type="submit"
-              className="bg-customGreen-dark text-white px-4 py-2 rounded-lg"
+              disabled={isSubmitting}
+              className={`${
+                isSubmitting ? "bg-gray-400" : "bg-customGreen-default"
+              } text-white px-4 py-2 rounded-lg shadow-md hover:bg-customGreen-dark transition duration-300`}
             >
-              Update Invoice
+              {isSubmitting ? "Submitting..." : "Save"}
             </button>
           </div>
         </form>
