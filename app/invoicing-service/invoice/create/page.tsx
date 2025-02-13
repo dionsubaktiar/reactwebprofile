@@ -18,7 +18,7 @@ interface Packages {
 interface Parts {
   id: number;
   nama_barang: string;
-  kode_barang: string;
+  part_number: string;
 }
 
 const CreateInvoicePage = () => {
@@ -210,7 +210,7 @@ const CreateInvoicePage = () => {
                     <option value="">Select Part</option>
                     {parts.map((p) => (
                       <option key={p.id} value={p.id}>
-                        {p.nama_barang} - {p.kode_barang}
+                        {p.nama_barang} - {p.part_number}
                       </option>
                     ))}
                   </select>

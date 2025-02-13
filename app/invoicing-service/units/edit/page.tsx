@@ -44,8 +44,10 @@ const UnitEditPage = () => {
 
   useEffect(() => {
     axios
-      .get("https://personalproject.nusantaratranssentosa.co.id/api/customer")
-      .then((response) => setCustomers(response.data))
+      .get(
+        "https://personalproject.nusantaratranssentosa.co.id/api/getcustomer"
+      )
+      .then((response) => setCustomers(response.data.data))
       .catch((error) => console.error("Error fetching customers:", error));
   }, []);
   useEffect(() => {
