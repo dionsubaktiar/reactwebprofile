@@ -159,9 +159,9 @@ const EditInvoicePage = () => {
         payload
       );
       setSuccessMessage("Unit updated successfully!");
-      router.push("/invoicing-service/units");
+      router.push("/invoicing-service");
     } catch (error) {
-      setErrorMessage("Error updating unit");
+      setErrorMessage("Error updating invoice");
       console.error("Error updating invoice:", error);
     } finally {
       setIsSubmitting(false);
