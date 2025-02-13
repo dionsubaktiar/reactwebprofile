@@ -8,11 +8,11 @@ import { useRouter } from "next/navigation";
 interface Customer {
   id: number;
   nama_perusahaan: string;
-  alamat: string;
-  pic: string;
-  kontak: string;
-  created_at: string;
-  updated_at: string;
+  // alamat: string;
+  // pic: string;
+  // kontak: string;
+  // created_at: string;
+  // updated_at: string;
 }
 
 const UnitCreatePage = () => {
@@ -38,8 +38,10 @@ const UnitCreatePage = () => {
 
   useEffect(() => {
     axios
-      .get("https://personalproject.nusantaratranssentosa.co.id/api/customer")
-      .then((response) => setCustomers(response.data))
+      .get(
+        "https://personalproject.nusantaratranssentosa.co.id/api/getcustomer"
+      )
+      .then((response) => setCustomers(response.data.data))
       .catch((error) => console.error("Error fetching customers:", error));
   }, []);
 
