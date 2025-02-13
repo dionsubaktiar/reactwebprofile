@@ -158,7 +158,7 @@ const EditInvoicePage = () => {
         `https://personalproject.nusantaratranssentosa.co.id/api/invoice/${id}`,
         payload
       );
-      setSuccessMessage("Unit updated successfully!");
+      setSuccessMessage("Invoice updated successfully!");
       router.push("/invoicing-service");
     } catch (error) {
       setErrorMessage("Error updating invoice");
