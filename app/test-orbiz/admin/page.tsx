@@ -16,7 +16,6 @@ const AdminPage = () => {
   const router = useRouter();
   const [books, setBooks] = useState<Books[]>([]);
   const [users, setUsers] = useState("");
-  const [token, setToken] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     author: "",
@@ -30,34 +29,39 @@ const AdminPage = () => {
     const fetchDataBooks = async () => {
       if (typeof window !== "undefined") {
         const user = localStorage.getItem("userOrbiz");
-        setUsers(user || "");
-        const tokenItem = localStorage.getItem("tokenOrbiz");
-        setToken(tokenItem || "");
-      }
-      console.log(token);
-      setIsLoading(true);
-      try {
-        const checkLogin = await axios.post(
-          "https://personalproject.nusantaratranssentosa.co.id/api/orbiz/me",
-          { token: token }
-        );
-        if (checkLogin.status == 200) {
-          const response = await axios.get(
-            "https://personalproject.nusantaratranssentosa.co.id/api/books"
+        setUsers(user || ""); // Keeping user in state
+
+        // Directly retrieve token without setting state
+        const tokenValue = localStorage.getItem("tokenOrbiz") || "";
+
+        console.log(tokenValue); // Ensuring the correct token is used
+
+        setIsLoading(true);
+
+        try {
+          const checkLogin = await axios.post(
+            "https://personalproject.nusantaratranssentosa.co.id/api/orbiz/me",
+            { token: tokenValue } // Using the token directly
           );
-          setBooks(response.data.data);
-          console.log(response.data.data);
-        } else {
-          router.push("/test-orbiz");
+
+          if (checkLogin.status === 200) {
+            const response = await axios.get(
+              "https://personalproject.nusantaratranssentosa.co.id/api/books"
+            );
+            setBooks(response.data.data);
+            console.log(response.data.data);
+          } else {
+            router.push("/test-orbiz");
+          }
+        } catch (error) {
+          console.log("Error: ", error);
+        } finally {
+          setIsLoading(false);
         }
-      } catch (error) {
-        console.log("Error: ", error);
-      } finally {
-        setIsLoading(false);
       }
     };
     fetchDataBooks();
-  }, []);
+  });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -67,7 +71,7 @@ const AdminPage = () => {
   };
 
   const handleLogout = () => {
-    setToken("");
+    // setToken("");
     localStorage.removeItem("userOrbiz");
     localStorage.removeItem("tokenOrbiz");
     router.replace("/test-orbiz");
