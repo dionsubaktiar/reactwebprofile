@@ -40,8 +40,8 @@ const LoginPageOrbiz = () => {
       if (response.data == 200) {
         router.push("/test-orbiz/admin");
       }
-      localStorage.setItem("authToken", response.data.token);
-      localStorage.setItem("authUser", response.data.user);
+      localStorage.setItem("tokenOrbiz", response.data.token);
+      localStorage.setItem("userOrbiz", response.data.user);
     } catch (error) {
       console.error("Error login:", error);
     } finally {

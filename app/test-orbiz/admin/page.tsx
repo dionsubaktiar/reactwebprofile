@@ -29,9 +29,9 @@ const AdminPage = () => {
   useEffect(() => {
     const fetchDataBooks = async () => {
       if (typeof window !== "undefined") {
-        const user = localStorage.getItem("authUser");
+        const user = localStorage.getItem("userOrbiz");
         setUsers(user || "");
-        const tokenItem = localStorage.getItem("authToken");
+        const tokenItem = localStorage.getItem("tokenOrbiz");
         setToken(tokenItem || "");
       }
       setIsLoading(true);
