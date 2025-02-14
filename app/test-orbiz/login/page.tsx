@@ -37,7 +37,7 @@ const LoginPageOrbiz = () => {
         // }
       );
       console.log(response.data);
-      if (response.data == 200) {
+      if (response.status == 200) {
         router.push("/test-orbiz/admin");
       }
       localStorage.setItem("tokenOrbiz", response.data.token);
