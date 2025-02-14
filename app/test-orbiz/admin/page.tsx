@@ -65,6 +65,13 @@ const AdminPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleLogout = () => {
+    setToken("");
+    localStorage.removeItem("userOrbiz");
+    localStorage.removeItem("tokenOrbiz");
+    router.replace("/test-orbiz");
+  };
+
   const handleDelete = async (id: number) => {
     if (confirm("Are you sure you want to delete this customer?")) {
       try {
@@ -106,7 +113,15 @@ const AdminPage = () => {
         <Navbar title="Admin Page" />
       </div>
       <div className="flex justify-end mx-3">
-        <h3>{users}</h3>
+        <div className="flex-col">
+          <h3>{users}</h3>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 px-4 py-2 rounded-lg"
+          >
+            Logout
+          </button>
+        </div>
       </div>
       <div className="mx-2 mb-5">
         <form onSubmit={handleSubmit} className="space-y-2">
