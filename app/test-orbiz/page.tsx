@@ -48,6 +48,15 @@ const MainPage = () => {
     setSearch((prev) => ({ ...prev, [name]: value }));
   };
 
+  // const handleLikes = async () => {
+  //   await axios.get(
+  //     "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie"
+  //   );
+  //   await axios.put(
+  //     `https://personalproject.nusantaratranssentosa.co.id/api/books/likes/${book.id}`
+  //   );
+  // };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -81,7 +90,7 @@ const MainPage = () => {
               </label>
               <div className="flex gap-2">
                 <input
-                  type="number"
+                  type="text"
                   name="title"
                   placeholder="masukkan judul buku"
                   value={search.title}
@@ -126,7 +135,20 @@ const MainPage = () => {
                   <h3>Genre: {book.genre}</h3>
                   <div className="flex justify-evenly mt-2">
                     <div>
-                      <button>
+                      <button
+                        onClick={async () => {
+                          await axios.get(
+                            "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie"
+                          );
+                          await axios.put(
+                            `https://personalproject.nusantaratranssentosa.co.id/api/books/likes/${book.id}`
+                          );
+                          const response = await axios.get(
+                            "https://personalproject.nusantaratranssentosa.co.id/api/books"
+                          );
+                          setBooks(response.data.data);
+                        }}
+                      >
                         {" "}
                         {book.vote_count > 0 ? (
                           <FaRegThumbsUp />

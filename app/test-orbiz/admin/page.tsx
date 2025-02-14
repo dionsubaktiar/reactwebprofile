@@ -105,7 +105,7 @@ const AdminPage = () => {
       <div className="mx-2">
         <Navbar title="Admin Page" />
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-end mx-3">
         <h3>{users}</h3>
       </div>
       <div className="mx-2 mb-5">
@@ -137,8 +137,8 @@ const AdminPage = () => {
             </label>
             <input
               type="text"
-              id="title"
-              name="title"
+              id="author"
+              name="author"
               placeholder="masukkan author"
               value={formData.author}
               onChange={handleChange}
@@ -155,8 +155,8 @@ const AdminPage = () => {
             </label>
             <input
               type="text"
-              id="title"
-              name="title"
+              id="genre"
+              name="genre"
               placeholder="masukkan genre"
               value={formData.genre}
               onChange={handleChange}
