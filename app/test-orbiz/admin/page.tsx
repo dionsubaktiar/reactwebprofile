@@ -15,6 +15,8 @@ interface Books {
 const AdminPage = () => {
   const router = useRouter();
   const [books, setBooks] = useState<Books[]>([]);
+  const [users, setUsers] = useState("");
+  const [token, setToken] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     author: "",
@@ -24,16 +26,19 @@ const AdminPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const user = localStorage.getItem("authUser");
-  const tokenItem = localStorage.getItem("authToken");
-
   useEffect(() => {
     const fetchDataBooks = async () => {
+      if (typeof window !== "undefined") {
+        const user = localStorage.getItem("authUser");
+        setUsers(user || "");
+        const tokenItem = localStorage.getItem("authToken");
+        setToken(tokenItem || "");
+      }
       setIsLoading(true);
       try {
         const checkLogin = await axios.post(
           "https://personalproject.nusantaratranssentosa.co.id/api/orbiz/me",
-          { token: tokenItem }
+          { token: token }
         );
         if (checkLogin.status == 200) {
           const response = await axios.get(
@@ -101,7 +106,7 @@ const AdminPage = () => {
         <Navbar title="Admin Page" />
       </div>
       <div className="flex justify-end">
-        <h3>{user}</h3>
+        <h3>{users}</h3>
       </div>
       <div className="mx-2 mb-5">
         <form onSubmit={handleSubmit} className="space-y-2">
