@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Navbar from "../components/navbar";
 import { useRouter } from "next/navigation";
+import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
 
 interface Books {
   id: number;
@@ -123,8 +124,17 @@ const MainPage = () => {
                   </h2>
                   <h3>Author: {book.author}</h3>
                   <h3>Genre: {book.genre}</h3>
-                  <div className="flex justify-evenly">
-                    <div>Like button</div>
+                  <div className="flex justify-evenly mt-2">
+                    <div>
+                      <button>
+                        {" "}
+                        {book.vote_count > 0 ? (
+                          <FaRegThumbsUp />
+                        ) : (
+                          <FaThumbsUp />
+                        )}
+                      </button>
+                    </div>
                     <div>Like Count : {book.vote_count}</div>
                   </div>
                 </div>
