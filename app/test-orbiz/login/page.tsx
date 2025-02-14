@@ -21,9 +21,13 @@ const LoginPageOrbiz = () => {
     };
 
     try {
-      console.log(await axios.get("http://localhost:8000/api/books"));
+      console.log(
+        await axios.get(
+          "https://personalproject.nusantaratranssentosa.co.id/api/books"
+        )
+      );
       const response = await axios.post(
-        "http://localhost:8000/api/orbiz/login",
+        "https://personalproject.nusantaratranssentosa.co.id/api/orbiz/login",
         newLogin
         // {
         //   withXSRFToken: true,
