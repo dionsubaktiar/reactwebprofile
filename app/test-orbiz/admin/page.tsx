@@ -34,6 +34,7 @@ const AdminPage = () => {
         const tokenItem = localStorage.getItem("tokenOrbiz");
         setToken(tokenItem || "");
       }
+      console.log(token);
       setIsLoading(true);
       try {
         const checkLogin = await axios.post(
