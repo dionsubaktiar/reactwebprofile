@@ -61,7 +61,7 @@ const AdminPage = () => {
       }
     };
     fetchDataBooks();
-  });
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
