@@ -121,7 +121,7 @@ const MainPage = () => {
         {isLoading ? (
           <div className="text-center text-honeyDew">Loading...</div>
         ) : (
-          <div className="mx-2 grid grid-cols-1 lg:grid-cols-3">
+          <div className="mx-2 grid grid-cols-1 lg:grid-cols-3 gap-2">
             {books.map((book) => (
               <div
                 key={book.id}
