@@ -46,14 +46,12 @@ const AdminPage = () => {
       try {
         const checkLogin = await axios.post(
           "https://personalproject.nusantaratranssentosa.co.id/api/orbiz/me",
-          {},
-          { headers: { Authorization: `Bearer ${tokenValue}` } } // Pass token in headers
+          { token: tokenValue }
         );
 
         if (checkLogin.status === 200) {
           const response = await axios.get(
-            "https://personalproject.nusantaratranssentosa.co.id/api/books",
-            { headers: { Authorization: `Bearer ${tokenValue}` } } // Pass token in headers
+            "https://personalproject.nusantaratranssentosa.co.id/api/books"
           );
           setBooks(response.data.data);
           console.log("Books data:", response.data.data);
