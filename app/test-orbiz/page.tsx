@@ -65,12 +65,12 @@ const MainPage = () => {
       await axios.get(
         "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie"
       );
-      await axios.post(
+      const response = await axios.post(
         "https://personalproject.nusantaratranssentosa.co.id/api/books/search",
         search
       );
       router.push("/test-orbiz");
-      setBooks;
+      setBooks(response.data.data);
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {
