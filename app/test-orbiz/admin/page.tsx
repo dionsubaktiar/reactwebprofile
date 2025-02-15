@@ -27,39 +27,58 @@ const AdminPage = () => {
 
   useEffect(() => {
     const fetchDataBooks = async () => {
-      if (typeof window !== "undefined") {
-        const user = localStorage.getItem("userOrbiz");
-        setUsers(user || ""); // Keeping user in state
+      if (typeof window === "undefined") return; // Ensure it's running on the client
 
-        // Directly retrieve token without setting state
-        const tokenValue = localStorage.getItem("tokenOrbiz") || "";
+      const user = localStorage.getItem("userOrbiz");
+      setUsers(user || ""); // Keep user in state
 
-        console.log(tokenValue); // Ensuring the correct token is used
+      const tokenValue = localStorage.getItem("tokenOrbiz");
+      if (!tokenValue) {
+        console.warn("No token found, redirecting...");
+        router.push("/test-orbiz");
+        return;
+      }
 
-        setIsLoading(true);
+      console.log("Using token:", tokenValue); // Debugging token retrieval
 
-        try {
-          const checkLogin = await axios.post(
-            "https://personalproject.nusantaratranssentosa.co.id/api/orbiz/me",
-            { token: tokenValue } // Using the token directly
+      setIsLoading(true);
+
+      try {
+        const checkLogin = await axios.post(
+          "https://personalproject.nusantaratranssentosa.co.id/api/orbiz/me",
+          {},
+          { headers: { Authorization: `Bearer ${tokenValue}` } } // Pass token in headers
+        );
+
+        if (checkLogin.status === 200) {
+          const response = await axios.get(
+            "https://personalproject.nusantaratranssentosa.co.id/api/books",
+            { headers: { Authorization: `Bearer ${tokenValue}` } } // Pass token in headers
           );
-
-          if (checkLogin.status === 200) {
-            const response = await axios.get(
-              "https://personalproject.nusantaratranssentosa.co.id/api/books"
-            );
-            setBooks(response.data.data);
-            console.log(response.data.data);
-          } else {
-            router.push("/test-orbiz");
-          }
-        } catch (error) {
-          console.log("Error: ", error);
-        } finally {
-          setIsLoading(false);
+          setBooks(response.data.data);
+          console.log("Books data:", response.data.data);
+        } else {
+          router.push("/test-orbiz");
         }
+      } catch (error) {
+        // Ensure error has a response property before accessing it
+        if (axios.isAxiosError(error)) {
+          console.error("Axios error:", error.response?.data || error.message);
+
+          if (
+            error.response?.status === 422 ||
+            error.response?.status === 401
+          ) {
+            router.push("/test-orbiz"); // Redirect if unauthorized or validation error
+          }
+        } else {
+          console.error("Unknown error:", error);
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
+
     fetchDataBooks();
   }, []);
 
