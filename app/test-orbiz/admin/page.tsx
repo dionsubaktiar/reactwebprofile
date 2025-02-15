@@ -27,10 +27,10 @@ const AdminPage = () => {
 
   useEffect(() => {
     const fetchDataBooks = async () => {
-      if (typeof window === "undefined") return; // Ensure it's running on the client
+      if (typeof window === "undefined") return;
 
       const user = localStorage.getItem("userOrbiz");
-      setUsers(user || ""); // Keep user in state
+      setUsers(user || "");
 
       const tokenValue = localStorage.getItem("tokenOrbiz");
       if (!tokenValue) {
@@ -39,7 +39,7 @@ const AdminPage = () => {
         return;
       }
 
-      console.log("Using token:", tokenValue); // Debugging token retrieval
+      console.log("Using token:", tokenValue);
 
       setIsLoading(true);
 
@@ -59,7 +59,6 @@ const AdminPage = () => {
           router.push("/test-orbiz");
         }
       } catch (error) {
-        // Ensure error has a response property before accessing it
         if (axios.isAxiosError(error)) {
           console.error("Axios error:", error.response?.data || error.message);
 
@@ -67,7 +66,7 @@ const AdminPage = () => {
             error.response?.status === 422 ||
             error.response?.status === 401
           ) {
-            router.push("/test-orbiz"); // Redirect if unauthorized or validation error
+            router.push("/test-orbiz");
           }
         } else {
           console.error("Unknown error:", error);
