@@ -124,8 +124,7 @@ const CreateInvoicePage = () => {
       const updatedParts = prev.id_part.filter((_, i) => i !== index);
       return {
         ...prev,
-        id_part:
-          updatedParts.length > 0 ? updatedParts : [{ id_part: "", qty: "" }],
+        id_part: updatedParts, // Tidak menambahkan elemen kosong
       };
     });
   };
@@ -227,54 +226,55 @@ const CreateInvoicePage = () => {
             </select>
           </div>
           <div>
-            {formData.id_part.map((part, index) => (
-              <div key={index} className="flex gap-2 items-end mt-1">
-                {/* Parts Select */}
-                <div className="w-3/4">
-                  <label className="text-sm font-medium dark:text-honeyDew">
-                    Parts
-                  </label>
-                  <select
-                    name="id_part"
-                    value={part.id_part}
-                    onChange={(e) => handlePartChange(index, e)}
-                    className="p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
-                  >
-                    <option value="">Select Part</option>
-                    {parts.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.nama_barang} - {p.merk}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Qty Input & Remove Button */}
-                <div className="flex items-end gap-2 w-1/4">
-                  <div className="w-full">
+            {formData.id_part.length > 0 &&
+              formData.id_part.map((part, index) => (
+                <div key={index} className="flex gap-2 items-end mt-1">
+                  {/* Parts Select */}
+                  <div className="w-3/4">
                     <label className="text-sm font-medium dark:text-honeyDew">
-                      Qty
+                      Parts
                     </label>
-                    <input
-                      type="number"
-                      name="qty"
-                      value={part.qty}
+                    <select
+                      name="id_part"
+                      value={part.id_part}
                       onChange={(e) => handlePartChange(index, e)}
                       className="p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
-                    />
+                    >
+                      <option value="">Select Part</option>
+                      {parts.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.nama_barang} - {p.merk}
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
-                  {/* Remove Button */}
-                  <button
-                    type="button"
-                    onClick={() => removePart(index)}
-                    className="bg-red-500 text-white py-2 px-3 rounded-lg shadow-md hover:bg-red-600 transition duration-300 "
-                  >
-                    X
-                  </button>
+                  {/* Qty Input & Remove Button */}
+                  <div className="flex items-end gap-2 w-1/4">
+                    <div className="w-full">
+                      <label className="text-sm font-medium dark:text-honeyDew">
+                        Qty
+                      </label>
+                      <input
+                        type="number"
+                        name="qty"
+                        value={part.qty}
+                        onChange={(e) => handlePartChange(index, e)}
+                        className="p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+                      />
+                    </div>
+
+                    {/* Remove Button */}
+                    <button
+                      type="button"
+                      onClick={() => removePart(index)}
+                      className="bg-red-500 text-white py-2 px-3 rounded-lg shadow-md hover:bg-red-600 transition duration-300 "
+                    >
+                      X
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
 
             {/* Add Part Button */}
             <button
