@@ -71,12 +71,39 @@ const CreateInvoicePage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // const handlePartChange = (
+  //   index: number,
+  //   e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  // ) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => {
+  //     const updatedParts = [...prev.id_part];
+  //     updatedParts[index] = { ...updatedParts[index], [name]: value };
+  //     return { ...prev, id_part: updatedParts };
+  //   });
+  // };
+
+  // const addPart = () => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     id_part: [...prev.id_part, { id_part: "", qty: "" }],
+  //   }));
+  // };
+
+  // const removePart = (index: number) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     id_part: prev.id_part.filter((_, i) => i !== index),
+  //   }));
+  // };
   const handlePartChange = (
     index: number,
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => {
+      if (!prev.id_part) return prev; // Ensure id_part exists
+
       const updatedParts = [...prev.id_part];
       updatedParts[index] = { ...updatedParts[index], [name]: value };
       return { ...prev, id_part: updatedParts };
@@ -86,15 +113,21 @@ const CreateInvoicePage = () => {
   const addPart = () => {
     setFormData((prev) => ({
       ...prev,
-      id_part: [...prev.id_part, { id_part: "", qty: "" }],
+      id_part: prev.id_part
+        ? [...prev.id_part, { id_part: "", qty: "" }]
+        : [{ id_part: "", qty: "" }],
     }));
   };
 
   const removePart = (index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      id_part: prev.id_part.filter((_, i) => i !== index),
-    }));
+    setFormData((prev) => {
+      const updatedParts = prev.id_part.filter((_, i) => i !== index);
+      return {
+        ...prev,
+        id_part:
+          updatedParts.length > 0 ? updatedParts : [{ id_part: "", qty: "" }],
+      };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
