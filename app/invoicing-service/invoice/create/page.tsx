@@ -134,13 +134,20 @@ const CreateInvoicePage = () => {
     setIsSubmitting(true);
     setSuccessMessage(null);
     setErrorMessage(null);
+
+    // Pastikan `id_part` dikirim sebagai `null` jika kosong
+    const payload = {
+      ...formData,
+      id_part: formData.id_part.length > 0 ? formData.id_part : null,
+    };
+
     try {
       await axios.get(
         "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie"
       );
       await axios.post(
         "https://personalproject.nusantaratranssentosa.co.id/api/invoice",
-        formData
+        payload // Gunakan payload yang sudah diperbaiki
       );
       setSuccessMessage("Unit created successfully!");
       router.push("/invoicing-service");
