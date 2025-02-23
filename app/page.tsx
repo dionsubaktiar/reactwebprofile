@@ -125,7 +125,7 @@ export default function Home() {
                   </li>
                   <li>
                     <strong>IT Specialist at PT Nusantara Trans Sentosa</strong>{" "}
-                    (January 2024 - Present)
+                    (January 2024 - December 2024)
                     <br />
                     Current responsibilities include:
                     <ul className="list-disc ml-4">
