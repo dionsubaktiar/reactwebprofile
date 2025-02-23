@@ -9,6 +9,11 @@ const Resume = () => {
       <main className="flex items-center justify-center px-2 py-1 font-poppins">
         <section className="gap-4">
           <CardResume
+            title="BMI & BFP Calculator"
+            href="/bmi"
+            description="This project is build only using NextJS. There is no backend framework used, only on the fly calculation using TypeScript."
+          ></CardResume>
+          <CardResume
             title="Invoicing Service"
             href="/invoicing-service"
             description="This project is build using Laravel for backend, inspired by Invoice Service from PT Nusantara Trans sentosa which i developed it myself. Still being developed"
