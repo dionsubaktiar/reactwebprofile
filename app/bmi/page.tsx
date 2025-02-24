@@ -60,13 +60,13 @@ const BmiPage = () => {
     <div className="min-h-screen bg-customGreen-light text-eggplant dark:bg-gray-900 dark:text-honeyDew flex flex-col items-center">
       <form
         onSubmit={handleSubmit}
-        className="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 w-full max-w-md mt-6"
+        className="bg-honeyDew dark:bg-gray-800 shadow-lg rounded-xl p-2 mt-2 mx-2"
       >
         {/* <h2 className="text-2xl font-bold text-eggplant dark:text-honeyDew mb-4 text-center">
           BMI & BFP Calculator
         </h2> */}
         <Navbar title="BMI & BFP Calculator" />
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 p-2">
           {/* Gender */}
           <label className="text-eggplant dark:text-honeyDew">
             Gender:
