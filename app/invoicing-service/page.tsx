@@ -62,6 +62,7 @@ const MainPageInvoice = () => {
   const links = [
     { href: "/invoicing-service/units", label: "Units" },
     { href: "/invoicing-service/customers", label: "Customers" },
+    { href: "/invoicing-service/parts", label: "Parts" },
   ];
 
   const [invoice, setinvoice] = useState<Invoice[]>([]);
