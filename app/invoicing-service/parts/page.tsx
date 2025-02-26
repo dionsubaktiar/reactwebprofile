@@ -51,7 +51,7 @@ const PartsPage = () => {
         setPagination(response.data.data);
         setCurrentPage(page);
       } catch (error) {
-        console.error("Error fetching units:", error);
+        console.error("Error fetching parts:", error);
       } finally {
         setIsLoading(false);
       }
@@ -65,7 +65,7 @@ const PartsPage = () => {
   };
 
   const handleDelete = async (id: number) => {
-    if (confirm("Are you sure you want to delete this customer?")) {
+    if (confirm("Are you sure you want to delete this part?")) {
       try {
         await axios.delete(
           `https://personalproject.nusantaratranssentosa.co.id/api/parts/${id}`
@@ -93,10 +93,13 @@ const PartsPage = () => {
           <table className="min-w-full table-auto bg-white dark:bg-gray-800 dark:text-honeyDew">
             <thead>
               <tr className="bg-white text-eggplant">
-                <th className="px-4 py-2 text-left">Nama Perusahaan</th>
-                <th className="px-4 py-2 text-left">Alamat</th>
-                <th className="px-4 py-2 text-left">PIC</th>
-                <th className="px-4 py-2 text-left">Kontak</th>
+                <th className="px-4 py-2 text-left">
+                  Nama Barang (Part Number)
+                </th>
+                <th className="px-4 py-2 text-left">Jenis Kendaraan</th>
+                <th className="px-4 py-2 text-left">Merk</th>
+                <th className="px-4 py-2 text-left">Harga</th>
+                <th className="px-4 py-2 text-left">Biaya pasang</th>
                 <th className="px-4 py-2 text-left">Actions</th>
               </tr>
             </thead>
@@ -106,10 +109,27 @@ const PartsPage = () => {
                   key={part.id}
                   className="border-t border-gray-200 dark:border-gray-700"
                 >
-                  <td className="px-4 py-2">{part.nama_barang}</td>
-                  <td className="px-4 py-2">{part.part_number}</td>
+                  <td className="px-4 py-2">
+                    {part.nama_barang}({part.part_number})
+                  </td>
                   <td className="px-4 py-2">{part.kendaraan}</td>
                   <td className="px-4 py-2">{part.merk}</td>
+                  <td className="px-4 py-2">
+                    {part.harga.toLocaleString("id-ID", {
+                      currency: "IDR",
+                      style: "currency",
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 2,
+                    })}
+                  </td>
+                  <td className="px-4 py-2">
+                    {part.jasa.toLocaleString("id-ID", {
+                      currency: "IDR",
+                      style: "currency",
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 2,
+                    })}
+                  </td>
                   <td className="px-4 py-2 relative">
                     <div className="relative inline-block text-left">
                       <button
@@ -124,6 +144,13 @@ const PartsPage = () => {
                       </button>
                       {openDropdown === part.id && (
                         <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                          <Link
+                            href={`/invoicing-service/parts/edit?id=${part.id}`}
+                          >
+                            <button className="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+                              Edit
+                            </button>
+                          </Link>
                           <button
                             onClick={() => handleDelete(part.id)}
                             className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
