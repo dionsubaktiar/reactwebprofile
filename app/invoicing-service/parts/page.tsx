@@ -72,7 +72,7 @@ const PartsPage = () => {
         );
         setParts(parts.filter((part) => part.id !== id));
       } catch (error) {
-        console.error("Error deleting customer:", error);
+        console.error("Error deleting part:", error);
       }
     }
   };
