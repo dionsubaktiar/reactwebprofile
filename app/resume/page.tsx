@@ -13,21 +13,21 @@ const Resume = () => {
             href="/bmi"
             description="This project is build only using NextJS. There is no backend framework used, only on the fly calculation using TypeScript."
           ></CardResume>
-          <CardResume
+          {/* <CardResume
             title="Invoicing Service"
             href="/invoicing-service"
             description="This project is build using Laravel for backend, inspired by Invoice Service from PT Nusantara Trans sentosa which i developed it myself. Still being developed"
-          ></CardResume>
+          ></CardResume> */}
           <CardResume
             title="Auth and CRUD using Laravel"
             href="/auth-crud/login"
             description="This project is build using Laravel for backend, Socialite as Social Auth, Role permission, and also traditional Auth, The Frontend for Auth is still being developed"
           ></CardResume>
-          <CardResume
+          {/* <CardResume
             title="Pengajuan Kredit"
             href="/pengajuan-kredit"
             description="This project is build using Laravel for Backend. This Project is build within 90 Min."
-          ></CardResume>
+          ></CardResume> */}
           <CardResume
             title="Simulasi Kredit"
             href="/simulasi-cicilan"
@@ -43,11 +43,11 @@ const Resume = () => {
             href="/pokeapi"
             description="This Project is build using React TSX and Tailwind as Front-End, API are provided by PokeAPI V2"
           ></CardResume>
-          <CardResume
+          {/* <CardResume
             title="User CRUD API (UNDER MAINTENANCE)"
             description="This Project is build using ExpressJS as backend and Prisma as the ORM. The data is fetched via API"
             href="/users"
-          ></CardResume>
+          ></CardResume> */}
           <CardResume
             title="Nusantara Trans Sentosa"
             description="Landing Page for PT Nusantara Trans Sentosa using SwiperJS"

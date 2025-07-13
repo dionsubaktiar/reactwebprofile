@@ -144,6 +144,19 @@ export default function Home() {
                       </li>
                     </ul>
                   </li>
+                  <li>
+                    <strong>
+                      Junior Developer at PT. Besmart Global Indonesia
+                    </strong>
+                    (March 2025 - Present)
+                    <br />
+                    Current responsibilities include:
+                    <ul className="list-disc ml-4">
+                      <li>Developing Backend Microservices using .NET</li>
+                      <li>Developing Frontend Microservices using React</li>
+                      <li>Researching library for Backend developer uses</li>
+                    </ul>
+                  </li>
                 </ul>
               </div>
             }
@@ -166,8 +179,19 @@ export default function Home() {
                     and formatting
                   </li>
                   <li>
-                    <strong>Next.js</strong> - Building dynamic and
+                    <strong>Microservices</strong> - Developing scalable
+                    application using microservices concept
+                  </li>
+                  <li>
+                    <strong>Next.js & React</strong> - Building dynamic and
                     server-rendered React applications
+                  </li>
+                  <li>
+                    <strong>.NET</strong> - Developing easy to maintain and
+                    scalable .NET applications
+                  </li>
+                  <li>
+                    <strong>RDBMS</strong> - Generate an efficient query
                   </li>
                   <li>
                     <strong>Laravel</strong> - Developing robust and scalable
