@@ -10,16 +10,44 @@ interface ExperienceItem {
 
 const experiences: ExperienceItem[] = [
   {
+    role: "Middle Developer",
+    company: "PT. Besmart Global Indonesia",
+    period: "December 2025 - Present",
+    bullets: [
+      "Leading collaborative discussions and modeling core business logic & system workflow architectures.",
+      "Conducting extensive research and development for shared core library modules to standardize backend operations.",
+      "Designing and implementing background job schedulers and automation tasks for high-concurrency systems.",
+      "Supervising git branching strategies, pull requests, and conducting structural code reviews for database migrations."
+    ],
+    tags: [
+      "System Workflows",
+      "Logic Design",
+      "Library R&D",
+      "Job Schedulers",
+      "Code Reviews",
+      "Git Branching",
+      "Database Migrations"
+    ],
+  },
+  {
     role: "Junior Developer",
     company: "PT. Besmart Global Indonesia",
-    period: "March 2025 - Present",
+    period: "March 2025 - December 2025",
     bullets: [
       "Architecting and developing secure, highly maintainable Backend Microservices utilizing C# and the .NET framework ecosystem.",
       "Building dynamic, responsive, and performance-optimized Frontend Microservices leveraging React.js, Next.js, and advanced data architectures.",
       "Integrating intricate third-party libraries and web tools to optimize analytical interfaces and core enterprise data flows.",
-      "Managing end-to-end development lifecycles, structured code reviews, and microservice integration tests."
+      "Participating in end-to-end development lifecycles, structured code reviews, and microservice integration testing."
     ],
-    tags: [".NET Core", "C#", "Microservices", "React.js", "Next.js", "REST APIs", "Integration Testing"]
+    tags: [
+      ".NET Core",
+      "C#",
+      "Microservices",
+      "React.js",
+      "Next.js",
+      "REST APIs",
+      "Integration Testing",
+    ],
   },
   {
     role: "IT Specialist & Developer",
@@ -29,9 +57,16 @@ const experiences: ExperienceItem[] = [
       "Engineered and deployed custom production websites and infrastructure for corporate transport logistics ecosystems (including live domains: nusantaratranssentosa.co.id).",
       "Managed, configured, and optimized independent cloud infrastructure including VPS (Virtual Private Servers) and production deployment pipelines.",
       "Implemented secure corporate routing and remote network environments utilizing Tailscale VPN and Cloudflare proxies for enhanced data protection.",
-      "Developed internal operational programs aimed at automating tracking metrics, resolving critical network bottlenecks, and decreasing manual operational processing."
+      "Developed internal operational programs aimed at automating tracking metrics, resolving critical network bottlenecks, and decreasing manual operational processing.",
     ],
-    tags: ["Logistics Tech", "VPS Management", "Tailscale VPN", "Cloudflare WAF/DNS", "Network Routing", "Infrastructure automation"]
+    tags: [
+      "Logistics Tech",
+      "VPS Management",
+      "Tailscale VPN",
+      "Cloudflare WAF/DNS",
+      "Network Routing",
+      "Infrastructure automation",
+    ],
   },
   {
     role: "Freelance Full Stack Developer",
@@ -40,15 +75,24 @@ const experiences: ExperienceItem[] = [
     bullets: [
       "Successfully developed and published operational landing and corporate web solutions (such as rinsgloballogistic.com), matching complex business demands with performant tech stacks.",
       "Utilized Laravel (PHP) for robust backend architecture, data persistence handling, and secure RESTful API development.",
-      "Designed optimized Relational Database Management Systems (RDBMS) schemas, ensuring highly efficient queries for concurrent users."
+      "Designed optimized Relational Database Management Systems (RDBMS) schemas, ensuring highly efficient queries for concurrent users.",
     ],
-    tags: ["Laravel (PHP)", "RDBMS", "Database Optimization", "API Integration", "Corporate Landing Pages"]
-  }
+    tags: [
+      "Laravel (PHP)",
+      "RDBMS",
+      "Database Optimization",
+      "API Integration",
+      "Corporate Landing Pages",
+    ],
+  },
 ];
 
 const ExperienceSection = () => {
   return (
-    <section id="experience" className="py-20 border-t border-zinc-200 dark:border-zinc-800">
+    <section
+      id="experience"
+      className="py-20 border-t border-zinc-200 dark:border-zinc-800"
+    >
       <div className="max-w-4xl mx-auto space-y-12">
         <div className="space-y-4 text-center">
           <h2 className="text-3xl font-bold font-poppins text-zinc-900 dark:text-white">
