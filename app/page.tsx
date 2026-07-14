@@ -1,217 +1,53 @@
-import { AiFillInstagram, AiFillGithub, AiFillLinkedin } from "react-icons/ai";
-import Link from "next/link";
-import Image from "next/image";
-import TwoColumnLayout from "./components/twoColumns";
-import ToggleDarkModeButton from "./components/toggleDarkMode";
+import HeroSection from "./components/HeroSection";
+import AboutSection from "./components/AboutSection";
+import ExperienceSection from "./components/ExperienceSection";
+import SkillsSection from "./components/SkillsSection";
+import ProjectsSection from "./components/ProjectsSection";
+import ClientsSection from "./components/ClientsSection";
+import ActivityLogSection from "./components/ActivityLogSection";
+import MiniPlayground from "./components/MiniPlayground";
 
 export default function Home() {
   return (
-    <div
-      className={
-        "min-h-screen flex items-center justify-center bg-honeyDew dark:text-customGreen-light dark:bg-eggplant"
-      }
-    >
-      <main className="px-10 font-poppins">
-        <section className="min-h-screen">
-          <nav className="py-10 mb-4 flex justify-between dark:text-customGreen-light">
-            <h1 className="text-xl font-poppins text-eggplant dark:text-customGreen-light">
-              Subaktiar
-            </h1>
-            <ul className="flex items-center">
-              <li>
-                <ToggleDarkModeButton />
-              </li>
-            </ul>
-          </nav>
-          <div className="text-center flex-col items-center justify-evenly p-6">
-            <h2 className="text-4xl py-2 text-customGreen-dark font-medium dark:text-honeyDew ">
-              Dion Subaktiar
-            </h2>
-            <h3 className="text-2xl py-2 text-eggplant dark:text-customGreen-light">
-              Fullstack Developer and Software Engineer
-            </h3>
-            <p className="text-md py-5 leading-8 text-eggplant dark:text-customGreen-light">
-              I am a skilled developer with a Bachelor’s degree in Information
-              Engineering from the University of 17 August 1945 Surabaya,
-              graduating with a GPA of 3.40. I specialize in building efficient
-              and scalable solutions using tools such as Laravel, Next.js, and
-              MATLAB, combining my technical expertise with a strong foundation
-              in software engineering.
-            </p>
-            <Link
-              className="bg-customGreen-light dark:bg-customGreen-default
-                   hover:bg-customGreen-default hover:dark:bg-customGreen-light
-                   transition duration-200 ease-in-out
-                   text-eggplant dark:text-honeyDew
-                  px-7 py-2 rounded-md w-full"
-              href="/resume"
-            >
-              Portofolio
-            </Link>
-          </div>
-          <div className="text-3xl flex justify-center gap-14 py-3 text-eggplant dark:text-customGreen-light">
-            <a
-              href="https://www.instagram.com/dionsubaktiar"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <AiFillInstagram className="hover:text-customGreen-default transition duration-150 ease-in-out" />
-            </a>
-            <a
-              href="https://github.com/dionsubaktiar"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <AiFillGithub className="hover:text-customGreen-default transition duration-150 ease-in-out" />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/dion-subaktiar-767a94279"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <AiFillLinkedin className="hover:text-customGreen-default transition duration-150 ease-in-out" />
-            </a>
-          </div>
-          <div
-            className="mx-auto bg-gradient-to-b from-customGreen-dark to-customGreen-light rounded-full 
-          w-60 h-60 relative overflow-hidden mt-5 mb-16 md:h-96 md:w-96"
-          >
-            <Image
-              src="/assets/images/profile.png"
-              fill
-              style={{ objectFit: "contain" }}
-              alt="profile"
-            />
-          </div>
-        </section>
-        <section>
-          <TwoColumnLayout
-            column1title="Career"
-            column2title="Skills"
-            column1content={
-              <div>
-                <p className="text-md py-1 leading-8 text-eggplant dark:text-customGreen-light">
-                  Here is a list of my career highlights:
-                </p>
-                <ul className="list-disc ml-4">
-                  <li>
-                    <strong>Admin at CV. Nusantara Trans</strong> (February 2022
-                    - May 2023)
-                    <br />
-                    Responsibilities included:
-                    <ul className="list-disc ml-4">
-                      <li>Creating invoices and financial documentation</li>
-                      <li>Recording and managing spending and income</li>
-                      <li>
-                        Drafting official correspondence for partner companies
-                      </li>
-                      <li>
-                        Coordinating administrative tasks and office management
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <strong>Freelance Full Stack Developer</strong> (June 2023 -
-                    January 2024)
-                    <br />
-                    Key projects and technologies used:
-                    <ul className="list-disc ml-4">
-                      <li>Developed over 5 projects of web applications</li>
-                      <li>
-                        Used Laravel for backend development and HTML for
-                        frontend
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <strong>IT Specialist at PT Nusantara Trans Sentosa</strong>{" "}
-                    (January 2024 - December 2024)
-                    <br />
-                    Current responsibilities include:
-                    <ul className="list-disc ml-4">
-                      <li>Managing IT infrastructure and support</li>
-                      <li>Overseeing system maintenance and upgrades</li>
-                      <li>
-                        Providing technical support to staff and resolving
-                        issues
-                      </li>
-                      <li>
-                        Implementing security measures and data protection
-                        protocols
-                      </li>
-                      <li>
-                        Developed 3 major projects to enhance company operations
-                      </li>
-                    </ul>
-                  </li>
-                  <li>
-                    <strong>
-                      Junior Developer at PT. Besmart Global Indonesia
-                    </strong>
-                    (March 2025 - Present)
-                    <br />
-                    Current responsibilities include:
-                    <ul className="list-disc ml-4">
-                      <li>Developing Backend Microservices using .NET</li>
-                      <li>Developing Frontend Microservices using React</li>
-                      <li>Researching library for Backend developer uses</li>
-                    </ul>
-                  </li>
-                </ul>
-              </div>
-            }
-            column2content={
-              <div>
-                <p className="text-md py-2 leading-8 text-eggplant dark:text-customGreen-light">
-                  My key skills include:
-                </p>
-                <ul className="list-disc ml-4">
-                  <li>
-                    <strong>Adaptive</strong> - Eager to embrace new challenges,
-                    consistently learning and growing.
-                  </li>
-                  <li>
-                    <strong>MS Excel</strong> - Advanced data analysis and
-                    visualization
-                  </li>
-                  <li>
-                    <strong>MS Word</strong> - Professional document creation
-                    and formatting
-                  </li>
-                  <li>
-                    <strong>Microservices</strong> - Developing scalable
-                    application using microservices concept
-                  </li>
-                  <li>
-                    <strong>Next.js & React</strong> - Building dynamic and
-                    server-rendered React applications
-                  </li>
-                  <li>
-                    <strong>.NET</strong> - Developing easy to maintain and
-                    scalable .NET applications
-                  </li>
-                  <li>
-                    <strong>RDBMS</strong> - Generate an efficient query
-                  </li>
-                  <li>
-                    <strong>Laravel</strong> - Developing robust and scalable
-                    PHP applications
-                  </li>
-                  <li>
-                    <strong>MATLAB</strong> - Image segmentation and
-                    classification for medical images
-                  </li>
-                  <li>
-                    <strong>Device Repair</strong> - Expertise in repairing
-                    phones and laptops, including both software troubleshooting
-                    and hardware component replacement
-                  </li>
-                </ul>
-              </div>
-            }
-          />
-        </section>
+    <div className="min-h-screen bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50 font-poppins transition-colors duration-300">
+      <main className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+        {/* Hero Section */}
+        <HeroSection />
+
+        {/* About Section */}
+        <AboutSection />
+
+        {/* Experience Section */}
+        <ExperienceSection />
+
+        {/* Skills Section */}
+        <SkillsSection />
+
+        {/* Projects Section */}
+        <ProjectsSection />
+
+        {/* Clients Section */}
+        <ClientsSection />
+
+        {/* Activity & Operational Logs */}
+        <ActivityLogSection />
+
+        {/* Secondary playground / mini apps */}
+        <MiniPlayground />
       </main>
+
+      {/* Modern minimal footer */}
+      <footer className="border-t border-zinc-200 dark:border-zinc-900 bg-white dark:bg-zinc-950 py-12 transition-colors">
+        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-zinc-500 dark:text-zinc-600">
+          <p>© {new Date().getFullYear()} Dion Subaktiar. All rights reserved.</p>
+          <div className="flex gap-6 font-light">
+            <a href="#about" className="hover:text-zinc-800 dark:hover:text-zinc-300 transition-colors">About</a>
+            <a href="#experience" className="hover:text-zinc-800 dark:hover:text-zinc-300 transition-colors">Experience</a>
+            <a href="#projects" className="hover:text-zinc-800 dark:hover:text-zinc-300 transition-colors">Projects</a>
+            <a href="#playground" className="hover:text-zinc-800 dark:hover:text-zinc-300 transition-colors">Sandbox</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

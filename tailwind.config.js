@@ -32,8 +32,18 @@ module.exports = {
           backgroundColor: "#241185",
           gradationBlue: "#018DFF",
           gradationRed: "#FF6A6F",
-          // complementarybg: "#855511",
         },
+        // Minimalist Theme Accent Colors
+        accent: {
+          primary: "#6366f1", // Indigo
+          primaryHover: "#4f46e5",
+          secondary: "#0d9488", // Teal
+          secondaryHover: "#0f766e",
+          success: "#10b981", // Emerald
+          darkBg: "#09090b", // Zinc 950
+          darkCard: "#18181b", // Zinc 900
+          darkBorder: "#27272a", // Zinc 800
+        }
       },
     },
   },
