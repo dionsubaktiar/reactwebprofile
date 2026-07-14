@@ -21,21 +21,21 @@ const SimulasiPage = () => {
     return `Rp ${number.toLocaleString("id-ID")}`;
   };
 
-  // Helper function to parse currency back to a number
   const parseCurrency = (value: string): number => {
     return parseInt(value.replace(/[^0-9]/g, ""), 10) || 0;
   };
 
   const handleSubmit = () => {
-    const loanAmount = parseCurrency(harga) - parseCurrency(dp); // Loan amount after down payment
-    const interestRateNumber = parseFloat(interestRate) / 100; // Convert percentage to decimal
+    const loanAmount = parseCurrency(harga) - parseCurrency(dp);
+    const interestRateNumber = parseFloat(interestRate) / 100;
 
-    const totalInterest = loanAmount * interestRateNumber; // Total interest for the loan
+    if (loanAmount <= 0) return;
 
-    // Use rounding to prevent weird numbers
-    const perMonthPrincipal = Math.round(loanAmount / tenor); // Principal paid per month
-    const perMonthInterest = Math.round(totalInterest / tenor); // Interest paid per month
-    const totalMonthlyPayment = perMonthPrincipal + perMonthInterest; // Total monthly payment
+    const totalInterest = loanAmount * interestRateNumber;
+
+    const perMonthPrincipal = Math.round(loanAmount / tenor);
+    const perMonthInterest = Math.round(totalInterest / tenor);
+    const totalMonthlyPayment = perMonthPrincipal + perMonthInterest;
 
     setMonthlyDetails({
       perMonthPrincipal,
@@ -43,7 +43,6 @@ const SimulasiPage = () => {
       totalMonthlyPayment,
     });
 
-    // Calculate the "Until Date"
     const currentDate = new Date();
     const finalDate = new Date(
       currentDate.setMonth(currentDate.getMonth() + tenor)
@@ -52,116 +51,137 @@ const SimulasiPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-honeyDew text-customGreen-dark dark:bg-gray-900 dark:text-honeyDew">
-      <Navbar title="Simulasi Kredit" />
-      <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-md rounded dark:bg-gray-800 dark:shadow-lg">
-        <h1 className="text-2xl font-bold mb-6 text-customGreen-default dark:text-customGreen-light">
-          Simulasi Kredit
-        </h1>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSubmit();
-          }}
-          className="space-y-4"
-        >
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Harga Barang (Rp)
-            </label>
-            <input
-              type="text"
-              required
-              className="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              value={harga}
-              onChange={(e) => setHarga(formatCurrency(e.target.value))}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Down Payment (DP) (Rp)
-            </label>
-            <input
-              type="text"
-              required
-              className="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              value={dp}
-              onChange={(e) => setDP(formatCurrency(e.target.value))}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Bunga (%) (Interest Rate)
-            </label>
-            <input
-              type="text"
-              required
-              className="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              value={interestRate}
-              onChange={(e) =>
-                setInterestRate(e.target.value.replace(/[^0-9.]/g, ""))
-              } // Allow only numbers and decimals
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">Tenor</label>
-            <select
-              className="w-full px-4 py-2 border rounded dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              value={tenor}
-              onChange={(e) => setTenor(Number(e.target.value))}
-            >
-              <option value={1}>1 bulan</option>
-              <option value={3}>3 bulan</option>
-              <option value={6}>6 bulan</option>
-              <option value={12}>1 tahun</option>
-              <option value={24}>2 tahun</option>
-              <option value={36}>3 tahun</option>
-              <option value={48}>4 tahun</option>
-              <option value={60}>5 tahun</option>
-              <option value={72}>6 tahun</option>
-            </select>
-          </div>
-          <button
-            type="submit"
-            className="w-full px-4 py-2 bg-customGreen-dark text-white rounded hover:bg-customGreen-default transition dark:bg-customGreen-light dark:text-gray-800"
-          >
-            Hitung
-          </button>
-        </form>
+    <div className="min-h-screen bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50 font-poppins flex flex-col items-center">
+      <div className="w-full max-w-xl px-4 flex-grow py-8">
+        <Navbar title="Simulasi Cicilan" />
 
-        {monthlyDetails !== null && untilDate !== null && (
-          <div className="mt-6 p-4 bg-customGreen-light text-gray-800 rounded dark:bg-gray-700 dark:text-white">
-            <h2 className="text-xl font-bold">Hasil Simulasi:</h2>
-            <p className="mt-2">
-              Cicilan Pokok Per Bulan:{" "}
-              <strong>
-                {formatCurrency(monthlyDetails.perMonthPrincipal.toString())}
-              </strong>
-            </p>
-            <p>
-              Cicilan Bunga Per Bulan:{" "}
-              <strong>
-                {formatCurrency(monthlyDetails.perMonthInterest.toString())}
-              </strong>
-            </p>
-            <p>
-              Total Cicilan Per Bulan:{" "}
-              <strong>
-                {formatCurrency(monthlyDetails.totalMonthlyPayment.toString())}
-              </strong>
-            </p>
-            <p>
-              Tanggal Selesai:{" "}
-              <strong>
-                {new Date(untilDate).toLocaleDateString("id-ID", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
-              </strong>
-            </p>
-          </div>
-        )}
+        <div className="mt-8 p-6 md:p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/10 shadow-sm space-y-6">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+            className="space-y-4"
+          >
+            {/* Harga Barang */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 block">
+                Harga Barang (Rp)
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="Contoh: Rp 20.000.000"
+                className="w-full p-2.5 border border-zinc-200 dark:border-zinc-850 rounded-lg bg-white dark:bg-zinc-950 text-zinc-850 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 text-sm transition-all"
+                value={harga}
+                onChange={(e) => setHarga(formatCurrency(e.target.value))}
+              />
+            </div>
+
+            {/* Down Payment */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 block">
+                Down Payment (DP) (Rp)
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="Contoh: Rp 5.000.000"
+                className="w-full p-2.5 border border-zinc-200 dark:border-zinc-850 rounded-lg bg-white dark:bg-zinc-950 text-zinc-850 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 text-sm transition-all"
+                value={dp}
+                onChange={(e) => setDP(formatCurrency(e.target.value))}
+              />
+            </div>
+
+            {/* Bunga % */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 block">
+                Bunga Tahunan (%)
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="Contoh: 5"
+                className="w-full p-2.5 border border-zinc-200 dark:border-zinc-850 rounded-lg bg-white dark:bg-zinc-950 text-zinc-850 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 text-sm transition-all"
+                value={interestRate}
+                onChange={(e) =>
+                  setInterestRate(e.target.value.replace(/[^0-9.]/g, ""))
+                }
+              />
+            </div>
+
+            {/* Tenor */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300 block">
+                Tenor Cicilan
+              </label>
+              <select
+                className="w-full p-2.5 border border-zinc-200 dark:border-zinc-850 rounded-lg bg-white dark:bg-zinc-950 text-zinc-850 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 text-sm transition-all"
+                value={tenor}
+                onChange={(e) => setTenor(Number(e.target.value))}
+              >
+                <option value={3}>3 Bulan</option>
+                <option value={6}>6 Bulan</option>
+                <option value={12}>12 Bulan (1 Tahun)</option>
+                <option value={24}>24 Bulan (2 Tahun)</option>
+                <option value={36}>36 Bulan (3 Tahun)</option>
+                <option value={48}>48 Bulan (4 Tahun)</option>
+                <option value={60}>60 Bulan (5 Tahun)</option>
+              </select>
+            </div>
+
+            {/* Submit */}
+            <button
+              type="submit"
+              className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium rounded-lg transition-colors text-sm shadow-sm"
+            >
+              Hitung Simulasi Compounding
+            </button>
+          </form>
+
+          {/* Results Area */}
+          {monthlyDetails !== null && untilDate !== null && (
+            <div className="border-t border-zinc-200 dark:border-zinc-800/80 pt-6 space-y-4">
+              <h3 className="text-base font-bold font-poppins text-zinc-900 dark:text-white">
+                Hasil Rincian Cicilan
+              </h3>
+
+              <div className="grid gap-3">
+                <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/80 flex justify-between items-center text-sm">
+                  <span className="text-zinc-500">Cicilan Pokok / Bulan</span>
+                  <strong className="font-semibold text-zinc-850 dark:text-zinc-200">
+                    {formatCurrency(monthlyDetails.perMonthPrincipal.toString())}
+                  </strong>
+                </div>
+
+                <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/80 flex justify-between items-center text-sm">
+                  <span className="text-zinc-500">Cicilan Bunga / Bulan</span>
+                  <strong className="font-semibold text-zinc-850 dark:text-zinc-200">
+                    {formatCurrency(monthlyDetails.perMonthInterest.toString())}
+                  </strong>
+                </div>
+
+                <div className="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/50 flex justify-between items-center text-sm">
+                  <span className="text-indigo-600 dark:text-indigo-400 font-medium">Total Tagihan / Bulan</span>
+                  <strong className="font-bold text-indigo-700 dark:text-indigo-400 text-base">
+                    {formatCurrency(monthlyDetails.totalMonthlyPayment.toString())}
+                  </strong>
+                </div>
+
+                <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/80 flex justify-between items-center text-sm">
+                  <span className="text-zinc-500">Tanggal Pelunasan</span>
+                  <strong className="font-semibold text-zinc-850 dark:text-zinc-200">
+                    {new Date(untilDate).toLocaleDateString("id-ID", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </strong>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

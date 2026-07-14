@@ -1,6 +1,5 @@
 "use client";
 
-// import { ReactNode } from "react";
 import Link from "next/link";
 
 interface CardResumeProps {
@@ -11,16 +10,15 @@ interface CardResumeProps {
 
 const CardResume = ({ title, description, href }: CardResumeProps) => {
   return (
-    <div
-      className="container mx-auto drop-shadow-md rounded-lg bg-customGreen-default
-      border-solid border-eggplant border-2 hover:border-0
-      transition duration-300 ease-linear transform hover:bg-customGreen-light hover:scale-105  
-      mb-1"
-    >
+    <div className="p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/10 hover:border-indigo-500/50 hover:shadow-md transition-all duration-300 w-full group mb-4">
       <Link href={href}>
-        <div className="px-4 py-4 hover:text-customGreen-dark">
-          <p className="text-black dark:text-gray-100">{title}</p>
-          <p>{description}</p>
+        <div className="space-y-2">
+          <h3 className="text-base font-bold text-zinc-900 dark:text-white font-poppins group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+            {title}
+          </h3>
+          <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 font-light leading-relaxed">
+            {description}
+          </p>
         </div>
       </Link>
     </div>

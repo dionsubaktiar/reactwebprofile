@@ -6,9 +6,9 @@ import Navbar from "../components/navbar";
 const BmiPage = () => {
   const [formData, setFormData] = useState({
     gender: "",
-    tinggi: 0,
-    berat: 0,
-    umur: 0,
+    tinggi: 170,
+    berat: 65,
+    umur: 24,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [bfpResult, setBfpResult] = useState<number | null>(null);
@@ -21,21 +21,23 @@ const BmiPage = () => {
 
     try {
       const { gender, tinggi, berat } = formData;
+      if (!gender || tinggi <= 0 || berat <= 0) return;
+
       const bmi = berat / (tinggi / 100) ** 2;
       setBmiResult(parseFloat(bmi.toFixed(2)));
 
       if (bmi < 18.5) {
-        setClassification("Kurus");
+        setClassification("Underweight (Kurus)");
       } else if (bmi >= 18.5 && bmi <= 24.9) {
-        setClassification("Normal");
+        setClassification("Normal Weight (Ideal)");
       } else if (bmi >= 25 && bmi <= 29.9) {
-        setClassification("Overweight");
+        setClassification("Overweight (Kelebihan Berat)");
       } else if (bmi >= 30 && bmi <= 34.9) {
-        setClassification("Obesitas Stadium I");
+        setClassification("Obese Class I (Obesitas Stadium I)");
       } else if (bmi >= 35 && bmi <= 39.9) {
-        setClassification("Obesitas Stadium II");
+        setClassification("Obese Class II (Obesitas Stadium II)");
       } else {
-        setClassification("Obesitas Stadium III");
+        setClassification("Obese Class III (Obesitas Stadium III)");
       }
 
       let lbm: number;
@@ -57,86 +59,117 @@ const BmiPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-customGreen-light text-eggplant dark:bg-gray-900 dark:text-honeyDew flex flex-col items-center">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-honeyDew dark:bg-gray-800 shadow-lg rounded-xl p-2 mt-2 mx-2"
-      >
-        {/* <h2 className="text-2xl font-bold text-eggplant dark:text-honeyDew mb-4 text-center">
-          BMI & BFP Calculator
-        </h2> */}
+    <div className="min-h-screen bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50 font-poppins flex flex-col items-center">
+      <div className="w-full max-w-lg px-4 flex-grow py-8">
         <Navbar title="BMI & BFP Calculator" />
-        <div className="flex flex-col gap-4 p-2">
-          {/* Gender */}
-          <label className="text-eggplant dark:text-honeyDew">
-            Gender:
-            <select
-              className="w-full mt-1 p-2 border rounded-lg bg-honeyDew text-eggplant focus:ring-2 focus:ring-customGreen-default"
-              value={formData.gender}
-              onChange={(e) =>
-                setFormData({ ...formData, gender: e.target.value })
-              }
+
+        <div className="mt-8 p-6 md:p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/10 shadow-sm space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Gender */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Gender
+              </label>
+              <select
+                required
+                className="w-full p-2.5 border border-zinc-200 dark:border-zinc-850 rounded-lg bg-white dark:bg-zinc-950 text-zinc-800 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 text-sm transition-all"
+                value={formData.gender}
+                onChange={(e) =>
+                  setFormData({ ...formData, gender: e.target.value })
+                }
+              >
+                <option value="">Select Gender</option>
+                <option value="L">Male</option>
+                <option value="P">Female</option>
+              </select>
+            </div>
+
+            {/* Height */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Height (cm)
+              </label>
+              <input
+                type="number"
+                required
+                min="50"
+                max="250"
+                className="w-full p-2.5 border border-zinc-200 dark:border-zinc-850 rounded-lg bg-white dark:bg-zinc-950 text-zinc-850 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 text-sm transition-all"
+                value={formData.tinggi || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, tinggi: parseFloat(e.target.value) || 0 })
+                }
+              />
+            </div>
+
+            {/* Weight */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Weight (kg)
+              </label>
+              <input
+                type="number"
+                required
+                min="10"
+                max="300"
+                className="w-full p-2.5 border border-zinc-200 dark:border-zinc-850 rounded-lg bg-white dark:bg-zinc-950 text-zinc-850 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 text-sm transition-all"
+                value={formData.berat || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, berat: parseFloat(e.target.value) || 0 })
+                }
+              />
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium rounded-lg transition-colors text-sm shadow-sm"
+              disabled={isSubmitting}
             >
-              <option value="">Select</option>
-              <option value="L">Male</option>
-              <option value="P">Female</option>
-            </select>
-          </label>
+              {isSubmitting ? "Calculating..." : "Calculate Body Metrics"}
+            </button>
+          </form>
 
-          {/* Height */}
-          <label className="text-eggplant dark:text-honeyDew">
-            Height (cm):
-            <input
-              type="number"
-              className="w-full mt-1 p-2 border rounded-lg bg-honeyDew text-eggplant focus:ring-2 focus:ring-customGreen-default"
-              value={formData.tinggi}
-              onChange={(e) =>
-                setFormData({ ...formData, tinggi: parseFloat(e.target.value) })
-              }
-            />
-          </label>
+          {/* Results Display */}
+          {(bmiResult !== null || bfpResult !== null) && (
+            <div className="border-t border-zinc-200 dark:border-zinc-800/80 pt-6 space-y-4">
+              <h3 className="text-base font-bold font-poppins text-zinc-900 dark:text-white">
+                Calculation Results
+              </h3>
+              
+              <div className="grid sm:grid-cols-2 gap-4">
+                {bmiResult !== null && (
+                  <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/80 space-y-1">
+                    <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest block">
+                      Body Mass Index
+                    </span>
+                    <p className="text-lg font-bold text-indigo-600 dark:text-indigo-400">
+                      {bmiResult}
+                    </p>
+                    <span className="text-xs text-zinc-500 dark:text-zinc-400 block font-light">
+                      {classification}
+                    </span>
+                  </div>
+                )}
 
-          {/* Weight */}
-          <label className="text-eggplant dark:text-honeyDew">
-            Weight (kg):
-            <input
-              type="number"
-              className="w-full mt-1 p-2 border rounded-lg bg-honeyDew text-eggplant focus:ring-2 focus:ring-customGreen-default"
-              value={formData.berat}
-              onChange={(e) =>
-                setFormData({ ...formData, berat: parseFloat(e.target.value) })
-              }
-            />
-          </label>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full px-4 py-2 bg-customGreen-dark text-white font-semibold rounded-lg hover:bg-customGreen-default transition"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Calculating..." : "Calculate"}
-          </button>
+                {bfpResult !== null && (
+                  <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800/80 space-y-1">
+                    <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest block">
+                      Body Fat Percentage
+                    </span>
+                    <p className="text-lg font-bold text-teal-600 dark:text-teal-400">
+                      {bfpResult}%
+                    </p>
+                    <span className="text-xs text-zinc-500 dark:text-zinc-400 block font-light">
+                      Boer formula estimate
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
-      </form>
-
-      {/* Results */}
-      {bmiResult !== null && classification !== null && (
-        <div className="mt-4 p-4 bg-customGreen-dark text-white rounded-lg text-center w-full max-w-md">
-          <h2 className="text-lg font-bold">BMI Result</h2>
-          <p className="text-xl">
-            {bmiResult} -{" "}
-            <span className="font-semibold">{classification}</span>
-          </p>
-        </div>
-      )}
-
-      {bfpResult !== null && (
-        <div className="mt-2 p-4 bg-customGreen-default text-white rounded-lg text-center w-full max-w-md">
-          <h2 className="text-lg font-bold">BFP Result</h2>
-          <p className="text-xl">{bfpResult}%</p>
-        </div>
-      )}
+      </div>
     </div>
   );
 };

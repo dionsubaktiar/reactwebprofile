@@ -7,31 +7,28 @@ interface DataPost {
 
 const CardPosts: React.FC<DataPost> = ({ userId, id, title, body }) => {
   return (
-    <div
-      className="p-5 bg-customGreen-default rounded-lg border border-eggplant 
-        shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out
-        hover:bg-customGreen-light dark:bg-customGreen-dark 
-        hover:dark:bg-customGreen-light text-eggplant dark:text-honeyDew"
-    >
-      {/* Post Header */}
-      <div className="flex justify-between items-center mb-3">
-        <span className="text-sm font-medium">
-          <strong>ID:</strong> {id}
-        </span>
-        <span className="text-sm font-medium">
-          <strong>User ID:</strong> {userId}
-        </span>
+    <div className="p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/10 hover:border-indigo-500/50 hover:shadow-md transition-all duration-300 flex flex-col justify-between gap-4">
+      <div className="space-y-3">
+        {/* Post Header */}
+        <div className="flex justify-between items-center text-xs font-mono text-zinc-400 dark:text-zinc-500">
+          <span>
+            POST ID: <strong className="text-zinc-700 dark:text-zinc-300">{id}</strong>
+          </span>
+          <span>
+            USER ID: <strong className="text-zinc-700 dark:text-zinc-300">{userId}</strong>
+          </span>
+        </div>
+
+        {/* Post Title */}
+        <h3 className="text-base font-bold text-zinc-900 dark:text-white font-poppins capitalize">
+          {title}
+        </h3>
+
+        {/* Post Body */}
+        <p className="text-xs sm:text-sm text-zinc-650 dark:text-zinc-400 font-light leading-relaxed">
+          {body}
+        </p>
       </div>
-
-      {/* Post Title */}
-      <h3 className="text-lg font-semibold text-eggplant dark:text-honeyDew uppercase mb-2">
-        {title}
-      </h3>
-
-      {/* Post Body */}
-      <p className="text-sm text-gray-800 dark:text-gray-300 leading-relaxed">
-        {body}
-      </p>
     </div>
   );
 };

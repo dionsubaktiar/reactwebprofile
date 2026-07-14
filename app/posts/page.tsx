@@ -15,12 +15,14 @@ const Posts = async () => {
   const posts: Iposts[] = await response.json();
 
   return (
-    <div className="min-h-screen flex flex-col bg-honeyDew dark:bg-eggplant text-eggplant dark:text-honeyDew">
+    <div className="min-h-screen flex flex-col bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
       {/* Navbar */}
       <Navbar title="Fake Posts API" />
 
       <main className="max-w-4xl mx-auto px-5 py-8 font-poppins space-y-6">
-        <h1 className="text-2xl font-bold text-center mb-8">Posts</h1>
+        <h1 className="text-2xl font-bold font-poppins text-zinc-900 dark:text-white text-center mb-8">
+          Fake Posts Sandbox
+        </h1>
 
         {/* Display Posts */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

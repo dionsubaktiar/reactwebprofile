@@ -14,7 +14,7 @@ const BackButton = () => {
     <div className="flex justify-start">
       <FaArrowLeft
         onClick={handleBack}
-        className="text-2xl cursor-pointer text-eggplant dark:text-honeyDew"
+        className="text-xl cursor-pointer text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100 transition-colors"
       />
     </div>
   );

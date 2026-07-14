@@ -12,7 +12,7 @@ const Navbar: React.FC<TitleProps> = ({ title }) => {
         <BackButton />
       </div>
       <div className="flex items-center">
-        <strong className="text-2xl text-eggplant dark:text-honeyDew">
+        <strong className="text-2xl text-zinc-900 dark:text-zinc-100 font-poppins font-semibold">
           {title}
         </strong>
       </div>

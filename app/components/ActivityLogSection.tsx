@@ -6,7 +6,6 @@ interface LogItem {
   project: string;
   category: string;
   icon: React.ReactNode;
-  date: string;
   details: string[];
 }
 
@@ -15,7 +14,6 @@ const logs: LogItem[] = [
     project: "SIV_Jalan Transport Logistics Platform",
     category: "Backend & Systems Architecture",
     icon: <FiCpu className="text-emerald-500" />,
-    date: "July 2026",
     details: [
       "Engineered single-transaction database operations (atomic commits) to secure critical verify/settlement workflows, resolving out-of-order execution issues.",
       "Designed dynamic Lead Time and Max Registration Time tracking scripts matching driver sitetime parameters.",
@@ -26,7 +24,6 @@ const logs: LogItem[] = [
     project: "Android Driver Telemetry App",
     category: "Mobile & Telemetry Engineering",
     icon: <FiSmartphone className="text-indigo-500" />,
-    date: "July 2026",
     details: [
       "Architected background GPS location capture routines on Android (Kotlin/Jetpack Compose) configured to sync real-time coordinates between journey Start and Stop events.",
       "Built interactive sign-and-canvas UI modules for secure driver signatures.",
@@ -37,7 +34,6 @@ const logs: LogItem[] = [
     project: "Rins Global Logistics Infrastructure",
     category: "DevOps & Cloud Deployments",
     icon: <FiGitBranch className="text-blue-500" />,
-    date: "July 2026",
     details: [
       "Configured automated Git-to-cPanel deployments utilizing GitHub Actions and SSH commands to minimize manual pipeline errors.",
       "Designed secure production server environment configurations including MySQL RDBMS setup.",
@@ -48,7 +44,6 @@ const logs: LogItem[] = [
     project: "DevOps Operations & fleet Management",
     category: "Systems Administration",
     icon: <FiCode className="text-zinc-500" />,
-    date: "June 2026",
     details: [
       "Orchestrated Docker environments for SIT/UAT staging using custom yaml configuration profiles.",
       "Developed automated alarm algorithms to flag expiring vehicle taxes (STNK), driving licenses (SIM), and road safety tests (KIR) with color-coded dashboard indicators."
@@ -83,9 +78,6 @@ const ActivityLogSection = () => {
                   {log.icon}
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest block">
-                    {log.date}
-                  </span>
                   <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 block font-poppins">
                     {log.category}
                   </span>
