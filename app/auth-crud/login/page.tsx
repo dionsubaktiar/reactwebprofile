@@ -1,194 +1,86 @@
-"use client";
+// Service: reactwebprofile | File: app/auth-crud/login/page.tsx
+'use client';
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import axios from "axios";
-import Navbar from "../../components/navbar";
-import Image from "next/image";
-import Link from "next/link";
-import { useAuth } from "../../context/authContext"; // Import useAuth hook
+import { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import Navbar from '../../components/navbar';
+import { HiLockClosed, HiMail } from 'react-icons/hi';
 
-const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+export default function LoginPage() {
   const router = useRouter();
-  const { setAuth } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleOAuthLogin = (provider: "google" | "github") => {
-    router.push(
-      `https://personalproject.nusantaratranssentosa.co.id/api/auth/${provider}/redirect`
-    );
-  };
-
-  const handleLogin = async (role: "admin" | "user" | "custom") => {
-    const credentials =
-      role === "admin"
-        ? { email: "admin@example.com", password: "adminpassword" }
-        : { email: "johndoe@example.com", password: "Johndoe123" };
-
-    setEmail(credentials.email);
-    setPassword(credentials.password);
-
-    try {
-      setIsLoading(true);
-
-      // Get CSRF token
-      await axios.get(
-        "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie",
-        { withCredentials: true }
-      );
-
-      const response = await axios.post(
-        "https://personalproject.nusantaratranssentosa.co.id/api/login",
-        credentials,
-        { withCredentials: true }
-      );
-
-      const user = response.data.user;
-      const token = response.data.token;
-
-      setAuth(user, token);
-
-      console.log(`${role} logged in successfully.`);
-
-      router.replace("/auth-crud/");
-    } catch (error) {
-      console.error("Login failed:", error);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    router.push('/auth-crud');
   };
 
   return (
-    <div className="min-h-screen bg-honeyDew text-customGreen-dark dark:bg-gray-900 dark:text-honeyDew">
-      <div className="max-w-md mx-auto p-6">
-        <Navbar title="Login" />
+    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950">
+      <Navbar title="Autentikasi Akun" subtitle="Masuk untuk mengelola artikel dan otorisasi konten" />
 
-        <h1 className="text-2xl font-bold text-center mb-6">Welcome Back</h1>
+      <main className="mx-auto flex max-w-md items-center justify-center px-4 py-12">
+        <div className="w-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-8">
+          <h2 className="text-xl font-extrabold text-slate-900 dark:text-white">
+            Selamat Datang Kembali
+          </h2>
+          <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
+            Masukkan kredensial akun terdaftar Anda untuk melanjutkan.
+          </p>
 
-        <div className="space-y-4">
-          {/* Google Login Button */}
-          <button
-            className="flex items-center justify-center w-full px-4 py-2 bg-white text-gray-700 rounded shadow hover:bg-gray-100 transition dark:bg-gray-800 dark:text-gray-300"
-            onClick={() => {
-              handleOAuthLogin("google");
-            }}
-          >
-            <Image
-              src="/assets/images/google-logo.png"
-              alt="Google"
-              width={20}
-              height={20}
-              className="mr-2"
-            />
-            Login with Google
-          </button>
-
-          {/* GitHub Login Button */}
-          {/* <button
-            className="flex items-center justify-center w-full px-4 py-2 bg-white text-gray-700 rounded shadow hover:bg-gray-100 transition dark:bg-gray-800 dark:text-gray-300"
-            onClick={() => {
-              handleOAuthLogin("github");
-            }}
-          >
-            <Image
-              src="/assets/images/github-logo.png"
-              alt="GitHub"
-              width={20}
-              height={20}
-              className="mr-2"
-            />
-            Login with GitHub
-          </button> */}
-
-          <div className="relative text-center mt-6">
-            <span className="bg-honeyDew px-4 text-gray-500 dark:bg-gray-900 dark:text-gray-400">
-              or
-            </span>
-            <div className="absolute inset-x-0 top-1 border-t border-gray-300 dark:border-gray-700"></div>
-          </div>
-
-          {/* Login as Admin */}
-          <button
-            className="w-full px-4 py-2 bg-customGreen-dark text-white rounded hover:bg-customGreen-default transition dark:bg-customGreen-light dark:text-gray-800"
-            onClick={() => handleLogin("admin")}
-            disabled={isLoading}
-          >
-            {isLoading ? "Logging in..." : "Login as Admin"}
-          </button>
-
-          {/* Login as User */}
-          <button
-            className="w-full px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-800 transition"
-            onClick={() => handleLogin("user")}
-            disabled={isLoading}
-          >
-            {isLoading ? "Logging in..." : "Login as User"}
-          </button>
-
-          {/* Email and Password Input */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleLogin("custom");
-            }}
-            className="mt-6"
-          >
-            <div className="mb-4">
-              <label htmlFor="email" className="block text-sm font-medium mb-1">
-                Email Address
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <div>
+              <label className="text-xs font-semibold text-slate-700 dark:text-zinc-300">
+                Alamat Email
               </label>
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border rounded dark:bg-gray-800 dark:border-gray-700 dark:text-honeyDew"
-                placeholder="Enter your email"
-              />
+              <div className="relative mt-1">
+                <HiMail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="email"
+                  required
+                  placeholder="admin@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-xs text-slate-900 focus:border-blue-600 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+                />
+              </div>
             </div>
 
-            <div className="mb-4">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium mb-1"
-              >
-                Password
+            <div>
+              <label className="text-xs font-semibold text-slate-700 dark:text-zinc-300">
+                Kata Sandi
               </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border rounded dark:bg-gray-800 dark:border-gray-700 dark:text-honeyDew"
-                placeholder="Enter your password"
-              />
+              <div className="relative mt-1">
+                <HiLockClosed className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <input
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-10 pr-3 text-xs text-slate-900 focus:border-blue-600 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
+                />
+              </div>
             </div>
 
             <button
               type="submit"
-              className="w-full px-4 py-2 bg-customGreen-dark text-white rounded hover:bg-customGreen-default transition dark:bg-customGreen-light dark:text-gray-800"
-              disabled={isLoading}
+              className="mt-2 w-full rounded-xl bg-blue-600 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-blue-700"
             >
-              {isLoading ? "Logging in..." : "Login"}
+              Masuk Sekarang
             </button>
           </form>
-          <div className="mt-4 text-center">
-            <p className="text-sm">
-              Dont have an account?{" "}
-              <Link
-                href="/auth-crud/register"
-                className="text-customGreen-dark underline hover:text-customGreen-default dark:text-customGreen-light"
-              >
-                Register Here
-              </Link>
-            </p>
+
+          <div className="mt-6 border-t border-slate-100 pt-4 text-center text-xs text-slate-500 dark:border-zinc-800 dark:text-zinc-400">
+            Belum memiliki akun?{' '}
+            <Link href="/auth-crud/register" className="font-semibold text-blue-600 hover:underline dark:text-blue-400">
+              Daftar disini
+            </Link>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
-};
-
-export default LoginPage;
+}
