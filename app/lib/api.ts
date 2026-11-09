@@ -1,4 +1,3 @@
-// File: app/lib/api.ts
 import axios, {
   AxiosError,
   AxiosResponse,
