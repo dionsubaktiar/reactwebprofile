@@ -1,0 +1,11 @@
+openapi: 3.0.3
+info:
+  title: API Rapihkan styling, dan improve content
+  version: 1.0.0
+paths:
+  /api/v1/feature:
+    post:
+      summary: Execute Rapihkan styling, dan improve content
+      responses:
+        '200':
+          description: Success
