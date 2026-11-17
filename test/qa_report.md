@@ -1,6 +1,6 @@
 ### QA Execution Report: style(ui): sebuah sandbox baru yang isi fiturnya bebas, kamu
 - **Pipeline Mode**: `fast_track_style`
-- **Target File**: `app/globals.css`
+- **Target File**: `app/tech-radar/page.tsx`
 - **Target Scope**: `ui`
 - **Framework**: `Next.js (^16.2.10)`
 - **Unit Tests**: 18/18 PASS
