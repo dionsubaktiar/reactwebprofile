@@ -1,11 +1,15 @@
 # Product Requirement Document (PRD)
-**Project:** Invoicing Module Revamp & Backend Migration / Decoupling  
-**Author:** Senior Business Analyst — Hermes SDLC Swarm  
-**Status:** Ready for Sprint Planning / Engineering Review  
-**Target Stack:** Next.js (v16.x App Router), Tailwind CSS, TypeScript, Headless/Serverless Backend  
+
+**Project:** Invoicing Service – Customers/Companies UI/UX & Feature Harmonization  
+**Role:** Senior Business Analyst (Hermes SDLC Swarm)  
+**Target Stack:** Next.js (App Router), Tailwind CSS, TypeScript  
+**Status:** Ready for Engineering Review  
 
 ---
 
 ## 1. Problem Statement
 
-1.
+Modul `customers` (dan representasi entitas *companies*) pada Sandbox Invoicing saat ini mengalami **technical & design drift** yang signifikan pasca-revamp modul `invoice/*`. 
+
+Secara spesifik:
+1. **Inkonsistensi Style (Visual Drift):** Halaman `app/invoicing-service/customers/` (List, Create, Edit) masih mengadopsi pola styling lama (

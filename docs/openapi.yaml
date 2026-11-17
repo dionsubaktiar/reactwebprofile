@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
-  title: API saat ini, api apapun yang memiliki basis .nus...
+  title: API pada sandbox invoicing, page customers / comp...
   version: 1.0.0
 paths:
-  /api/v1/api:
+  /api/v1/ui:
     post:
-      summary: Execute saat ini, api apapun yang memiliki basis .nus...
+      summary: Execute pada sandbox invoicing, page customers / comp...
       responses:
         '200':
           description: Success

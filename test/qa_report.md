@@ -1,7 +1,7 @@
-### QA Execution Report: feat(api): saat ini, api apapun yang memiliki basis .nusantaratranssentosa.co.id
+### QA Execution Report: feat(ui): pada sandbox invoicing, page customers / companies belum
 - **Pipeline Mode**: `full_sdlc`
 - **Target File**: `app/invoicing-service/page.tsx`
-- **Target Scope**: `api`
+- **Target Scope**: `ui`
 - **Framework**: `Next.js (^16.2.10)`
 - **Unit Tests**: 18/18 PASS
 - **Regression Tests**: 6/6 PASS
