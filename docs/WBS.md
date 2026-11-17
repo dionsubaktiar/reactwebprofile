@@ -1,8 +1,8 @@
-# WBS: coba rework dulu terkait sandbox Invoicing da...
+# WBS: Coba benerin atau rework Sandbox Invoicing / ...
 
-- **Conventional Target**: `feat(core): rework dulu terkait sandbox Invoicing dan Kredit Kendaraan`
+- **Conventional Target**: `fix(core): benerin atau rework Sandbox Invoicing / Invoice dan`
 - **Framework**: `Next.js (^16.2.10)`
-- **Pipeline**: `full_sdlc`
+- **Pipeline**: `fast_track_fix`
 
 ## Tasks:
 1. Implementasi kode riil pada `core` (Next.js (^16.2.10))

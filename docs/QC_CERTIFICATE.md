@@ -1,6 +1,6 @@
 # QC Clearance Certificate
-- **Conventional Target**: `feat(core): rework dulu terkait sandbox Invoicing dan Kredit Kendaraan`
-- **Target Workspace File**: `app/tech-radar/page.tsx`
+- **Conventional Target**: `fix(core): benerin atau rework Sandbox Invoicing / Invoice dan`
+- **Target Workspace File**: `app/invoicing-service/page.tsx`
 - **Framework**: `Next.js (^16.2.10)`
 - **Status**: [[VERDICT: GO_RELEASE]]
 - **Acceptance Criteria**: 100% Checked
