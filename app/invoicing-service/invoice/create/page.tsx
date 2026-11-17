@@ -2,6 +2,7 @@
 
 import Navbar from "@/app/components/navbar";
 import axios from "axios";
+import apiClient from "@/app/lib/api";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -42,15 +43,9 @@ const CreateInvoicePage = () => {
     const fetchData = async () => {
       try {
         const [unitResp, partsResp, packagesResp] = await Promise.all([
-          axios.get(
-            "https://personalproject.nusantaratranssentosa.co.id/api/getunit"
-          ),
-          axios.get(
-            "https://personalproject.nusantaratranssentosa.co.id/api/getparts"
-          ),
-          axios.get(
-            "https://personalproject.nusantaratranssentosa.co.id/api/packages"
-          ),
+          apiClient.get("/getunit"),
+          apiClient.get("/getparts"),
+          apiClient.get("/packages"),
         ]);
 
         setUnits(unitResp.data.data);
@@ -142,13 +137,7 @@ const CreateInvoicePage = () => {
     };
 
     try {
-      await axios.get(
-        "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie"
-      );
-      await axios.post(
-        "https://personalproject.nusantaratranssentosa.co.id/api/invoice",
-        payload // Gunakan payload yang sudah diperbaiki
-      );
+      await apiClient.post("/invoice", payload);
       setSuccessMessage("Unit created successfully!");
       router.push("/invoicing-service");
     } catch (error) {

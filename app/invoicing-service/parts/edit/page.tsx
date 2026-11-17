@@ -2,6 +2,7 @@
 
 import Navbar from "@/app/components/navbar";
 import axios from "axios";
+import apiClient from "@/app/lib/api";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
@@ -31,12 +32,8 @@ const EditPartPage = () => {
     const fetchPart = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(
-          `https://personalproject.nusantaratranssentosa.co.id/api/part/${id}`
-        );
-
+        const response = await apiClient.get(`/part/${id}`);
         setParts(response.data.data);
-        // console.log(customer);
       } catch (error) {
         console.error("Error fetching part data:", error);
         setErrorMessage("Gagal memuat data part.");
@@ -62,19 +59,10 @@ const EditPartPage = () => {
     setErrorMessage(null);
 
     try {
-      await axios.get(
-        "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie"
-      );
       if (id) {
-        await axios.put(
-          `https://personalproject.nusantaratranssentosa.co.id/api/part/${id}`,
-          parts
-        );
+        await apiClient.put(`/part/${id}`, parts);
       } else {
-        await axios.post(
-          "https://personalproject.nusantaratranssentosa.co.id/api/customer",
-          parts
-        );
+        await apiClient.post("/part", parts);
       }
 
       setSuccessMessage(`Part berhasil ${id ? "diperbarui" : "ditambahkan"}!`);

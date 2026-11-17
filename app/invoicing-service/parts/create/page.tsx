@@ -2,6 +2,7 @@
 
 import Navbar from "@/app/components/navbar";
 import axios from "axios";
+import apiClient from "@/app/lib/api";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -23,15 +24,9 @@ const CreatePartsPage = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await axios.get(
-        "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie"
-      );
-      await axios.post(
-        "https://personalproject.nusantaratranssentosa.co.id/api/part",
-        parts
-      );
+      await apiClient.post("/part", parts);
       setSuccessMessage("Part created successfully!");
-      router.push("invoicing-service/parts");
+      router.push("/invoicing-service/parts");
     } catch (error) {
       setErrorMessage("Error creating part");
       console.error("Error creating part:", error);

@@ -21,14 +21,11 @@ const AuthCallback = () => {
 
       try {
         // Fetch user data using the token
-        const response = await fetch(
-          "https://personalproject.nusantaratranssentosa.co.id/api/me",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await fetch("/api/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         if (!response.ok) {
           throw new Error(`Failed to fetch user data: ${response.status}`);

@@ -47,12 +47,9 @@ const CreatePinjamanPage = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const baseUrl =
-    "https://personalproject.nusantaratranssentosa.co.id/api/pinjaman";
-  const kendaraanUrl =
-    "https://personalproject.nusantaratranssentosa.co.id/api/kendaraan";
-  const konsumenUrl =
-    "https://personalproject.nusantaratranssentosa.co.id/api/konsumen";
+  const baseUrl = "/api/pinjaman";
+  const kendaraanUrl = "/api/kendaraan";
+  const konsumenUrl = "/api/konsumen";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,10 +95,7 @@ const CreatePinjamanPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.get(
-        "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie",
-        { withCredentials: true }
-      );
+      await axios.get("/api/sanctum/csrf-cookie", { withCredentials: true });
       await axios.post(baseUrl, formData, {
         withCredentials: true,
       });

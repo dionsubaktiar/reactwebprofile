@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
+import apiClient from "@/app/lib/api";
 import Navbar from "@/app/components/navbar";
 
 interface Package {
@@ -54,23 +55,24 @@ const EditInvoicePage = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    axios
-      .get("https://personalproject.nusantaratranssentosa.co.id/api/getunit")
-      .then((response) => setUnits(response.data.data));
-    axios
-      .get("https://personalproject.nusantaratranssentosa.co.id/api/packages")
-      .then((response) => setPackages(response.data));
-    axios
-      .get("https://personalproject.nusantaratranssentosa.co.id/api/getparts")
-      .then((response) => setParts(response.data.data));
+    apiClient
+      .get("/getunit")
+      .then((response) => setUnits(response.data.data))
+      .catch(() => {});
+    apiClient
+      .get("/packages")
+      .then((response) => setPackages(response.data))
+      .catch(() => {});
+    apiClient
+      .get("/getparts")
+      .then((response) => setParts(response.data.data))
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
     if (id) {
-      axios
-        .get(
-          `https://personalproject.nusantaratranssentosa.co.id/api/invoice/${id}`
-        )
+      apiClient
+        .get(`/invoice/${id}`)
         .then((response) => {
           setInvoiceData(response.data.data);
           setLoading(false);
@@ -139,10 +141,6 @@ const EditInvoicePage = () => {
     setSuccessMessage(null);
     setErrorMessage(null);
     try {
-      await axios.get(
-        "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie"
-      );
-
       const payload = {
         kilometer: invoiceData?.kilometer,
         tanggal: invoiceData?.tanggal, // Adjust if needed
@@ -154,10 +152,7 @@ const EditInvoicePage = () => {
         })),
       };
 
-      await axios.put(
-        `https://personalproject.nusantaratranssentosa.co.id/api/invoice/${id}`,
-        payload
-      );
+      await apiClient.put(`/invoice/${id}`, payload);
       setSuccessMessage("Invoice updated successfully!");
       router.push("/invoicing-service");
     } catch (error) {

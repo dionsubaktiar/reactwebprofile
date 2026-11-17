@@ -67,7 +67,7 @@ const ViewDetailPage = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `https://personalproject.nusantaratranssentosa.co.id/api/pinjaman/${id}`,
+          `/api/pinjaman/${id}`,
           { withCredentials: true }
         );
         setData(response.data);

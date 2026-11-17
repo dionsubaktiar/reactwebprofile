@@ -5,9 +5,9 @@ import axios, {
 } from "axios";
 
 const API_BASE_URL: string =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000/api";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "/api";
 const SANCTUM_URL: string =
-  process.env.NEXT_PUBLIC_SANCTUM_URL || "http://localhost:8000";
+  process.env.NEXT_PUBLIC_SANCTUM_URL || "/api";
 
 const AUTH_TOKEN_KEY = "access_token";
 const LOGIN_PATH = "/auth-crud/login";

@@ -16,12 +16,9 @@ const RegisterPage = () => {
   const handleRegister = async () => {
     try {
       setIsLoading(true);
-      await axios.get(
-        "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie",
-        { withCredentials: true }
-      );
+      await axios.get("/api/sanctum/csrf-cookie", { withCredentials: true });
       await axios.post(
-        "https://personalproject.nusantaratranssentosa.co.id/api/register",
+        "/api/register",
         { name, email, password },
         { withCredentials: true }
       );

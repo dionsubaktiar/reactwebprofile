@@ -5,14 +5,6 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "nusantaratranssentosa.co.id",
-      },
-      {
-        protocol: "https",
-        hostname: "personalproject.nusantaratranssentosa.co.id",
-      },
-      {
-        protocol: "https",
         hostname: "raw.githubusercontent.com",
       },
       {

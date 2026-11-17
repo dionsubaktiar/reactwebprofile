@@ -21,21 +21,7 @@ const LoginPageOrbiz = () => {
     };
 
     try {
-      console.log(
-        await axios.get(
-          "https://personalproject.nusantaratranssentosa.co.id/api/books"
-        )
-      );
-      const response = await axios.post(
-        "https://personalproject.nusantaratranssentosa.co.id/api/orbiz/login",
-        newLogin
-        // {
-        //   withXSRFToken: true,
-        //   headers: {
-        //     "X-Requested-With": "XMLHttpRequest",
-        //   },
-        // }
-      );
+      const response = await axios.post("/api/orbiz/login", newLogin);
       console.log(response.data);
       if (response.status == 200) {
         router.push("/test-orbiz/admin");

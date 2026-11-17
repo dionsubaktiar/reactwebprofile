@@ -51,12 +51,9 @@ const CreateArticlePage = () => {
 
     try {
       // Ensure CSRF token is set
-      await axios.get(
-        "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie",
-        { withCredentials: true }
-      );
+      await axios.get("/api/sanctum/csrf-cookie", { withCredentials: true });
       await axios.post(
-        "https://personalproject.nusantaratranssentosa.co.id/api/article",
+        "/api/article",
         { ...formData, user_id: userId },
         {
           headers: {

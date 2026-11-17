@@ -4,6 +4,7 @@ import Link from "next/link";
 import Navbar from "../components/navbar";
 import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
+import apiClient from "@/app/lib/api";
 import { 
   FiFileText, 
   FiTruck, 
@@ -209,8 +210,8 @@ const MainPageInvoice = () => {
     const fetchData = async (page = 1) => {
       setIsLoading(true);
       try {
-        const response = await axios.get<ApiResponse>(
-          `https://personalproject.nusantaratranssentosa.co.id/api/invoice?page=${page}`,
+        const response = await apiClient.get<ApiResponse>(
+          `/invoice?page=${page}`,
           { timeout: 3500 }
         );
         if (isMounted && response.data?.data?.data && response.data.data.data.length > 0) {
@@ -240,11 +241,7 @@ const MainPageInvoice = () => {
   const handleDelete = async (id: number) => {
     if (confirm(`Yakin ingin menghapus Invoice #${id}?`)) {
       try {
-        if (dataSource === "api") {
-          await axios.delete(
-            `https://personalproject.nusantaratranssentosa.co.id/api/invoice/${id}`
-          );
-        }
+        await apiClient.delete(`/invoice/${id}`);
         setInvoice(prev => prev.filter(inv => inv.id !== id));
       } catch (error) {
         console.error("Error deleting invoice:", error);

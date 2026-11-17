@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import axios from "axios";
+import apiClient from "@/app/lib/api";
 import { useRouter, useSearchParams } from "next/navigation";
 import Navbar from "../../../components/navbar";
 
@@ -43,18 +44,18 @@ const UnitEditPage = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    axios
-      .get(
-        "https://personalproject.nusantaratranssentosa.co.id/api/getcustomer"
-      )
+    apiClient
+      .get("/getcustomer")
       .then((response) => setCustomers(response.data.data))
       .catch((error) => console.error("Error fetching customers:", error));
   }, []);
   useEffect(() => {
-    axios
-      .get(`https://personalproject.nusantaratranssentosa.co.id/api/unit/${id}`)
-      .then((response) => setFormData(response.data.data))
-      .catch((error) => console.error("Error fetching unit data:", error));
+    if (id) {
+      apiClient
+        .get(`/unit/${id}`)
+        .then((response) => setFormData(response.data.data))
+        .catch((error) => console.error("Error fetching unit data:", error));
+    }
   }, [id]);
 
   const handleChange = (
@@ -85,13 +86,7 @@ const UnitEditPage = () => {
     setErrorMessage(null);
 
     try {
-      await axios.get(
-        "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie"
-      );
-      await axios.put(
-        `https://personalproject.nusantaratranssentosa.co.id/api/unit/${id}`,
-        formData
-      );
+      await apiClient.put(`/unit/${id}`, formData);
       setSuccessMessage("Unit updated successfully!");
       router.push("/invoicing-service/units");
     } catch (error) {

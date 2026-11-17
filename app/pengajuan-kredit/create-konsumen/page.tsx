@@ -23,8 +23,7 @@ const CreateKonsumenPage = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const router = useRouter();
 
-  const apiUrl =
-    "https://personalproject.nusantaratranssentosa.co.id/api/bcaregister";
+  const apiUrl = "/api/bcaregister";
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -43,10 +42,7 @@ const CreateKonsumenPage = () => {
     setSuccess(null);
 
     try {
-      await axios.get(
-        "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie",
-        { withCredentials: true }
-      );
+      await axios.get("/api/sanctum/csrf-cookie", { withCredentials: true });
       await axios.post(
         apiUrl,
         {

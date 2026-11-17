@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
+import apiClient from "@/app/lib/api";
 import Navbar from "../../../components/navbar";
 import { useRouter } from "next/navigation";
 
@@ -37,10 +38,8 @@ const UnitCreatePage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    axios
-      .get(
-        "https://personalproject.nusantaratranssentosa.co.id/api/getcustomer"
-      )
+    apiClient
+      .get("/getcustomer")
       .then((response) => setCustomers(response.data.data))
       .catch((error) => console.error("Error fetching customers:", error));
   }, []);
@@ -60,13 +59,7 @@ const UnitCreatePage = () => {
     setErrorMessage(null);
 
     try {
-      await axios.get(
-        "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie"
-      );
-      await axios.post(
-        "https://personalproject.nusantaratranssentosa.co.id/api/unit",
-        formData
-      );
+      await apiClient.post("/unit", formData);
       setSuccessMessage("Unit created successfully!");
       router.push("/invoicing-service/units");
     } catch (error) {

@@ -38,7 +38,7 @@ const EditArticlePage = () => {
     const fetchArticle = async () => {
       try {
         const response = await axios.get(
-          `https://personalproject.nusantaratranssentosa.co.id/api/article/${articleId}`,
+          `/api/article/${articleId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -70,12 +70,9 @@ const EditArticlePage = () => {
     }
 
     try {
-      await axios.get(
-        "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie",
-        { withCredentials: true }
-      );
+      await axios.get("/api/sanctum/csrf-cookie", { withCredentials: true });
       await axios.put(
-        `https://personalproject.nusantaratranssentosa.co.id/api/article/${articleId}`,
+        `/api/article/${articleId}`,
         article,
         {
           headers: {

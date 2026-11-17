@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const loginWithOAuth = async (provider: "google" | "github") => {
     try {
-      const redirectUrl = `https://personalproject.nusantaratranssentosa.co.id/api/auth/${provider}/redirect`;
+      const redirectUrl = `/api/auth/${provider}/redirect`;
       window.location.href = redirectUrl;
     } catch (error) {
       console.error("OAuth login failed:", error);

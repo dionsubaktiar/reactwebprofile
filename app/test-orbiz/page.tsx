@@ -27,9 +27,7 @@ const MainPage = () => {
     const fetchDataBooks = async () => {
       try {
         setIsLoading(true);
-        const response = await axios.get(
-          "https://personalproject.nusantaratranssentosa.co.id/api/books"
-        );
+        const response = await axios.get("/api/books");
         setBooks(response.data.data);
         console.log(response.data.data);
       } catch (error) {
@@ -48,27 +46,15 @@ const MainPage = () => {
     setSearch((prev) => ({ ...prev, [name]: value }));
   };
 
-  // const handleLikes = async () => {
-  //   await axios.get(
-  //     "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie"
-  //   );
-  //   await axios.put(
-  //     `https://personalproject.nusantaratranssentosa.co.id/api/books/likes/${book.id}`
-  //   );
-  // };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      await axios.get(
-        "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie"
-      );
-      const response = await axios.post(
-        "https://personalproject.nusantaratranssentosa.co.id/api/books/search",
-        search
-      );
+      await axios.get("/api/sanctum/csrf-cookie");
+      const response = await axios.get(`/api/books/search?q=${encodeURIComponent(search.title || "")}`);
       router.push("/test-orbiz");
       setBooks(response.data.data);
     } catch (error) {
@@ -137,15 +123,9 @@ const MainPage = () => {
                     <div>
                       <button
                         onClick={async () => {
-                          await axios.get(
-                            "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie"
-                          );
-                          await axios.put(
-                            `https://personalproject.nusantaratranssentosa.co.id/api/books/likes/${book.id}`
-                          );
-                          const response = await axios.get(
-                            "https://personalproject.nusantaratranssentosa.co.id/api/books"
-                          );
+                          await axios.get("/api/sanctum/csrf-cookie");
+                          await axios.post(`/api/books/likes/${book.id}`);
+                          const response = await axios.get("/api/books");
                           setBooks(response.data.data);
                         }}
                       >

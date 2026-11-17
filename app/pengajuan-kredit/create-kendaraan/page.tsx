@@ -32,8 +32,7 @@ const CreateKendaraanPage = () => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const baseUrl =
-    "https://personalproject.nusantaratranssentosa.co.id/api/kendaraan";
+  const baseUrl = "/api/kendaraan";
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

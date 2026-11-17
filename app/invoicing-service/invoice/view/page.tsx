@@ -2,6 +2,7 @@
 
 import Navbar from "@/app/components/navbar";
 import axios from "axios";
+import apiClient from "@/app/lib/api";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
 
@@ -69,9 +70,7 @@ const ViewInvoicePage = () => {
       if (!id) return;
       setIsLoading(true);
       try {
-        const response = await axios.get(
-          `https://personalproject.nusantaratranssentosa.co.id/api/invoice/${id}`
-        );
+        const response = await apiClient.get(`/invoice/${id}`);
         setInvoice(response.data.data);
       } catch (error) {
         console.error("Error fetching invoice details:", error);

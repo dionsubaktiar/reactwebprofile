@@ -2,6 +2,7 @@
 
 import Navbar from "@/app/components/navbar";
 import axios from "axios";
+import apiClient from "@/app/lib/api";
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { 
@@ -147,8 +148,8 @@ const UnitsPage = () => {
     const fetchUnits = async (page = 1) => {
       setIsLoading(true);
       try {
-        const response = await axios.get<ApiResponse>(
-          `https://personalproject.nusantaratranssentosa.co.id/api/unit?page=${page}`,
+        const response = await apiClient.get<ApiResponse>(
+          `/unit?page=${page}`,
           { timeout: 3500 }
         );
         if (isMounted && response.data?.data?.data && response.data.data.data.length > 0) {
@@ -177,11 +178,7 @@ const UnitsPage = () => {
   const handleDelete = async (id: number) => {
     if (confirm(`Yakin ingin menghapus Unit armada #${id}?`)) {
       try {
-        if (dataSource === "api") {
-          await axios.delete(
-            `https://personalproject.nusantaratranssentosa.co.id/api/unit/${id}`
-          );
-        }
+        await apiClient.delete(`/unit/${id}`);
         setUnits(prev => prev.filter(u => u.id !== id));
       } catch (error) {
         console.error("Error deleting unit:", error);

@@ -45,13 +45,13 @@ const AdminPage = () => {
 
       try {
         const checkLogin = await axios.post(
-          "https://personalproject.nusantaratranssentosa.co.id/api/orbiz/me",
+          "/api/orbiz/me",
           { token: tokenValue }
         );
 
         if (checkLogin.status === 200) {
           const response = await axios.get(
-            "https://personalproject.nusantaratranssentosa.co.id/api/books"
+            "/api/books"
           );
           setBooks(response.data.data);
           console.log("Books data:", response.data.data);
@@ -96,9 +96,7 @@ const AdminPage = () => {
   const handleDelete = async (id: number) => {
     if (confirm("Are you sure you want to delete this customer?")) {
       try {
-        await axios.delete(
-          `https://personalproject.nusantaratranssentosa.co.id/api/books/${id}`
-        );
+        await axios.delete(`/api/books/${id}`);
         setBooks(books.filter((book) => book.id !== id));
       } catch (error) {
         console.error("Error deleting customer:", error);
@@ -110,20 +108,13 @@ const AdminPage = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await axios.get(
-        "https://personalproject.nusantaratranssentosa.co.id/sanctum/csrf-cookie"
-      );
-      await axios.post(
-        "https://personalproject.nusantaratranssentosa.co.id/api/books",
-        formData
-      );
+      await axios.get("/api/sanctum/csrf-cookie");
+      await axios.post("/api/books", formData);
     } catch (error) {
       console.error("Error creating customer:", error);
     } finally {
       setIsSubmitting(false);
-      const response = await axios.get(
-        "https://personalproject.nusantaratranssentosa.co.id/api/books"
-      );
+      const response = await axios.get("/api/books");
       setBooks(response.data.data);
     }
   };

@@ -2,6 +2,7 @@
 
 import Navbar from "@/app/components/navbar";
 import axios from "axios";
+import apiClient from "@/app/lib/api";
 import Link from "next/link";
 import { useEffect, useState, useMemo } from "react";
 import { 
@@ -115,8 +116,8 @@ const PartsPage = () => {
     const fetchData = async (page = 1) => {
       setIsLoading(true);
       try {
-        const response = await axios.get<Payload>(
-          `https://personalproject.nusantaratranssentosa.co.id/api/part?page=${page}`,
+        const response = await apiClient.get<Payload>(
+          `/part?page=${page}`,
           { timeout: 3500 }
         );
         if (isMounted && response.data?.data?.data && response.data.data.data.length > 0) {
@@ -145,11 +146,7 @@ const PartsPage = () => {
   const handleDelete = async (id: number) => {
     if (confirm(`Yakin ingin menghapus part #${id}?`)) {
       try {
-        if (dataSource === "api") {
-          await axios.delete(
-            `https://personalproject.nusantaratranssentosa.co.id/api/part/${id}`
-          );
-        }
+        await apiClient.delete(`/part/${id}`);
         setParts(prev => prev.filter(p => p.id !== id));
       } catch (error) {
         console.error("Error deleting part:", error);

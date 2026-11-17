@@ -170,7 +170,7 @@ const PinjamanPage = () => {
   const [calcTenor, setCalcTenor] = useState<number>(36);
   const [calcRate, setCalcRate] = useState<number>(7.5);
 
-  const baseUrl = "https://personalproject.nusantaratranssentosa.co.id/api/pinjaman";
+  const baseUrl = "/api/pinjaman";
 
   useEffect(() => {
     let isMounted = true;
