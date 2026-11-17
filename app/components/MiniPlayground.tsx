@@ -14,6 +14,20 @@ interface PlaygroundItem {
 
 const playgroundItems: PlaygroundItem[] = [
   {
+    title: 'Invoicing & SPK Hub',
+    href: '/invoicing-service',
+    description: 'Fleet repair work orders (SPK), billing invoices, customer accounts, and real-time operational revenue analytics.',
+    category: 'Fleet Management',
+    isNew: true
+  },
+  {
+    title: 'Kredit Kendaraan',
+    href: '/pengajuan-kredit',
+    description: 'Automotive financing evaluation, debtor creditworthiness audit, and interactive live installment simulator.',
+    category: 'Financial Core',
+    isNew: true
+  },
+  {
     title: 'Tech Radar & Metrics',
     href: '/tech-radar',
     description: 'Interactive architecture observatory, technology adoption rings, and live engineering metrics.',
