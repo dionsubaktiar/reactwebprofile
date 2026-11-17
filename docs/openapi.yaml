@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
-  title: API Rapihkan styling, dan improve content
+  title: API coba rework dulu terkait sandbox Invoicing da...
   version: 1.0.0
 paths:
-  /api/v1/feature:
+  /api/v1/core:
     post:
-      summary: Execute Rapihkan styling, dan improve content
+      summary: Execute coba rework dulu terkait sandbox Invoicing da...
       responses:
         '200':
           description: Success

@@ -3,7 +3,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Navbar from '../components/navbar';
-import { FiCpu, FiActivity, FiLayers, FiShield, FiTrendingUp, FiSearch, FiExternalLink, FiCompass } from 'react-icons/fi';
+import { FiCpu, FiActivity, FiLayers, FiShield, FiTrendingUp, FiSearch, FiExternalLink } from 'react-icons/fi';
 
 interface TechItem {
   id: string;
@@ -17,7 +17,7 @@ interface TechItem {
 }
 
 const TECH_CATALOG: TechItem[] = [
-  { id: '1', name: 'TypeScript 5.x', category: 'Languages', ring: 'Adopt', description: 'Strict type safety, const type parameters, performance optimization for enterprise web apps.', maturity: 95, momentum: 'up', tags: ['Core', 'TypeSafe'] },
+  { id: '1', name: 'TypeScript 5.x', category: 'Languages', ring: 'Adopt', description: 'Strict typing, const type parameters, performance optimization for enterprise web apps.', maturity: 95, momentum: 'up', tags: ['Core', 'TypeSafe'] },
   { id: '2', name: 'Next.js App Router', category: 'Frameworks', ring: 'Adopt', description: 'React Server Components, nested streaming layouts, and zero-bundle server logic.', maturity: 90, momentum: 'up', tags: ['React', 'SSR'] },
   { id: '3', name: 'Tailwind CSS', category: 'Frameworks', ring: 'Adopt', description: 'Utility-first styling with responsive design tokens and dark mode architecture.', maturity: 98, momentum: 'stable', tags: ['CSS', 'Responsive'] },
   { id: '4', name: 'Hermes Agentic Swarm', category: 'Data & AI', ring: 'Adopt', description: 'Multi-agent SDLC orchestration with autonomous Planner, Coder, and QA gatekeepers.', maturity: 85, momentum: 'up', tags: ['Agentic', 'Automation'] },
@@ -53,13 +53,13 @@ export default function TechRadarPage() {
         <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-1">
-              <FiCompass /> Developer Sandbox &bull; Interactive Architecture Telemetry
+              <FiActivity /> Developer Sandbox &bull; Interactive Telemetry
             </div>
             <h1 className="text-2xl md:text-4xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
               Tech Radar &amp; Engineering Metrics
             </h1>
             <p className="text-sm md:text-base text-zinc-600 dark:text-zinc-400 mt-1 max-w-2xl">
-              Showcase observabilitas teknologi, adopsi stack modern, dan evaluasi kesiapan arsitektur sistem dengan visualisasi desktop-first.
+              Showcase observabilitas teknologi, adopsi stack modern, dan evaluasi kesiapan arsitektur sistem.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -214,10 +214,10 @@ export default function TechRadarPage() {
 
               <div className="pt-2">
                 <a
-                  href="/#playground"
+                  href="#playground"
                   className="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm"
                 >
-                  <FiLayers /> Kembali ke Sandbox Hub
+                  <FiLayers /> Hubungkan ke Modul Sandbox Lain
                 </a>
               </div>
             </div>

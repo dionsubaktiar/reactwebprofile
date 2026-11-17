@@ -1,6 +1,7 @@
-# ADR-005: Architecture Decision for Rapihkan styling, dan improve content
+# ADR-005: Architecture Decision for coba rework dulu terkait sandbox Invoicing da...
 
 - **Status**: ACCEPTED
-- **Workspace**: /data/workspace/reactwebprofile
-- **Pattern**: Modular Microservice with Centralized Storage
-- **Resilience**: SQLite WAL Persistence & Asynchronous Events
+- **Framework**: `Next.js (^16.2.10)`
+- **Scope**: `core`
+- **Pattern**: Component Architecture with Centralized State
+- **Resilience**: Verified Build & Defensive Guard Clauses
