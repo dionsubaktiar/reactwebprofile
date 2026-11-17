@@ -1,5 +1,8 @@
 deployment:
   status: SUCCESS
+  category: feat
+  scope: api
+  target: feat(api): saat ini, api apapun yang memiliki basis .nusantaratranssentosa.co.id
   cluster: live
   endpoint: https://4000-agq3ckapsqjtxy5tsb3ptilllm.instabox.tech/dashboard
-  timestamp: 2026-11-15T18:30:00Z
+  timestamp: 2026-11-17T12:27:56Z

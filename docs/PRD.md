@@ -1,6 +1,11 @@
-Berikut adalah dokumen **Product Requirements Document (PRD)** ringkas, terstruktur, dan siap dieksekusi oleh tim developer Hermes SDLC Swarm.
+# Product Requirement Document (PRD)
+**Project:** Invoicing Module Revamp & Backend Migration / Decoupling  
+**Author:** Senior Business Analyst — Hermes SDLC Swarm  
+**Status:** Ready for Sprint Planning / Engineering Review  
+**Target Stack:** Next.js (v16.x App Router), Tailwind CSS, TypeScript, Headless/Serverless Backend  
 
 ---
 
-# Product Requirements Document (PRD)
-**Fitur:** Rework Sandbox Invoicing & Modul Kredit
+## 1. Problem Statement
+
+1.

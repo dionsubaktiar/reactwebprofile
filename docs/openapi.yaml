@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
-  title: API coba rework dulu terkait sandbox Invoicing da...
+  title: API saat ini, api apapun yang memiliki basis .nus...
   version: 1.0.0
 paths:
-  /api/v1/core:
+  /api/v1/api:
     post:
-      summary: Execute coba rework dulu terkait sandbox Invoicing da...
+      summary: Execute saat ini, api apapun yang memiliki basis .nus...
       responses:
         '200':
           description: Success

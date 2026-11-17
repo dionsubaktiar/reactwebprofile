@@ -1,16 +1,16 @@
-# 📋 Ringkasan Eksekusi Swarm SDLC: fix(core): benerin atau rework Sandbox Invoicing / Invoice dan
+# 📋 Ringkasan Eksekusi Swarm SDLC: feat(api): saat ini, api apapun yang memiliki basis .nusantaratranssentosa.co.id
 
-- **Kategori**: 🐛 **Perbaikan Bug** (`fix`)
-- **Lingkup Modul**: `core`
-- **Mode Alur Pipeline**: `fast_track_fix`
+- **Kategori**: ✨ **Fitur Baru** (`feat`)
+- **Lingkup Modul**: `api`
+- **Mode Alur Pipeline**: `full_sdlc`
 - **Framework / Tech Stack**: `Next.js (^16.2.10)` (Tailwind CSS)
-- **Waktu Selesai**: `2026-11-17 08:56:47`
+- **Waktu Selesai**: `2026-11-17 12:27:56`
 - **Status Verifikasi Akhir**: `[[VERDICT: GO_RELEASE 100%]]`
 
 ---
 
 ## 🎯 Instruksi Pengguna (Goal)
-> Coba benerin atau rework Sandbox Invoicing / Invoice dan juga Sandbox kredit kendaraan. dan munculkan ke depan ya.
+> saat ini, api apapun yang memiliki basis .nusantaratranssentosa.co.id  sudah tidak ada. remove, dan buat cari opsi lain untuk deploy sistem backend bebas apabila mau dibikin headless atau serverless pun boleh saja (asal bukan server ini). lalu juga beberapa bagian dalam menu invoicing belum sepenuhnya ter revamp/rework  juga.
 
 ---
 

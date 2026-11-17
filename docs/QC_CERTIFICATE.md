@@ -1,5 +1,5 @@
 # QC Clearance Certificate
-- **Conventional Target**: `fix(core): benerin atau rework Sandbox Invoicing / Invoice dan`
+- **Conventional Target**: `feat(api): saat ini, api apapun yang memiliki basis .nusantaratranssentosa.co.id`
 - **Target Workspace File**: `app/invoicing-service/page.tsx`
 - **Framework**: `Next.js (^16.2.10)`
 - **Status**: [[VERDICT: GO_RELEASE]]
