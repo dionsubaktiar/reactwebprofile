@@ -1,20 +1,10 @@
 "use client";
 
 import Navbar from "@/app/components/navbar";
-import axios from "axios";
 import apiClient from "@/app/lib/api";
+import type { Part } from "@/app/lib/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-
-interface Part {
-  id: number;
-  part_number: string | null;
-  nama_barang: string;
-  merk: string;
-  kendaraan: string;
-  harga: number;
-  jasa: number;
-}
 
 const EditPartPage = () => {
   const router = useRouter();
@@ -49,7 +39,10 @@ const EditPartPage = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setParts((prev) => (prev ? { ...prev, [name]: value } : null));
+    // Field angka (harga/jasa) harus dikirim sebagai number, bukan string.
+    const parsedValue =
+      name === "harga" || name === "jasa" ? Number(value) : value;
+    setParts((prev) => (prev ? { ...prev, [name]: parsedValue } : null));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -82,7 +75,7 @@ const EditPartPage = () => {
         {successMessage && <p className="text-green-500">{successMessage}</p>}
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         {isLoading ? (
-          <div className="text-center text-Black">Loading customer data...</div>
+          <div className="text-center text-Black">Loading part data...</div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -95,6 +88,7 @@ const EditPartPage = () => {
               <input
                 type="text"
                 id="nama_barang"
+              name="nama_barang"
                 placeholder="nama barang"
                 value={parts?.nama_barang}
                 onChange={handleChange}
@@ -113,6 +107,7 @@ const EditPartPage = () => {
               <input
                 type="text"
                 id="merk"
+              name="merk"
                 placeholder="masukkan merk"
                 value={parts?.merk}
                 onChange={handleChange}
@@ -130,6 +125,7 @@ const EditPartPage = () => {
               <input
                 type="text"
                 id="part_number"
+              name="part_number"
                 placeholder="masukkan part number"
                 value={parts?.part_number ?? ""}
                 onChange={handleChange}
@@ -146,6 +142,7 @@ const EditPartPage = () => {
               </label>
               <select
                 id="kendaraan"
+              name="kendaraan"
                 value={parts?.kendaraan}
                 onChange={handleChange}
                 required
@@ -168,6 +165,7 @@ const EditPartPage = () => {
               <input
                 type="number"
                 id="harga"
+              name="harga"
                 //   placeholder="masukkan email atau telepon"
                 value={parts?.harga}
                 onChange={handleChange}
@@ -186,6 +184,7 @@ const EditPartPage = () => {
               <input
                 type="number"
                 id="jasa"
+              name="jasa"
                 //   placeholder="masukkan email atau telepon"
                 value={parts?.jasa}
                 onChange={handleChange}

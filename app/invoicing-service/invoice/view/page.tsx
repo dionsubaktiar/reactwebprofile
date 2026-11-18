@@ -1,63 +1,10 @@
 "use client";
 
 import Navbar from "@/app/components/navbar";
-import axios from "axios";
 import apiClient from "@/app/lib/api";
+import type { Invoice } from "@/app/lib/types";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-
-interface Invoice {
-  id: number;
-  kilometer: number;
-  tanggal: string;
-  harga: number;
-  id_package: number;
-  status_invoice: string;
-  status_spk: string;
-  units: Unit;
-  packages: Package | null;
-  parts: Part[] | null;
-  package_items: Package_items[] | null;
-}
-
-interface Part {
-  id_part: number;
-  name: string;
-  quantity: number;
-  total_price: number;
-}
-
-interface Package_items {
-  id: number;
-  sparepart: string;
-  harga_part: number;
-  harga_jasa: number;
-}
-
-interface Customer {
-  id: number;
-  nama_perusahaan: string;
-  alamat: string;
-  pic: string;
-  kontak: string;
-  created_at: string;
-  updated_at: string;
-}
-
-interface Unit {
-  id: number;
-  nopol: string;
-  tipe: string;
-  driver: string;
-  tahun: string;
-  id_customer: number;
-  customers: Customer;
-}
-
-interface Package {
-  id: number;
-  kode_packages: string | null;
-}
 
 const ViewInvoicePage = () => {
   const searchParams = useSearchParams();
@@ -187,7 +134,7 @@ const ViewInvoicePage = () => {
                   >
                     <p className="font-semibold">{part.name}</p>
                     <p>
-                      {part.total_price.toLocaleString("id-ID", {
+                      {(part.total_price ?? 0).toLocaleString("id-ID", {
                         currency: "IDR",
                         style: "currency",
                       })}

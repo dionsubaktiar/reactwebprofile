@@ -2,52 +2,18 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import axios from "axios";
 import apiClient from "@/app/lib/api";
+import type { Package, Unit, Part, Invoice } from "@/app/lib/types";
 import Navbar from "@/app/components/navbar";
-
-interface Package {
-  id: number;
-  kode_packages: string;
-}
-
-interface Part {
-  id_part: number;
-  name?: string;
-  quantity?: number;
-}
-
-interface Unit {
-  id: number;
-  nopol: string;
-}
-
-interface InvoiceData {
-  id: number;
-  tanggal: string;
-  kode_invoice: string;
-  kilometer: number;
-  status_invoice: string;
-  parts: Part[];
-  id_part: string;
-  id_unit: number;
-  id_package: number;
-}
-
-interface Parts {
-  id: number;
-  nama_barang: string;
-  merk: string;
-}
 
 const EditInvoicePage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
-  const [invoiceData, setInvoiceData] = useState<InvoiceData | null>(null);
+  const [invoiceData, setInvoiceData] = useState<Invoice | null>(null);
   const [units, setUnits] = useState<Unit[]>([]);
   const [packages, setPackages] = useState<Package[]>([]);
-  const [parts, setParts] = useState<Parts[]>([]);
+  const [parts, setParts] = useState<Part[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -93,7 +59,7 @@ const EditInvoicePage = () => {
     setInvoiceData((prev) => {
       if (!prev) return prev;
 
-      const updatedParts = prev.parts.map((part, i) =>
+      const updatedParts = (prev.parts ?? []).map((part, i) =>
         i === index
           ? { ...part, [name]: name === "qty" ? Number(value) : Number(value) }
           : part
@@ -106,14 +72,14 @@ const EditInvoicePage = () => {
   const addPart = () => {
     setInvoiceData((prev) => {
       if (!prev) return prev;
-      return { ...prev, parts: [...prev.parts, { id_part: 0, qty: 1 }] };
+      return { ...prev, parts: [...(prev.parts ?? []), { id_part: 0, qty: 1 }] };
     });
   };
 
   const removePart = (index: number) => {
     setInvoiceData((prev) => {
       if (!prev) return prev;
-      return { ...prev, parts: prev.parts.filter((_, i) => i !== index) };
+      return { ...prev, parts: (prev.parts ?? []).filter((_, i) => i !== index) };
     });
   };
 
@@ -146,7 +112,7 @@ const EditInvoicePage = () => {
         tanggal: invoiceData?.tanggal, // Adjust if needed
         id_package: invoiceData?.id_package,
         id_unit: invoiceData?.id_unit,
-        id_part: invoiceData?.parts.map((part) => ({
+        id_part: invoiceData?.parts?.map((part) => ({
           id_part: part.id_part,
           qty: part.quantity,
         })),
@@ -201,6 +167,7 @@ const EditInvoicePage = () => {
           <label>
             Select Unit:
             <select
+              name="id_unit"
               className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
               value={invoiceData?.id_unit || ""}
               onChange={handleChange}
@@ -238,6 +205,7 @@ const EditInvoicePage = () => {
           <label>
             Select Package:
             <select
+              name="id_package"
               className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
               value={invoiceData?.id_package || ""}
               onChange={handleChange}
@@ -250,7 +218,7 @@ const EditInvoicePage = () => {
             </select>
           </label>
           <div>
-            {invoiceData?.parts.map((part, index) => (
+            {invoiceData?.parts?.map((part, index) => (
               <div key={index} className="flex gap-2 items-end">
                 <div className="w-3/4">
                   <label className="text-sm font-medium dark:text-honeyDew">

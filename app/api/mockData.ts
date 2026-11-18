@@ -1,50 +1,9 @@
-export interface Customer {
-  id: number;
-  nama_perusahaan: string;
-  alamat: string;
-  pic: string;
-  kontak: string;
-  created_at?: string;
-  updated_at?: string;
-}
+// Tipe entitas tinggal di app/lib/types.ts — file ini hanya berisi data mock.
+// Re-export di sini supaya route API yang sudah meng-import tipe dari
+// mockData (mis. `import { Customer } from "../mockData"`) tetap jalan.
+import type { Customer, Unit, Part, Package, Invoice } from "@/app/lib/types";
 
-export interface Unit {
-  id: number;
-  nopol: string;
-  tipe: string;
-  driver: string;
-  tahun: string;
-  id_customer: number;
-  customers?: Customer;
-}
-
-export interface Part {
-  id: number;
-  part_number: string | null;
-  nama_barang: string;
-  merk: string;
-  kendaraan: string;
-  harga: number;
-  jasa: number;
-}
-
-export interface Package {
-  id: number;
-  kode_packages: string | null;
-  nama_paket?: string;
-}
-
-export interface Invoice {
-  id: number;
-  kilometer: number;
-  tanggal: string;
-  harga: number;
-  id_package: number;
-  status_invoice: string;
-  status_spk: string;
-  units: Unit;
-  packages: Package;
-}
+export type { Customer, Unit, Part, Package, Invoice };
 
 // In-memory data store for serverless mode
 export const initialCustomers: Customer[] = [

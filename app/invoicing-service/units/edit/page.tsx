@@ -1,37 +1,10 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import axios from "axios";
 import apiClient from "@/app/lib/api";
+import type { Unit, Customer } from "@/app/lib/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import Navbar from "../../../components/navbar";
-
-interface Unit {
-  id: number;
-  nopol: string;
-  tipe: string;
-  no_rangka: string;
-  no_mesin: string;
-  driver: string;
-  tahun: string;
-  japo_kir: string;
-  japo_pajak: string;
-  japo_stnk: string;
-  japo_kontrak: string;
-  status: boolean;
-  id_customer: number;
-  customers: Customer;
-}
-
-interface Customer {
-  id: number;
-  nama_perusahaan: string;
-  alamat: string;
-  pic: string;
-  kontak: string;
-  created_at: string;
-  updated_at: string;
-}
 
 const UnitEditPage = () => {
   const router = useRouter();
@@ -271,7 +244,7 @@ const UnitEditPage = () => {
               <input
                 type="date"
                 id="japo_kir"
-                value={formData.japo_kir}
+                value={formData.japo_kir ?? ""}
                 onChange={handleChange}
                 required
                 className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
@@ -288,7 +261,7 @@ const UnitEditPage = () => {
               <input
                 type="date"
                 id="japo_pajak"
-                value={formData.japo_pajak}
+                value={formData.japo_pajak ?? ""}
                 onChange={handleChange}
                 required
                 className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
@@ -304,7 +277,7 @@ const UnitEditPage = () => {
               <input
                 type="date"
                 id="japo_stnk"
-                value={formData.japo_stnk}
+                value={formData.japo_stnk ?? ""}
                 onChange={handleChange}
                 required
                 className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
@@ -338,7 +311,7 @@ const UnitEditPage = () => {
             <input
               type="checkbox"
               id="status"
-              checked={formData.status || false}
+              checked={!!formData.status}
               onChange={handleChange}
               className="w-5 h-5 rounded border-gray-300 text-customGreen-default focus:ring-2 focus:ring-customGreen-dark transition duration-200"
             />

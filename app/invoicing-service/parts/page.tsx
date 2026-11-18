@@ -1,8 +1,9 @@
 "use client";
 
 import Navbar from "@/app/components/navbar";
-import axios from "axios";
 import apiClient from "@/app/lib/api";
+import type { Part, Pagination, ApiResponse } from "@/app/lib/types";
+import { formatIDR } from "@/app/lib/format";
 import Link from "next/link";
 import { useEffect, useState, useMemo } from "react";
 import { 
@@ -20,35 +21,7 @@ import {
   FiAlertCircle
 } from "react-icons/fi";
 
-interface Parts {
-  id: number;
-  part_number: string | null;
-  nama_barang: string;
-  merk: string;
-  kendaraan: string;
-  harga: number;
-  jasa: number;
-}
-
-interface Pagination {
-  current_page: number;
-  last_page: number;
-  prev_page_url: string | null;
-  next_page_url: string | null;
-}
-
-interface Payload {
-  message: string;
-  data: {
-    current_page: number;
-    data: Parts[];
-    last_page: number;
-    next_page_url: string | null;
-    prev_page_url: string | null;
-  };
-}
-
-const FALLBACK_PARTS: Parts[] = [
+const FALLBACK_PARTS: Part[] = [
   {
     id: 1,
     part_number: "FLT-OIL-H130",
@@ -97,7 +70,7 @@ const FALLBACK_PARTS: Parts[] = [
 ];
 
 const PartsPage = () => {
-  const [parts, setParts] = useState<Parts[]>(FALLBACK_PARTS);
+  const [parts, setParts] = useState<Part[]>(FALLBACK_PARTS);
   const [pagination, setPagination] = useState<Pagination | null>({
     current_page: 1,
     last_page: 1,
@@ -116,7 +89,7 @@ const PartsPage = () => {
     const fetchData = async (page = 1) => {
       setIsLoading(true);
       try {
-        const response = await apiClient.get<Payload>(
+        const response = await apiClient.get<ApiResponse<Part>>(
           `/part?page=${page}`,
           { timeout: 3500 }
         );
@@ -175,14 +148,6 @@ const PartsPage = () => {
     const avgJasa = totalCount > 0 ? Math.round(parts.reduce((acc, curr) => acc + (curr.jasa || 0), 0) / totalCount) : 0;
     return { totalCount, totalInventoryValue, avgJasa };
   }, [parts]);
-
-  const formatIDR = (val: number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      maximumFractionDigits: 0
-    }).format(val);
-  };
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">

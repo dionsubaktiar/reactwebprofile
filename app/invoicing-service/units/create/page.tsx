@@ -1,20 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import axios from "axios";
 import apiClient from "@/app/lib/api";
+import type { Customer } from "@/app/lib/types";
 import Navbar from "../../../components/navbar";
 import { useRouter } from "next/navigation";
-
-interface Customer {
-  id: number;
-  nama_perusahaan: string;
-  // alamat: string;
-  // pic: string;
-  // kontak: string;
-  // created_at: string;
-  // updated_at: string;
-}
 
 const UnitCreatePage = () => {
   const [formData, setFormData] = useState({

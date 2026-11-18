@@ -1,26 +1,10 @@
 "use client";
 
 import Navbar from "@/app/components/navbar";
-import axios from "axios";
 import apiClient from "@/app/lib/api";
+import type { Unit, Package, Part } from "@/app/lib/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
-interface Units {
-  id: number;
-  nopol: string;
-}
-
-interface Packages {
-  id: number;
-  kode_packages: string;
-}
-
-interface Parts {
-  id: number;
-  nama_barang: string;
-  merk: string;
-}
 
 const CreateInvoicePage = () => {
   const [formData, setFormData] = useState({
@@ -31,9 +15,9 @@ const CreateInvoicePage = () => {
     id_part: [{ id_part: "", qty: "" }],
   });
 
-  const [units, setUnits] = useState<Units[]>([]);
-  const [parts, setParts] = useState<Parts[]>([]);
-  const [packages, setPackages] = useState<Packages[]>([]);
+  const [units, setUnits] = useState<Unit[]>([]);
+  const [parts, setParts] = useState<Part[]>([]);
+  const [packages, setPackages] = useState<Package[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

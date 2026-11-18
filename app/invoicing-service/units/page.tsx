@@ -1,8 +1,8 @@
 "use client";
 
 import Navbar from "@/app/components/navbar";
-import axios from "axios";
 import apiClient from "@/app/lib/api";
+import type { Unit, Pagination, ApiResponse } from "@/app/lib/types";
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { 
@@ -19,44 +19,6 @@ import {
   FiCheckCircle,
   FiAlertCircle
 } from "react-icons/fi";
-
-interface Customer {
-  id: number;
-  nama_perusahaan: string;
-  alamat: string;
-  pic: string;
-  kontak: string;
-  created_at: string;
-  updated_at: string;
-}
-
-interface Unit {
-  id: number;
-  nopol: string;
-  tipe: string;
-  driver: string;
-  tahun: string;
-  id_customer: number;
-  customers: Customer;
-}
-
-interface Pagination {
-  current_page: number;
-  last_page: number;
-  prev_page_url: string | null;
-  next_page_url: string | null;
-}
-
-interface ApiResponse {
-  message: string;
-  data: {
-    current_page: number;
-    data: Unit[];
-    last_page: number;
-    prev_page_url: string | null;
-    next_page_url: string | null;
-  };
-}
 
 const FALLBACK_UNITS: Unit[] = [
   {
@@ -148,7 +110,7 @@ const UnitsPage = () => {
     const fetchUnits = async (page = 1) => {
       setIsLoading(true);
       try {
-        const response = await apiClient.get<ApiResponse>(
+        const response = await apiClient.get<ApiResponse<Unit>>(
           `/unit?page=${page}`,
           { timeout: 3500 }
         );

@@ -1,39 +1,10 @@
 "use client";
 
 import Navbar from "@/app/components/navbar";
-import axios from "axios";
 import apiClient from "@/app/lib/api";
+import type { Unit } from "@/app/lib/types";
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-
-interface Customer {
-  id: number;
-  nama_perusahaan: string;
-  alamat: string;
-  pic: string;
-  kontak: string;
-  created_at: string;
-  updated_at: string;
-}
-
-interface Unit {
-  id: number;
-  nopol: string;
-  tipe: string;
-  no_rangka: string;
-  no_mesin: string;
-  driver: string;
-  tahun: string;
-  japo_kir: string;
-  japo_pajak: string;
-  japo_stnk: string;
-  japo_kontrak: string | null;
-  status: number;
-  id_customer: number;
-  created_at: string;
-  updated_at: string;
-  customers: Customer;
-}
 
 const UnitDetailPage = () => {
   const searchParams = useSearchParams();
@@ -100,31 +71,37 @@ const UnitDetailPage = () => {
               <tr>
                 <td className="font-semibold text-nowrap">KIR:</td>
                 <td className="text-right">
-                  {new Date(unit.japo_kir).toLocaleDateString("id-ID", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
+                  {unit.japo_kir
+                    ? new Date(unit.japo_kir).toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : "-"}
                 </td>
               </tr>
               <tr>
                 <td className="font-semibold text-nowrap">Pajak:</td>
                 <td className="text-right">
-                  {new Date(unit.japo_pajak).toLocaleDateString("id-ID", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
+                  {unit.japo_pajak
+                    ? new Date(unit.japo_pajak).toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : "-"}
                 </td>
               </tr>
               <tr>
                 <td className="font-semibold text-nowrap">STNK:</td>
                 <td className="text-right">
-                  {new Date(unit.japo_stnk).toLocaleDateString("id-ID", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
+                  {unit.japo_stnk
+                    ? new Date(unit.japo_stnk).toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : "-"}
                 </td>
               </tr>
               {unit.japo_kontrak && (
@@ -162,19 +139,19 @@ const UnitDetailPage = () => {
             <tbody>
               <tr>
                 <td className="font-semibold">Nama Perusahaan:</td>
-                <td className="text-right">{unit.customers.nama_perusahaan}</td>
+                <td className="text-right">{unit.customers?.nama_perusahaan ?? "-"}</td>
               </tr>
               <tr>
                 <td className="font-semibold">Alamat:</td>
-                <td className="text-right">{unit.customers.alamat}</td>
+                <td className="text-right">{unit.customers?.alamat ?? "-"}</td>
               </tr>
               <tr>
                 <td className="font-semibold">PIC:</td>
-                <td className="text-right">{unit.customers.pic}</td>
+                <td className="text-right">{unit.customers?.pic ?? "-"}</td>
               </tr>
               <tr>
                 <td className="font-semibold">Kontak:</td>
-                <td className="text-right">{unit.customers.kontak}</td>
+                <td className="text-right">{unit.customers?.kontak ?? "-"}</td>
               </tr>
             </tbody>
           </table>

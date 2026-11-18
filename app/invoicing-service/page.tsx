@@ -3,8 +3,16 @@
 import Link from "next/link";
 import Navbar from "../components/navbar";
 import { useEffect, useState, useMemo } from "react";
-import axios from "axios";
 import apiClient from "@/app/lib/api";
+import type {
+  Customer,
+  Unit,
+  Package,
+  Invoice,
+  Pagination,
+  ApiResponse,
+} from "@/app/lib/types";
+import { formatIDR, formatDateId, formatKm } from "@/app/lib/format";
 import { 
   FiFileText, 
   FiTruck, 
@@ -22,61 +30,6 @@ import {
   FiTrash2, 
   FiAlertCircle 
 } from "react-icons/fi";
-
-interface Customer {
-  id: number;
-  nama_perusahaan: string;
-  alamat: string;
-  pic: string;
-  kontak: string;
-  created_at: string;
-  updated_at: string;
-}
-
-interface Unit {
-  id: number;
-  nopol: string;
-  tipe: string;
-  driver: string;
-  tahun: string;
-  id_customer: number;
-  customers: Customer;
-}
-
-interface Package {
-  id: number;
-  kode_packages: string | null;
-}
-
-interface Invoice {
-  id: number;
-  kilometer: number;
-  tanggal: string;
-  harga: number;
-  id_package: number;
-  status_invoice: string;
-  status_spk: string;
-  units: Unit;
-  packages: Package;
-}
-
-interface Pagination {
-  current_page: number;
-  last_page: number;
-  prev_page_url: string | null;
-  next_page_url: string | null;
-}
-
-interface ApiResponse {
-  message: string;
-  data: {
-    current_page: number;
-    data: Invoice[];
-    last_page: number;
-    prev_page_url: string | null;
-    next_page_url: string | null;
-  };
-}
 
 // Fallback high-fidelity sample data to guarantee clean rendering if remote API is offline
 const FALLBACK_INVOICES: Invoice[] = [
@@ -210,7 +163,7 @@ const MainPageInvoice = () => {
     const fetchData = async (page = 1) => {
       setIsLoading(true);
       try {
-        const response = await apiClient.get<ApiResponse>(
+        const response = await apiClient.get<ApiResponse<Invoice>>(
           `/invoice?page=${page}`,
           { timeout: 3500 }
         );
@@ -278,14 +231,6 @@ const MainPageInvoice = () => {
     const lunasCount = invoice.filter(i => i.status_invoice === "Lunas").length;
     return { totalCount, totalRevenue, pendingCount, lunasCount };
   }, [invoice]);
-
-  const formatIDR = (val: number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      maximumFractionDigits: 0
-    }).format(val);
-  };
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
@@ -474,13 +419,9 @@ const MainPageInvoice = () => {
                         </td>
 
                         <td className="px-6 py-4 whitespace-nowrap text-xs text-zinc-600 dark:text-zinc-400 font-mono">
-                          {new Date(inv.tanggal).toLocaleDateString("id-ID", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric"
-                          })}
+                          {formatDateId(inv.tanggal)}
                           <div className="text-[11px] text-zinc-400">
-                            {Number(inv.kilometer || 0).toLocaleString("id-ID")} Km
+                            {formatKm(inv.kilometer || 0)} Km
                           </div>
                         </td>
 

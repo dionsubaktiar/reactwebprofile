@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/authContext";
+import { AUTH_TOKEN_KEY, AUTH_USER_KEY } from "@/app/lib/api";
 
 const AuthCallback = () => {
   const router = useRouter();
@@ -35,8 +36,8 @@ const AuthCallback = () => {
 
         setAuth(user, token);
 
-        localStorage.setItem("authToken", token);
-        localStorage.setItem("authUser", JSON.stringify(user));
+        localStorage.setItem(AUTH_TOKEN_KEY, token);
+        localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
 
         router.replace("/auth-crud/");
       } catch (error) {

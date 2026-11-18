@@ -3,17 +3,10 @@
 import { useState, useEffect, Suspense } from "react";
 import Navbar from "@/app/components/navbar";
 import apiClient from "@/app/lib/api";
+import type { Customer } from "@/app/lib/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { FiArrowLeft, FiEdit2, FiBriefcase, FiMapPin, FiUser, FiPhone, FiCheckCircle } from "react-icons/fi";
-
-interface Customer {
-  id: number;
-  nama_perusahaan: string;
-  alamat: string;
-  pic: string;
-  kontak: string;
-}
 
 function CustomerEditForm() {
   const router = useRouter();

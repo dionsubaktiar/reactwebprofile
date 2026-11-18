@@ -10,6 +10,10 @@ const SANCTUM_URL: string =
   process.env.NEXT_PUBLIC_SANCTUM_URL || "/api";
 
 const AUTH_TOKEN_KEY = "access_token";
+// Key penyimpanan data user di localStorage. Kedua konstanta key ini adalah
+// SATU-SATUNYA sumber nama key auth — authContext dan halaman callback
+// wajib memakai konstanta ini, bukan string literal sendiri.
+const AUTH_USER_KEY = "authUser";
 const LOGIN_PATH = "/auth-crud/login";
 
 /**
@@ -73,5 +77,5 @@ export const fetchCsrfCookie = async (): Promise<void> => {
   });
 };
 
-export { AUTH_TOKEN_KEY, API_BASE_URL, SANCTUM_URL };
+export { AUTH_TOKEN_KEY, AUTH_USER_KEY, API_BASE_URL, SANCTUM_URL };
 export default apiClient;

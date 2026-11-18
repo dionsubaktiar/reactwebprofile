@@ -1,7 +1,6 @@
 "use client";
 
 import Navbar from "@/app/components/navbar";
-import axios from "axios";
 import apiClient from "@/app/lib/api";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -39,7 +38,10 @@ const CreatePartsPage = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setParts((prev) => ({ ...prev, [name]: value }));
+    // Field angka (harga/jasa) harus dikirim sebagai number, bukan string.
+    const parsedValue =
+      name === "harga" || name === "jasa" ? Number(value) : value;
+    setParts((prev) => ({ ...prev, [name]: parsedValue }));
   };
 
   return (
@@ -61,6 +63,7 @@ const CreatePartsPage = () => {
             <input
               type="text"
               id="nama_barang"
+              name="nama_barang"
               placeholder="nama barang"
               value={parts.nama_barang}
               onChange={handleChange}
@@ -79,6 +82,7 @@ const CreatePartsPage = () => {
             <input
               type="text"
               id="merk"
+              name="merk"
               placeholder="masukkan merk"
               value={parts.merk}
               onChange={handleChange}
@@ -96,6 +100,7 @@ const CreatePartsPage = () => {
             <input
               type="text"
               id="part_number"
+              name="part_number"
               placeholder="masukkan part number"
               value={parts.part_number}
               onChange={handleChange}
@@ -112,6 +117,7 @@ const CreatePartsPage = () => {
             </label>
             <select
               id="kendaraan"
+              name="kendaraan"
               value={parts.kendaraan}
               onChange={handleChange}
               required
@@ -134,6 +140,7 @@ const CreatePartsPage = () => {
             <input
               type="number"
               id="harga"
+              name="harga"
               //   placeholder="masukkan email atau telepon"
               value={parts.harga}
               onChange={handleChange}
@@ -152,6 +159,7 @@ const CreatePartsPage = () => {
             <input
               type="number"
               id="jasa"
+              name="jasa"
               //   placeholder="masukkan email atau telepon"
               value={parts.jasa}
               onChange={handleChange}

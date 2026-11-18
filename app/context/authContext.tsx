@@ -8,6 +8,7 @@ import {
   useEffect,
 } from "react";
 import { useRouter } from "next/navigation";
+import { AUTH_TOKEN_KEY, AUTH_USER_KEY } from "@/app/lib/api";
 
 interface User {
   id: number;
@@ -40,8 +41,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Restore authentication state from localStorage on initialization
   useEffect(() => {
-    const storedToken = localStorage.getItem("authToken");
-    const storedUser = localStorage.getItem("authUser");
+    const storedToken = localStorage.getItem(AUTH_TOKEN_KEY);
+    const storedUser = localStorage.getItem(AUTH_USER_KEY);
 
     if (storedToken && storedUser) {
       try {
@@ -60,16 +61,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const setAuth = (user: User, token: string) => {
     setUser(user);
     setToken(token);
-    localStorage.setItem("authToken", token);
-    localStorage.setItem("authUser", JSON.stringify(user));
+    localStorage.setItem(AUTH_TOKEN_KEY, token);
+    localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
     console.log("Auth state updated and persisted.");
   };
 
   const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("authUser");
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    localStorage.removeItem(AUTH_USER_KEY);
     console.log("Auth state cleared.");
     router.push("/auth-crud/login");
   };

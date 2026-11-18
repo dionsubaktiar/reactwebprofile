@@ -2,6 +2,7 @@
 
 import Navbar from "@/app/components/navbar";
 import apiClient from "@/app/lib/api";
+import type { Customer, Pagination } from "@/app/lib/types";
 import Link from "next/link";
 import { useEffect, useState, useMemo } from "react";
 import { 
@@ -17,21 +18,6 @@ import {
   FiActivity,
   FiBriefcase
 } from "react-icons/fi";
-
-interface Customer {
-  id: number;
-  nama_perusahaan: string;
-  alamat: string;
-  pic: string;
-  kontak: string;
-}
-
-interface Pagination {
-  current_page: number;
-  last_page: number;
-  prev_page_url: string | null;
-  next_page_url: string | null;
-}
 
 const FALLBACK_CUSTOMERS: Customer[] = [
   { id: 1, nama_perusahaan: "PT Nusantara Prima Logistics", alamat: "Jl. Margomulyo Indah No. 45, Surabaya", pic: "Budi Santoso", kontak: "0812-3456-7890" },
