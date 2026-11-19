@@ -72,7 +72,7 @@ export const EnhancedHero = () => {
               <FiArrowRight />
             </Link>
             <Link
-              href="#invoicing"
+              href="/invoicing-service"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 text-zinc-800 dark:text-zinc-200 font-medium text-sm transition-all shadow-sm active:scale-95"
             >
               Live Invoicing Demo
