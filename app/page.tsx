@@ -8,7 +8,6 @@ import ProjectsSection from "./components/ProjectsSection";
 import ClientsSection from "./components/ClientsSection";
 import MiniPlayground from "./components/MiniPlayground";
 import ActivityLogSection from "./components/ActivityLogSection";
-import BottomNavbar from "./components/bottomNavbar";
 
 export const metadata = {
   title: "Dion Subaktiar | Senior Software Engineer & System Architect",
@@ -71,8 +70,6 @@ export default function HomePage() {
         </div>
       </footer>
 
-      {/* Bottom Floating Navigation for Mobile */}
-      <BottomNavbar />
     </div>
   );
 }
