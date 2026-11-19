@@ -1,53 +1,78 @@
+import Navbar from "./components/navbar";
 import HeroSection from "./components/HeroSection";
 import AboutSection from "./components/AboutSection";
-import ExperienceSection from "./components/ExperienceSection";
 import SkillsSection from "./components/SkillsSection";
+import ExperienceSection from "./components/ExperienceSection";
+import InvoicingSection from "./components/InvoicingSection";
 import ProjectsSection from "./components/ProjectsSection";
 import ClientsSection from "./components/ClientsSection";
-import ActivityLogSection from "./components/ActivityLogSection";
 import MiniPlayground from "./components/MiniPlayground";
+import ActivityLogSection from "./components/ActivityLogSection";
+import BottomNavbar from "./components/bottomNavbar";
 
-export default function Home() {
+export const metadata = {
+  title: "Dion Subaktiar | Senior Software Engineer & System Architect",
+  description:
+    "Portfolio profesional Dion Subaktiar - Senior Software Engineer & System Architect berpengalaman dalam backend microservices, sistem invoicing, simulasi kredit, dan arsitektur enterprise.",
+};
+
+export default function HomePage() {
   return (
-    <div className="min-h-screen bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50 font-poppins transition-colors duration-300">
-      <main className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
-        {/* Hero Section */}
+    <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-200 dark:bg-zinc-950 dark:text-zinc-50 pb-20 md:pb-12">
+      {/* Top Navigation Bar */}
+      <Navbar title="Dion Subaktiar" subtitle="Senior Software Engineer" />
+
+      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-16 pt-6 sm:pt-10">
+        {/* 1. Hero Section */}
         <HeroSection />
 
-        {/* About Section */}
+        {/* 2. About Section */}
         <AboutSection />
 
-        {/* Experience Section */}
-        <ExperienceSection />
-
-        {/* Skills Section */}
+        {/* 3. Skills Section */}
         <SkillsSection />
 
-        {/* Projects Section */}
+        {/* 4. Experience Section */}
+        <ExperienceSection />
+
+        {/* 5. Invoicing & Billing Simulation Section (Reactivated & Enhanced) */}
+        <InvoicingSection />
+
+        {/* 6. Projects Section */}
         <ProjectsSection />
 
-        {/* Clients Section */}
+        {/* 7. Clients & Partners Section */}
         <ClientsSection />
 
-        {/* Activity & Operational Logs */}
-        <ActivityLogSection />
-
-        {/* Secondary playground / mini apps */}
+        {/* 8. Interactive Mini Playground */}
         <MiniPlayground />
+
+        {/* 9. Activity Log Section */}
+        <ActivityLogSection />
       </main>
 
-      {/* Modern minimal footer */}
-      <footer className="border-t border-zinc-200 dark:border-zinc-900 bg-white dark:bg-zinc-950 py-12 transition-colors">
-        <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-zinc-500 dark:text-zinc-600">
-          <p>© {new Date().getFullYear()} Dion Subaktiar. All rights reserved.</p>
-          <div className="flex gap-6 font-light">
-            <a href="#about" className="hover:text-zinc-800 dark:hover:text-zinc-300 transition-colors">About</a>
-            <a href="#experience" className="hover:text-zinc-800 dark:hover:text-zinc-300 transition-colors">Experience</a>
-            <a href="#projects" className="hover:text-zinc-800 dark:hover:text-zinc-300 transition-colors">Projects</a>
-            <a href="#playground" className="hover:text-zinc-800 dark:hover:text-zinc-300 transition-colors">Sandbox</a>
+      {/* Landing Footer */}
+      <footer className="mt-20 border-t border-slate-200 bg-white py-8 text-center text-xs text-slate-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p>© {new Date().getFullYear()} Dion Subaktiar. Seluruh hak cipta dilindungi.</p>
+          <div className="flex items-center gap-4 text-xs font-medium">
+            <a href="#invoicing" className="hover:text-blue-600 dark:hover:text-blue-400 transition">
+              Simulasi Invoicing
+            </a>
+            <span className="text-slate-300 dark:text-zinc-700">•</span>
+            <a href="/invoicing-service" className="hover:text-blue-600 dark:hover:text-blue-400 transition">
+              Portal Invoicing
+            </a>
+            <span className="text-slate-300 dark:text-zinc-700">•</span>
+            <a href="/simulasi-cicilan" className="hover:text-blue-600 dark:hover:text-blue-400 transition">
+              Simulasi Cicilan
+            </a>
           </div>
         </div>
       </footer>
+
+      {/* Bottom Floating Navigation for Mobile */}
+      <BottomNavbar />
     </div>
   );
 }
