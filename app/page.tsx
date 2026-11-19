@@ -1,75 +1,49 @@
 import Navbar from "./components/navbar";
-import HeroSection from "./components/HeroSection";
-import AboutSection from "./components/AboutSection";
+import EnhancedHero from "./components/EnhancedHero";
 import SkillsSection from "./components/SkillsSection";
 import ExperienceSection from "./components/ExperienceSection";
-import InvoicingSection from "./components/InvoicingSection";
 import ProjectsSection from "./components/ProjectsSection";
-import ClientsSection from "./components/ClientsSection";
 import MiniPlayground from "./components/MiniPlayground";
+import ClientsSection from "./components/ClientsSection";
 import ActivityLogSection from "./components/ActivityLogSection";
+import AboutSection from "./components/AboutSection";
 
-export const metadata = {
-  title: "Dion Subaktiar | Senior Software Engineer & System Architect",
-  description:
-    "Portfolio profesional Dion Subaktiar - Senior Software Engineer & System Architect berpengalaman dalam backend microservices, sistem invoicing, simulasi kredit, dan arsitektur enterprise.",
-};
-
-export default function HomePage() {
+export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 transition-colors duration-200 dark:bg-zinc-950 dark:text-zinc-50 pb-20 md:pb-12">
-      {/* Top Navigation Bar */}
-      <Navbar title="Dion Subaktiar" subtitle="Senior Software Engineer" />
+    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 font-sans text-slate-800 dark:text-zinc-200 selection:bg-indigo-500 selection:text-white">
+      {/* Global Navigation Bar: tombol kembali dinonaktifkan di halaman landing */}
+      <Navbar showBack={false} />
 
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-16 pt-6 sm:pt-10">
-        {/* 1. Hero Section */}
-        <HeroSection />
+      <main>
+        {/* Hero Section with Live Metrics & Architecture Summary */}
+        <EnhancedHero />
 
-        {/* 2. About Section */}
-        <AboutSection />
-
-        {/* 3. Skills Section */}
+        {/* Core Technical Competencies & Architecture Paradigms */}
         <SkillsSection />
 
-        {/* 4. Experience Section */}
+        {/* Professional Career Track & Proven Impact */}
         <ExperienceSection />
 
-        {/* 5. Invoicing & Billing Simulation Section (Reactivated & Enhanced) */}
-        <InvoicingSection />
-
-        {/* 6. Projects Section */}
+        {/* Featured Enterprise & Architecture Projects */}
         <ProjectsSection />
 
-        {/* 7. Clients & Partners Section */}
-        <ClientsSection />
-
-        {/* 8. Interactive Mini Playground */}
+        {/* Interactive Live Sandboxes (Termasuk Invoicing, Simulasi Cicilan, PokeAPI, dll) */}
         <MiniPlayground />
 
-        {/* 9. Activity Log Section */}
+        {/* Enterprise Client Trust & Implementations */}
+        <ClientsSection />
+
+        {/* Professional Philosophy & Full Stack Values */}
+        <AboutSection />
+
+        {/* Audit, Telemetry & Git Engineering Activity */}
         <ActivityLogSection />
       </main>
 
-      {/* Landing Footer */}
-      <footer className="mt-20 border-t border-slate-200 bg-white py-8 text-center text-xs text-slate-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p>© {new Date().getFullYear()} Dion Subaktiar. Seluruh hak cipta dilindungi.</p>
-          <div className="flex items-center gap-4 text-xs font-medium">
-            <a href="#invoicing" className="hover:text-blue-600 dark:hover:text-blue-400 transition">
-              Simulasi Invoicing
-            </a>
-            <span className="text-slate-300 dark:text-zinc-700">•</span>
-            <a href="/invoicing-service" className="hover:text-blue-600 dark:hover:text-blue-400 transition">
-              Portal Invoicing
-            </a>
-            <span className="text-slate-300 dark:text-zinc-700">•</span>
-            <a href="/simulasi-cicilan" className="hover:text-blue-600 dark:hover:text-blue-400 transition">
-              Simulasi Cicilan
-            </a>
-          </div>
-        </div>
+      {/* Clean Global Footer */}
+      <footer className="border-t border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 py-10 text-center text-xs text-slate-500 dark:text-zinc-400">
+        <p>© {new Date().getFullYear()} Dion Subaktiar. Architected with Next.js, TypeScript & Tailwind CSS.</p>
       </footer>
-
     </div>
   );
 }
