@@ -234,43 +234,45 @@ const MainPageInvoice = () => {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
-      <Navbar title="Invoicing & Service Management" />
+      <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
-        {/* Top Control & Hub Navigation Bar (Responsive Desktop-First) */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-6">
+        {/* Top Control & Hub Navigation Bar (Harmonized with Landing Page Design) */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200/80 dark:border-zinc-800/80 pb-6">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                <FiFileText size={22} />
+            <div className="flex items-center gap-3">
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 text-white shadow-md shadow-indigo-500/20">
+                <FiFileText className="text-xl" />
               </span>
-              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-                Invoicing &amp; Armada Service Hub
-              </h1>
+              <div>
+                <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                  Invoicing &amp; Armada Service Hub
+                </h1>
+                <p className="text-xs md:text-sm text-slate-500 dark:text-zinc-400 mt-0.5">
+                  Manajemen penerbitan invoice perbaikan armada, surat perintah kerja (SPK), dan riwayat servis pelanggan.
+                </p>
+              </div>
             </div>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-              Manajemen penerbitan invoice perbaikan armada, surat perintah kerja (SPK), dan riwayat servis pelanggan.
-            </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5">
             <Link href="/invoicing-service/units">
-              <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/80 transition shadow-sm">
-                <FiTruck /> Units
+              <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800/80 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 transition shadow-xs">
+                <FiTruck className="text-indigo-500" /> Units
               </button>
             </Link>
             <Link href="/invoicing-service/customers">
-              <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/80 transition shadow-sm">
-                <FiUsers /> Customers
+              <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800/80 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 transition shadow-xs">
+                <FiUsers className="text-indigo-500" /> Customers
               </button>
             </Link>
             <Link href="/invoicing-service/parts">
-              <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/80 transition shadow-sm">
-                <FiTool /> Parts
+              <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800/80 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 transition shadow-xs">
+                <FiTool className="text-indigo-500" /> Parts
               </button>
             </Link>
             <Link href="/invoicing-service/invoice/create">
-              <button className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm">
+              <button className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white transition shadow-md shadow-indigo-500/20">
                 <FiPlus size={15} /> Buat Invoice Baru
               </button>
             </Link>

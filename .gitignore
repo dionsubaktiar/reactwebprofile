@@ -38,3 +38,4 @@ next-env.d.ts
 
 # Hermes local agent history & cache
 .hermes/
+.aider*
