@@ -1,3 +1,4 @@
+// Service: reactwebprofile | File: app/components/twoColumns.tsx
 import { ReactNode } from "react";
 
 interface Props {
@@ -15,18 +16,18 @@ const TwoColumnLayout: React.FC<Props> = ({
 }) => {
   return (
     <div className="container mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5 text-eggplant dark:text-honeyDew">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-slate-900 dark:text-zinc-100">
         {/* First Column */}
-        <div className="bg-gradient-to-bl from-customGreen-default to-transparent rounded-lg p-6">
-          <h2 className="text-2xl font-bold text-eggplant  dark:text-honeyDew">
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4 pb-2 border-b border-slate-100 dark:border-zinc-800">
             {column1title}
           </h2>
           {column1content}
         </div>
 
         {/* Second Column */}
-        <div className="bg-gradient-to-tr  from-customGreen-default to-transparent text-eggplant dark:text-honeyDew rounded-lg p-6">
-          <h2 className="text-2xl font-bold text-eggplant  dark:text-honeyDew">
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4 pb-2 border-b border-slate-100 dark:border-zinc-800">
             {column2title}
           </h2>
           {column2content}

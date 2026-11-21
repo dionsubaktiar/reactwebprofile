@@ -72,7 +72,7 @@ const UnitEditPage = () => {
 
   if (!formData)
     return (
-      <div className="flex items-center justify-center bg-customGreen-light dark:bg-gray-900 h-full min-h-screen">
+      <div className="flex items-center justify-center bg-slate-50 dark:bg-zinc-950 h-full min-h-screen">
         <p className="text-lg font-semibold text-gray-600 animate-pulse">
           Loading...
         </p>
@@ -80,7 +80,7 @@ const UnitEditPage = () => {
     );
 
   return (
-    <div className="min-h-screen bg-customGreen-light text-brown dark:bg-gray-900 dark:text-honeyDew">
+    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 font-sans antialiased">
       <div className="max-w-7xl mx-auto p-6">
         <Navbar title="Edit Data Unit" />
 
@@ -91,7 +91,7 @@ const UnitEditPage = () => {
           <div>
             <label
               htmlFor="id_customer"
-              className="block text-sm font-medium dark:text-honeyDew"
+              className="block text-sm font-medium dark:text-zinc-200"
             >
               Customer<span className="text-red-500">*</span>
             </label>
@@ -100,7 +100,7 @@ const UnitEditPage = () => {
               value={formData.id_customer}
               onChange={handleChange}
               required
-              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
             >
               {/* Opsi data awal yang sesuai dengan formData.id_customer */}
               {formData.id_customer &&
@@ -122,7 +122,7 @@ const UnitEditPage = () => {
           <div>
             <label
               htmlFor="nopol"
-              className="block text-sm font-medium dark:text-honeyDew"
+              className="block text-sm font-medium dark:text-zinc-200"
             >
               Nomor Polisi<span className="text-red-500">*</span>
             </label>
@@ -133,14 +133,14 @@ const UnitEditPage = () => {
               onChange={handleChange}
               placeholder="A 1234 BCD"
               required
-              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
             />
           </div>
 
           <div>
             <label
               htmlFor="tipe"
-              className="block text-sm font-medium dark:text-honeyDew"
+              className="block text-sm font-medium dark:text-zinc-200"
             >
               Tipe<span className="text-red-500">*</span>
             </label>
@@ -149,7 +149,7 @@ const UnitEditPage = () => {
               value={formData.tipe}
               onChange={handleChange}
               required
-              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
             >
               {/* Tambahkan opsi hanya jika tipe awal tidak ada dalam daftar */}
               {!["Pickup", "Bus", "Truck"].includes(formData.tipe) && (
@@ -168,7 +168,7 @@ const UnitEditPage = () => {
           <div>
             <label
               htmlFor="no_rangka"
-              className="block text-sm font-medium dark:text-honeyDew"
+              className="block text-sm font-medium dark:text-zinc-200"
             >
               No Rangka<span className="text-red-500">*</span>
             </label>
@@ -178,14 +178,14 @@ const UnitEditPage = () => {
               value={formData.no_rangka}
               onChange={handleChange}
               required
-              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
             />
           </div>
 
           <div>
             <label
               htmlFor="no_mesin"
-              className="block text-sm font-medium dark:text-honeyDew"
+              className="block text-sm font-medium dark:text-zinc-200"
             >
               No Mesin<span className="text-red-500">*</span>
             </label>
@@ -195,14 +195,14 @@ const UnitEditPage = () => {
               value={formData.no_mesin}
               onChange={handleChange}
               required
-              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
             />
           </div>
 
           <div>
             <label
               htmlFor="driver"
-              className="block text-sm font-medium dark:text-honeyDew"
+              className="block text-sm font-medium dark:text-zinc-200"
             >
               Driver<span className="text-red-500">*</span>
             </label>
@@ -212,14 +212,14 @@ const UnitEditPage = () => {
               value={formData.driver}
               onChange={handleChange}
               required
-              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
             />
           </div>
 
           <div>
             <label
               htmlFor="tahun"
-              className="block text-sm font-medium dark:text-honeyDew"
+              className="block text-sm font-medium dark:text-zinc-200"
             >
               Tahun<span className="text-red-500">*</span>
             </label>
@@ -229,7 +229,7 @@ const UnitEditPage = () => {
               value={formData.tahun}
               onChange={handleChange}
               required
-              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
             />
           </div>
 
@@ -237,7 +237,7 @@ const UnitEditPage = () => {
             <div>
               <label
                 htmlFor="japo_kir"
-                className="block text-sm font-medium dark:text-honeyDew"
+                className="block text-sm font-medium dark:text-zinc-200"
               >
                 Jatuh tempo KIR<span className="text-red-500">*</span>
               </label>
@@ -247,14 +247,14 @@ const UnitEditPage = () => {
                 value={formData.japo_kir ?? ""}
                 onChange={handleChange}
                 required
-                className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+                className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
               />
             </div>
 
             <div>
               <label
                 htmlFor="japo_pajak"
-                className="block text-sm font-medium dark:text-honeyDew"
+                className="block text-sm font-medium dark:text-zinc-200"
               >
                 Jatuh tempo Pajak<span className="text-red-500">*</span>
               </label>
@@ -264,13 +264,13 @@ const UnitEditPage = () => {
                 value={formData.japo_pajak ?? ""}
                 onChange={handleChange}
                 required
-                className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+                className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
               />
             </div>
             <div>
               <label
                 htmlFor="japo_stnk"
-                className="block text-sm font-medium dark:text-honeyDew"
+                className="block text-sm font-medium dark:text-zinc-200"
               >
                 Jatuh tempo STNK<span className="text-red-500">*</span>
               </label>
@@ -280,14 +280,14 @@ const UnitEditPage = () => {
                 value={formData.japo_stnk ?? ""}
                 onChange={handleChange}
                 required
-                className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+                className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
               />
             </div>
 
             <div>
               <label
                 htmlFor="japo_kontrak"
-                className="block text-sm font-medium dark:text-honeyDew"
+                className="block text-sm font-medium dark:text-zinc-200"
               >
                 Jatuh tempo Kontrak
               </label>
@@ -296,7 +296,7 @@ const UnitEditPage = () => {
                 id="japo_kontrak"
                 value={formData.japo_kontrak || ""}
                 onChange={handleChange}
-                className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+                className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
               />
             </div>
           </div>
@@ -304,7 +304,7 @@ const UnitEditPage = () => {
           <div className="flex items-center space-x-3">
             <label
               htmlFor="status"
-              className="text-sm font-medium dark:text-honeyDew"
+              className="text-sm font-medium dark:text-zinc-200"
             >
               Status unit (Terdaftar atau tidak terdaftar)
             </label>
@@ -313,7 +313,7 @@ const UnitEditPage = () => {
               id="status"
               checked={!!formData.status}
               onChange={handleChange}
-              className="w-5 h-5 rounded border-gray-300 text-customGreen-default focus:ring-2 focus:ring-customGreen-dark transition duration-200"
+              className="w-5 h-5 rounded border-gray-300 text-indigo-600 dark:text-indigo-400 focus:ring-2 focus:ring-indigo-500/20 transition duration-200"
             />
           </div>
 
@@ -322,8 +322,8 @@ const UnitEditPage = () => {
               type="submit"
               disabled={isSubmitting}
               className={`${
-                isSubmitting ? "bg-gray-400" : "bg-customGreen-default"
-              } text-white px-4 py-2 rounded-lg shadow-md hover:bg-customGreen-dark transition duration-300`}
+                isSubmitting ? "bg-gray-400" : "bg-gradient-to-r from-indigo-600 to-violet-600"
+              } text-white px-4 py-2 rounded-lg shadow-md hover:from-indigo-700 hover:to-violet-700 transition duration-300`}
             >
               {isSubmitting ? "Submitting..." : "Save"}
             </button>

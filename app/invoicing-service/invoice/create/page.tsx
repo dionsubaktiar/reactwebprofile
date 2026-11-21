@@ -133,7 +133,7 @@ const CreateInvoicePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-customGreen-light text-brown dark:bg-gray-900 dark:text-honeyDew">
+    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 font-sans antialiased">
       <div className="max-w-7xl mx-auto p-6">
         <Navbar title="Create Invoice" />
 
@@ -141,14 +141,14 @@ const CreateInvoicePage = () => {
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         <form onSubmit={handleSubmit} className="space-y-2">
           <div>
-            <label className="block text-sm font-medium dark:text-honeyDew">
+            <label className="block text-sm font-medium dark:text-zinc-200">
               Unit<span className="text-red-500">*</span>
             </label>
             <select
               name="id_unit"
               value={formData.id_unit}
               onChange={handleChange}
-              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
               required
             >
               <option value="">Pilih Unit</option>
@@ -160,7 +160,7 @@ const CreateInvoicePage = () => {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium dark:text-honeyDew">
+            <label className="block text-sm font-medium dark:text-zinc-200">
               Kilometer<span className="text-red-500">*</span>
             </label>
             <input
@@ -169,12 +169,12 @@ const CreateInvoicePage = () => {
               placeholder="1234 (km)"
               value={formData.kilometer}
               onChange={handleChange}
-              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium dark:text-honeyDew">
+            <label className="block text-sm font-medium dark:text-zinc-200">
               Tanggal<span className="text-red-500">*</span>
             </label>
             <input
@@ -182,20 +182,20 @@ const CreateInvoicePage = () => {
               name="tanggal"
               value={formData.tanggal}
               onChange={handleChange}
-              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium dark:text-honeyDew">
+            <label className="block text-sm font-medium dark:text-zinc-200">
               Package
             </label>
             <select
               name="id_package"
               value={formData.id_package}
               onChange={handleChange}
-              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
             >
               <option value="">Select Package</option>
               {packages.map((pkg) => (
@@ -211,14 +211,14 @@ const CreateInvoicePage = () => {
                 <div key={index} className="flex gap-2 items-end mt-1">
                   {/* Parts Select */}
                   <div className="w-3/4">
-                    <label className="text-sm font-medium dark:text-honeyDew">
+                    <label className="text-sm font-medium dark:text-zinc-200">
                       Parts
                     </label>
                     <select
                       name="id_part"
                       value={part.id_part}
                       onChange={(e) => handlePartChange(index, e)}
-                      className="p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+                      className="p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
                     >
                       <option value="">Select Part</option>
                       {parts.map((p) => (
@@ -232,7 +232,7 @@ const CreateInvoicePage = () => {
                   {/* Qty Input & Remove Button */}
                   <div className="flex items-end gap-2 w-1/4">
                     <div className="w-full">
-                      <label className="text-sm font-medium dark:text-honeyDew">
+                      <label className="text-sm font-medium dark:text-zinc-200">
                         Qty
                       </label>
                       <input
@@ -240,7 +240,7 @@ const CreateInvoicePage = () => {
                         name="qty"
                         value={part.qty}
                         onChange={(e) => handlePartChange(index, e)}
-                        className="p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
+                        className="p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
                       />
                     </div>
 
@@ -260,7 +260,7 @@ const CreateInvoicePage = () => {
             <button
               type="button"
               onClick={addPart}
-              className="bg-customGreen-default text-white w-full mt-2 px-4 py-2 rounded-lg shadow-md hover:bg-customGreen-dark transition duration-300"
+              className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white w-full mt-2 px-4 py-2 rounded-lg shadow-md hover:from-indigo-700 hover:to-violet-700 transition duration-300"
             >
               + Add Part
             </button>
@@ -271,8 +271,8 @@ const CreateInvoicePage = () => {
               type="submit"
               disabled={isSubmitting}
               className={`${
-                isSubmitting ? "bg-gray-400" : "bg-customGreen-default"
-              } text-white px-4 py-2 rounded-lg shadow-md hover:bg-customGreen-dark transition duration-300`}
+                isSubmitting ? "bg-gray-400" : "bg-gradient-to-r from-indigo-600 to-violet-600"
+              } text-white px-4 py-2 rounded-lg shadow-md hover:from-indigo-700 hover:to-violet-700 transition duration-300`}
             >
               {isSubmitting ? "Submitting..." : "Create Invoice"}
             </button>

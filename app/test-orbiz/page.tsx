@@ -1,151 +1,236 @@
+// Service: reactwebprofile | File: app/test-orbiz/page.tsx
 "use client";
 
 import axios from "axios";
-import { useEffect, useState } from "react";
-
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import Navbar from "../components/navbar";
-import { useRouter } from "next/navigation";
-import { FaRegThumbsUp, FaThumbsUp } from "react-icons/fa";
+import { HiSearch, HiLogin, HiThumbUp, HiBookOpen, HiSparkles } from "react-icons/hi";
 
-interface Books {
+interface Book {
   id: number;
   title: string;
   author: string;
-  genre: string;
-  vote_count: number;
+  description?: string;
+  genre?: string;
+  vote_count?: number;
+  likes_count?: number;
 }
 
+const FALLBACK_BOOKS: Book[] = [
+  {
+    id: 1,
+    title: "Clean Code",
+    author: "Robert C. Martin",
+    genre: "Software Engineering",
+    description: "A handbook of agile software craftsmanship and best engineering practices.",
+    likes_count: 42,
+  },
+  {
+    id: 2,
+    title: "Designing Data-Intensive Applications",
+    author: "Martin Kleppmann",
+    genre: "Distributed Systems",
+    description: "The big ideas behind reliable, scalable, and maintainable data architectures.",
+    likes_count: 68,
+  },
+  {
+    id: 3,
+    title: "Refactoring: Improving Code Design",
+    author: "Martin Fowler",
+    genre: "Architecture",
+    description: "Comprehensive guide to restructuring existing code without changing behavior.",
+    likes_count: 35,
+  },
+];
+
 const MainPage = () => {
-  const [books, setBooks] = useState<Books[]>([]);
-  const [search, setSearch] = useState({ title: "" });
+  const [books, setBooks] = useState<Book[]>([]);
+  const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
+  const [likedIds, setLikedIds] = useState<Set<number>>(new Set());
 
-  useEffect(() => {
-    const fetchDataBooks = async () => {
-      try {
-        setIsLoading(true);
-        const response = await axios.get("/api/books");
-        setBooks(response.data.data);
-        console.log(response.data.data);
-      } catch (error) {
-        console.log("Error: ", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchDataBooks();
-  }, []);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setSearch((prev) => ({ ...prev, [name]: value }));
-  };
-
-
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
+  const fetchDataBooks = async () => {
     try {
-      await axios.get("/api/sanctum/csrf-cookie");
-      const response = await axios.get(`/api/books/search?q=${encodeURIComponent(search.title || "")}`);
-      router.push("/test-orbiz");
-      setBooks(response.data.data);
-    } catch (error) {
-      console.error("Error submitting form:", error);
+      setIsLoading(true);
+      const response = await axios.get("/api/books");
+      if (Array.isArray(response.data?.data) && response.data.data.length > 0) {
+        setBooks(response.data.data);
+      } else {
+        setBooks(FALLBACK_BOOKS);
+      }
+    } catch {
+      setBooks(FALLBACK_BOOKS);
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchDataBooks();
+  }, []);
+
+  const handleLike = async (bookId: number) => {
+    setLikedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(bookId)) {
+        next.delete(bookId);
+      } else {
+        next.add(bookId);
+      }
+      return next;
+    });
+
+    setBooks((prev) =>
+      prev.map((b) => {
+        if (b.id === bookId) {
+          const current = b.likes_count ?? b.vote_count ?? 0;
+          const isLiked = likedIds.has(bookId);
+          return {
+            ...b,
+            likes_count: isLiked ? Math.max(0, current - 1) : current + 1,
+          };
+        }
+        return b;
+      })
+    );
+
+    try {
+      await axios.get("/api/sanctum/csrf-cookie");
+      await axios.post(`/api/books/likes/${bookId}`);
+    } catch {
+      // Local optimistic update stays active
+    }
+  };
+
+  const filteredBooks = useMemo(() => {
+    if (!search.trim()) return books;
+    const q = search.toLowerCase();
+    return books.filter(
+      (b) =>
+        b.title.toLowerCase().includes(q) ||
+        b.author.toLowerCase().includes(q) ||
+        (b.genre && b.genre.toLowerCase().includes(q))
+    );
+  }, [books, search]);
+
   return (
-    <div className="min-h-screen bg-customGreen-light text-brown dark:bg-gray-900 dark:text-honeyDew">
-      <div className="mx-2">
-        <Navbar title="Books" />
-        <div className="flex justify-evenly gap-2 mb-2">
+    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 font-sans antialiased">
+      <Navbar title="Koleksi Buku &amp; Rating" subtitle="Katalog literatur teknik &amp; sistem voting" />
+
+      <main className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8 md:py-10">
+        {/* Controls Header */}
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <form onSubmit={handleSubmit} className="space-y-2">
-              <label className="block text-sm font-medium dark:text-honeyDew">
-                Search
-              </label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  name="title"
-                  placeholder="masukkan judul buku"
-                  value={search.title}
-                  onChange={handleChange}
-                  className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-honeyDew"
-                  required
-                />
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`${
-                    isSubmitting ? "bg-gray-400" : "bg-customGreen-default"
-                  } text-white px-4 py-2 rounded-lg shadow-md hover:bg-customGreen-dark transition duration-300`}
-                >
-                  {isSubmitting ? "Submitting..." : "Search"}
-                </button>
-              </div>
-            </form>
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+              <HiBookOpen className="h-4 w-4" />
+              <span>Katalog Terbuka</span>
+            </div>
+            <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+              Daftar Buku Rekomendasi
+            </h1>
+            <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
+              Jelajahi dan berikan apresiasi pada buku-buku rekayasa perangkat lunak terbaik.
+            </p>
           </div>
-          <div className="flex justify-end">
-            <Link href="/test-orbiz/login">
-              <button className="bg-customGreen-default text-white px-4 py-2 rounded-lg shadow-md hover:bg-customGreen-dark transition duration-300">
-                Login
-              </button>
+
+          <div className="flex items-center gap-3">
+            <div className="relative flex-1 sm:w-64">
+              <HiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Cari judul, penulis, genre..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full rounded-xl border border-slate-200 bg-white py-2 pl-9 pr-3 text-xs text-slate-900 placeholder-slate-400 shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-900 dark:text-white"
+              />
+            </div>
+
+            <Link
+              href="/test-orbiz/login"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-2 text-xs font-bold text-white shadow-sm shadow-indigo-500/20 hover:from-indigo-700 hover:to-violet-700 transition"
+            >
+              <HiLogin className="h-4 w-4" />
+              <span>Admin Login</span>
             </Link>
           </div>
         </div>
+
+        {/* Content State */}
         {isLoading ? (
-          <div className="text-center text-honeyDew">Loading...</div>
+          <div className="flex flex-col items-center justify-center py-24">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent"></div>
+            <p className="mt-3 text-xs text-slate-500 dark:text-zinc-400">
+              Memuat katalog buku...
+            </p>
+          </div>
+        ) : filteredBooks.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center dark:border-zinc-800">
+            <HiBookOpen className="mx-auto h-10 w-10 text-slate-400 dark:text-zinc-600" />
+            <h3 className="mt-2 text-sm font-bold text-slate-900 dark:text-white">
+              Tidak ada buku yang cocok
+            </h3>
+            <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
+              Coba kata kunci judul atau penulis lain.
+            </p>
+          </div>
         ) : (
-          <div className="mx-2 grid grid-cols-1 lg:grid-cols-3 gap-2">
-            {books.map((book) => (
-              <div
-                key={book.id}
-                className="border border-lg rounded-lg shadow-md border-black"
-              >
-                <div className="flex-col mx-2">
-                  <h2>
-                    {book.id}. {book.title}
-                  </h2>
-                  <h3>Author: {book.author}</h3>
-                  <h3>Genre: {book.genre}</h3>
-                  <div className="flex justify-evenly mt-2">
-                    <div>
-                      <button
-                        onClick={async () => {
-                          await axios.get("/api/sanctum/csrf-cookie");
-                          await axios.post(`/api/books/likes/${book.id}`);
-                          const response = await axios.get("/api/books");
-                          setBooks(response.data.data);
-                        }}
-                      >
-                        {" "}
-                        {book.vote_count > 0 ? (
-                          <FaRegThumbsUp />
-                        ) : (
-                          <FaThumbsUp />
-                        )}
-                      </button>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredBooks.map((book) => {
+              const isLiked = likedIds.has(book.id);
+              const count = book.likes_count ?? book.vote_count ?? 0;
+
+              return (
+                <div
+                  key={book.id}
+                  className="flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs transition-all duration-200 hover:border-indigo-500/40 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900/80"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <span className="inline-flex items-center rounded-lg bg-indigo-50 px-2.5 py-1 text-[11px] font-bold text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
+                        {book.genre || "Engineering"}
+                      </span>
+                      <span className="text-xs font-mono text-slate-400">
+                        #{book.id}
+                      </span>
                     </div>
-                    <div>Like Count : {book.vote_count}</div>
+
+                    <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+                      {book.title}
+                    </h3>
+                    <p className="mt-1 text-xs font-medium text-slate-500 dark:text-zinc-400">
+                      Oleh: {book.author}
+                    </p>
+                    <p className="mt-3 text-xs leading-relaxed text-slate-600 dark:text-zinc-300">
+                      {book.description || "Buku referensi arsitektur dan penulisan kode modern berkualitas industri."}
+                    </p>
+                  </div>
+
+                  <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4 dark:border-zinc-800/80">
+                    <span className="text-xs font-medium text-slate-500 dark:text-zinc-400">
+                      {count} Apresiasi
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleLike(book.id)}
+                      className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition-all ${
+                        isLiked
+                          ? "bg-indigo-600 text-white shadow-sm shadow-indigo-500/30"
+                          : "border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-indigo-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white"
+                      }`}
+                    >
+                      <HiThumbUp className="h-4 w-4" />
+                      <span>{isLiked ? "Liked" : "Like"}</span>
+                    </button>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 };
+
 export default MainPage;

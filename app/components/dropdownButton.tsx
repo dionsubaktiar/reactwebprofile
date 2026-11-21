@@ -1,5 +1,7 @@
+// Service: reactwebprofile | File: app/components/dropdownButton.tsx
 "use client";
 import { useState } from "react";
+import { HiDotsVertical } from "react-icons/hi";
 
 interface DropdownProps {
   onAction: (action: string, articleId: number) => void;
@@ -8,14 +10,14 @@ interface DropdownProps {
 
 const Dropdown = ({ onAction, articleId }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false); // To disable buttons during action
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const toggleDropdown = () => {
     setIsOpen((prev) => !prev);
   };
 
   const handleAction = async (action: string) => {
-    if (isProcessing) return; // Prevent double submission
+    if (isProcessing) return;
     setIsProcessing(true);
 
     try {
@@ -27,7 +29,7 @@ const Dropdown = ({ onAction, articleId }: DropdownProps) => {
       );
     } finally {
       setIsProcessing(false);
-      setIsOpen(false); // Close dropdown after the action
+      setIsOpen(false);
     }
   };
 
@@ -36,31 +38,35 @@ const Dropdown = ({ onAction, articleId }: DropdownProps) => {
       <button
         type="button"
         onClick={toggleDropdown}
-        className="inline-flex justify-center w-full rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-customGreen-light dark:bg-gray-800 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700 dark:focus:ring-customGreen-light"
+        className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white p-2 text-xs font-semibold text-slate-700 shadow-xs hover:bg-slate-50 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white transition"
       >
-        Manage
+        <HiDotsVertical className="h-4 w-4" />
       </button>
 
       {isOpen && (
-        <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 dark:bg-gray-800 dark:ring-gray-700 transition ease-in-out duration-200">
-          <div className="py-1">
-            {["edit", "copy", "delete"].map((action) => (
-              <div key={action} className="flex justify-center">
-                <button
-                  onClick={() => handleAction(action)}
-                  disabled={isProcessing} // Disable button while processing
-                  className={`w-full text-left px-4 py-2 text-sm ${
-                    action === "delete"
-                      ? "text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
-                      : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-                  }`}
-                >
-                  {action === "edit" && "Edit"}
-                  {action === "copy" && "Copy Link"}
-                  {action === "delete" && "Delete"}
-                </button>
-              </div>
-            ))}
+        <div className="absolute right-0 z-30 mt-2 w-40 origin-top-right rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl dark:border-zinc-800 dark:bg-zinc-900 transition ease-in-out duration-150">
+          <div className="flex flex-col gap-1">
+            <button
+              onClick={() => handleAction("edit")}
+              disabled={isProcessing}
+              className="w-full text-left rounded-xl px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white transition"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => handleAction("copy")}
+              disabled={isProcessing}
+              className="w-full text-left rounded-xl px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white transition"
+            >
+              Copy Link
+            </button>
+            <button
+              onClick={() => handleAction("delete")}
+              disabled={isProcessing}
+              className="w-full text-left rounded-xl px-3 py-1.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/40 transition"
+            >
+              Delete
+            </button>
           </div>
         </div>
       )}

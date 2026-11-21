@@ -1,3 +1,4 @@
+// Service: reactwebprofile | File: app/components/input.tsx
 interface InputProps {
   id: string;
   type: string;
@@ -18,8 +19,8 @@ const InputForm: React.FC<InputProps> = ({
   onChangeValue,
 }) => {
   return (
-    <div className="my-3 flex-col">
-      <label htmlFor={id} className="block font-medium leading-6">
+    <div className="my-3 space-y-1">
+      <label htmlFor={id} className="block text-xs font-semibold text-slate-700 dark:text-zinc-300">
         {inputName}
       </label>
       <input
@@ -31,8 +32,7 @@ const InputForm: React.FC<InputProps> = ({
         onChange={onChangeValue}
         autoComplete="off"
         required
-        className="block w-full rounded-md border-0 py-1.5 pl-7 ring-gray-400 text-black ring-1 ring-inset ring-inherit
-         placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-customGreen-light sm:text-sm sm:leading-6"
+        className="w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white transition"
       />
     </div>
   );

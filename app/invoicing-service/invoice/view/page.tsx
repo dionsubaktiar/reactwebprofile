@@ -31,14 +31,14 @@ const ViewInvoicePage = () => {
 
   if (isLoading)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-customGreen-light text-brown dark:bg-gray-900 dark:text-honeyDew">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-900 dark:bg-zinc-950 dark:text-zinc-100">
         <p className="text-lg font-semibold">Loading...</p>
       </div>
     );
 
   if (!invoice)
     return (
-      <div className="min-h-screen flex items-center justify-center bg-customGreen-light text-brown dark:bg-gray-900 dark:text-honeyDew">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-900 dark:bg-zinc-950 dark:text-zinc-100">
         <p className="text-center text-lg font-semibold text-red-500">
           No data found
         </p>
@@ -46,12 +46,12 @@ const ViewInvoicePage = () => {
     );
 
   return (
-    <div className="min-h-screen bg-customGreen-light text-brown dark:bg-gray-900 dark:text-honeyDew">
+    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 font-sans antialiased">
       <div className="max-w-4xl mx-auto p-6">
         <Navbar title={`Invoice Detail`} />
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-eggplant mb-6">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
             Invoice Details
           </h2>
 

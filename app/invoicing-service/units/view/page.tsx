@@ -26,7 +26,7 @@ const UnitDetailPage = () => {
 
   if (!unit)
     return (
-      <div className="flex items-center justify-center bg-customGreen-light dark:bg-gray-900 h-full min-h-screen">
+      <div className="flex items-center justify-center bg-slate-50 dark:bg-zinc-950 h-full min-h-screen">
         <p className="text-lg font-semibold text-gray-600 animate-pulse">
           Loading...
         </p>
@@ -34,12 +34,12 @@ const UnitDetailPage = () => {
     );
 
   return (
-    <div className="min-h-screen bg-customGreen-light text-brown dark:bg-gray-900 dark:text-honeyDew">
+    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 font-sans antialiased">
       <div className="max-w-4xl mx-auto p-6">
         <Navbar title={`Unit Detail`} />
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-eggplant mb-4">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
             Unit Information
           </h2>
           <table className="w-full border-collapse">
@@ -132,7 +132,7 @@ const UnitDetailPage = () => {
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mt-6">
-          <h2 className="text-2xl font-bold text-eggplant mb-4">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">
             Customer Information
           </h2>
           <table className="w-full border-collapse">

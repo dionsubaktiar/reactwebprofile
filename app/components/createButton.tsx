@@ -1,26 +1,25 @@
+// Service: reactwebprofile | File: app/components/createButton.tsx
+"use client";
+
 import { useState } from "react";
 import CreateUserModal from "./createModal";
-import { IoAdd } from "react-icons/io5";
+import { HiPlus } from "react-icons/hi";
 
 const CreateUserButton = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Open and close modal
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
-
   return (
     <div className="relative">
-      {/* Button to open modal, floated on the right side */}
       <button
-        onClick={openModal}
-        className="fixed bottom-6 right-6 px-4 py-4 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 transition-all"
+        type="button"
+        onClick={() => setIsOpen(true)}
+        aria-label="Tambah Pengguna Baru"
+        className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-lg shadow-indigo-500/30 transition-all duration-200 hover:scale-105 hover:from-indigo-700 hover:to-violet-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 active:scale-95"
       >
-        <IoAdd></IoAdd>
+        <HiPlus className="h-6 w-6 stroke-2" />
       </button>
 
-      {/* Modal with form */}
-      <CreateUserModal isOpen={isOpen} closeModal={closeModal} />
+      <CreateUserModal isOpen={isOpen} closeModal={() => setIsOpen(false)} />
     </div>
   );
 };

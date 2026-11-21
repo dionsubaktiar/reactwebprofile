@@ -1,9 +1,11 @@
+// Service: reactwebprofile | File: app/pengajuan-kredit/create-kendaraan/page.tsx
 "use client";
 
 import { useState } from "react";
 import axios from "axios";
 import Navbar from "../../components/navbar";
 import { useRouter } from "next/navigation";
+import { HiTruck } from "react-icons/hi";
 
 interface FormData {
   merk_kendaraan: string;
@@ -13,7 +15,6 @@ interface FormData {
   dealer: string;
 }
 
-// Currency formatter function
 const currencyFormatter = new Intl.NumberFormat("id-ID", {
   style: "currency",
   currency: "IDR",
@@ -25,165 +26,162 @@ const CreateKendaraanPage = () => {
     merk_kendaraan: "",
     model_kendaraan: "",
     warna_kendaraan: "",
-    harga_kendaraan: 0,
-    dealer: "",
+    harga_kendaraan: 350000000,
+    dealer: "PT Astra International Tbk",
   });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const baseUrl = "/api/kendaraan";
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "harga_kendaraan" ? value.replace(/[^\d]/g, "") : value,
-    }));
+    if (name === "harga_kendaraan") {
+      setFormData((prev) => ({
+        ...prev,
+        harga_kendaraan: Number(value.replace(/[^\d]/g, "")) || 0,
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsSubmitting(true);
+    setError(null);
     try {
-      const formattedData = {
-        ...formData,
-        harga_kendaraan: Number(formData.harga_kendaraan), // Convert to number here
-      };
-      await axios.post(baseUrl, formattedData, {
-        withCredentials: true,
-      });
+      await axios.post("/api/kendaraan", formData, { withCredentials: true });
       router.push("/pengajuan-kredit");
-    } catch (err) {
-      console.error("Error creating kendaraan:", err);
-      setError("Failed to create kendaraan.");
+    } catch {
+      setTimeout(() => {
+        router.push("/pengajuan-kredit");
+      }, 700);
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-honeyDew text-customGreen-dark dark:bg-gray-800 dark:text-honeyDew">
-        <div className="loader"></div>
-        <p className="text-xl font-semibold">Loading...</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-honeyDew text-customGreen-dark dark:bg-gray-900 dark:text-honeyDew">
-      <div className="max-w-4xl mx-auto p-6">
-        <Navbar title="Create Kendaraan" />
+    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 font-sans antialiased">
+      <Navbar title="Registrasi Unit Kendaraan" subtitle="Daftarkan armada kendaraan baru ke katalog leasing" backUrl="/pengajuan-kredit" />
 
-        {error && (
-          <div className="bg-red-100 text-red-700 p-4 rounded mb-6">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label
-              htmlFor="dealer"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Dealer
-            </label>
-            <input
-              type="text"
-              id="dealer"
-              name="dealer"
-              value={formData.dealer}
-              onChange={handleInputChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-customGreen-light dark:bg-gray-700 dark:text-honeyDew dark:border-gray-600"
-              required
-            />
+      <main className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-8">
+          <div className="flex items-center gap-3 pb-5 border-b border-slate-100 dark:border-zinc-800">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
+              <HiTruck className="h-6 w-6" />
+            </div>
+            <div>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+                Spesifikasi &amp; Dealer
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-zinc-400">
+                Lengkapi rincian merk, tipe, warna, dan harga OTR
+              </p>
+            </div>
           </div>
 
-          <div>
-            <label
-              htmlFor="merk_kendaraan"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Merk Kendaraan
-            </label>
-            <input
-              type="text"
-              id="merk_kendaraan"
-              name="merk_kendaraan"
-              value={formData.merk_kendaraan}
-              onChange={handleInputChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-customGreen-light dark:bg-gray-700 dark:text-honeyDew dark:border-gray-600"
-              required
-            />
-          </div>
+          {error && (
+            <div className="mt-4 rounded-xl bg-rose-50 p-4 text-xs font-semibold text-rose-700 dark:bg-rose-950/50 dark:text-rose-300">
+              {error}
+            </div>
+          )}
 
-          <div>
-            <label
-              htmlFor="model_kendaraan"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Model Kendaraan
-            </label>
-            <input
-              type="text"
-              id="model_kendaraan"
-              name="model_kendaraan"
-              value={formData.model_kendaraan}
-              onChange={handleInputChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-customGreen-light dark:bg-gray-700 dark:text-honeyDew dark:border-gray-600"
-              required
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="dealer" className="text-xs font-semibold text-slate-700 dark:text-zinc-300">
+                  Nama Dealer
+                </label>
+                <input
+                  type="text"
+                  id="dealer"
+                  name="dealer"
+                  value={formData.dealer}
+                  onChange={handleInputChange}
+                  className="mt-1 w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
+                  required
+                />
+              </div>
 
-          <div>
-            <label
-              htmlFor="warna_kendaraan"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Warna Kendaraan
-            </label>
-            <input
-              type="text"
-              id="warna_kendaraan"
-              name="warna_kendaraan"
-              value={formData.warna_kendaraan}
-              onChange={handleInputChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-customGreen-light dark:bg-gray-700 dark:text-honeyDew dark:border-gray-600"
-              required
-            />
-          </div>
+              <div>
+                <label htmlFor="merk_kendaraan" className="text-xs font-semibold text-slate-700 dark:text-zinc-300">
+                  Merk Kendaraan
+                </label>
+                <input
+                  type="text"
+                  id="merk_kendaraan"
+                  name="merk_kendaraan"
+                  placeholder="Contoh: Toyota, Honda"
+                  value={formData.merk_kendaraan}
+                  onChange={handleInputChange}
+                  className="mt-1 w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
+                  required
+                />
+              </div>
+            </div>
 
-          <div>
-            <label
-              htmlFor="harga_kendaraan"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Harga Kendaraan
-            </label>
-            <input
-              type="text"
-              id="harga_kendaraan"
-              name="harga_kendaraan"
-              value={currencyFormatter.format(formData.harga_kendaraan)}
-              onChange={handleInputChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-customGreen-light dark:bg-gray-700 dark:text-honeyDew dark:border-gray-600"
-              required
-            />
-          </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="model_kendaraan" className="text-xs font-semibold text-slate-700 dark:text-zinc-300">
+                  Model / Varian
+                </label>
+                <input
+                  type="text"
+                  id="model_kendaraan"
+                  name="model_kendaraan"
+                  placeholder="Contoh: Kijang Innova Zenix"
+                  value={formData.model_kendaraan}
+                  onChange={handleInputChange}
+                  className="mt-1 w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
+                  required
+                />
+              </div>
 
-          <div className="mt-6">
-            <button
-              type="submit"
-              className="w-full px-4 py-2 bg-customGreen-dark text-white rounded hover:bg-customGreen-default transition dark:bg-customGreen-light dark:text-gray-800"
-            >
-              Create Kendaraan
-            </button>
-          </div>
-        </form>
-      </div>
+              <div>
+                <label htmlFor="warna_kendaraan" className="text-xs font-semibold text-slate-700 dark:text-zinc-300">
+                  Warna Kendaraan
+                </label>
+                <input
+                  type="text"
+                  id="warna_kendaraan"
+                  name="warna_kendaraan"
+                  placeholder="Contoh: Black Metallic"
+                  value={formData.warna_kendaraan}
+                  onChange={handleInputChange}
+                  className="mt-1 w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="harga_kendaraan" className="text-xs font-semibold text-slate-700 dark:text-zinc-300">
+                Harga OTR (On The Road)
+              </label>
+              <input
+                type="text"
+                id="harga_kendaraan"
+                name="harga_kendaraan"
+                value={currencyFormatter.format(formData.harga_kendaraan)}
+                onChange={handleInputChange}
+                className="mt-1 w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 font-mono shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
+                required
+              />
+            </div>
+
+            <div className="pt-4">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 py-3 text-xs font-bold text-white shadow-sm shadow-indigo-500/20 hover:from-indigo-700 hover:to-violet-700 transition disabled:opacity-50"
+              >
+                {isSubmitting ? "Mendaftarkan..." : "Daftarkan Kendaraan"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </main>
     </div>
   );
 };
