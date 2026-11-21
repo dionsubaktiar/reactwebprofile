@@ -49,22 +49,31 @@ body {
    ======================================================== */
 @layer utilities {
   .hermes-glass-card {
-    background: rgba(15, 23, 42, 0.75);
+    background: rgba(24, 24, 27, 0.75);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+  .dark .hermes-glass-card {
+    background: rgba(24, 24, 27, 0.85);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+  :root:not(.dark) .hermes-glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
   }
   .hermes-glow-hover {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .hermes-glow-hover:hover {
     transform: translateY(-3px);
-    border-color: rgba(56, 189, 248, 0.4);
-    box-shadow: 0 12px 30px rgba(56, 189, 248, 0.15);
+    border-color: rgba(99, 102, 241, 0.5);
+    box-shadow: 0 12px 30px rgba(99, 102, 241, 0.15);
   }
   .hermes-gradient-text {
-    background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
+    background: linear-gradient(135deg, #6366f1 0%, #0d9488 50%, #10b981 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
