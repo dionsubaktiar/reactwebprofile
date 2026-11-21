@@ -93,7 +93,7 @@ export default function AuthCrudPage() {
 
         {/* Responsive Table / Cards */}
         <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto shadow-inner rounded-lg border border-slate-200 dark:border-zinc-800">
             <table className="w-full text-left text-xs">
               <thead className="border-b border-slate-200 bg-slate-50/80 text-slate-500 dark:border-zinc-800 dark:bg-zinc-800/40 dark:text-zinc-400">
                 <tr>
