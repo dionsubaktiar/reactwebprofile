@@ -1,45 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
-import { initialUnits, Unit, initialCustomers } from "../mockData";
-
-let unitsStore: Unit[] = [...initialUnits];
+import {
+  customersStore,
+  getByIdOr404,
+  nextId,
+  paginate,
+  unitsStore,
+} from "../_store";
+import { validateUnit } from "../_validate";
+import type { Unit } from "@/app/lib/types";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const page = parseInt(searchParams.get("page") || "1", 10);
-  const perPage = 10;
-  const total = unitsStore.length;
-  const lastPage = Math.max(1, Math.ceil(total / perPage));
-  const start = (page - 1) * perPage;
-  const pagedData = unitsStore.slice(start, start + perPage);
+  const perPage = parseInt(searchParams.get("per_page") || "10", 10);
 
   return NextResponse.json({
     message: "Success",
-    data: {
-      current_page: page,
-      data: pagedData,
-      last_page: lastPage,
-      prev_page_url: page > 1 ? `/api/unit?page=${page - 1}` : null,
-      next_page_url: page < lastPage ? `/api/unit?page=${page + 1}` : null,
-      total: total
-    }
+    data: paginate(unitsStore, page, perPage, "/api/unit"),
   });
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    const error = validateUnit(body);
+    if (error) {
+      return NextResponse.json({ message: error }, { status: 400 });
+    }
     const newUnit: Unit = {
-      id: Date.now(),
-      nopol: body.nopol || "L 0000 XX",
+      id: nextId(unitsStore),
+      nopol: body.nopol.trim(),
       tipe: body.tipe || "Truk Standard",
       driver: body.driver || "-",
       tahun: body.tahun || "2024",
       id_customer: Number(body.id_customer) || 1,
-      customers: initialCustomers[0]
+      customers:
+        getByIdOr404(customersStore, Number(body.id_customer)) ?? undefined,
     };
-    unitsStore.unshift(newUnit);
-    return NextResponse.json({ message: "Unit created successfully", data: newUnit }, { status: 201 });
+    unitsStore.items.unshift(newUnit);
+    return NextResponse.json(
+      { message: "Unit created successfully", data: newUnit },
+      { status: 201 },
+    );
   } catch {
-    return NextResponse.json({ message: "Failed to create unit" }, { status: 400 });
+    return NextResponse.json(
+      { message: "Failed to create unit" },
+      { status: 400 },
+    );
   }
 }

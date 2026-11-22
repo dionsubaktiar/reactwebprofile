@@ -61,9 +61,8 @@ export type SpkStatus = "Selesai" | "Dalam Pengerjaan" | "Pending";
 export interface InvoicePart {
   id_part: number;
   name?: string;
+  /** Jumlah — satu-satunya field kuantitas; `qty` lama sudah dihapus (Hari 2). */
   quantity?: number;
-  /** Dipakai form edit saat menambah part baru. */
-  qty?: number;
   total_price?: number;
 }
 
@@ -80,7 +79,7 @@ export interface Invoice {
   tanggal: string;
   harga: number;
   id_package: number;
-  /** Tidak ada di mock saat ini; dipakai halaman invoice/edit. */
+  /** Unit pemilik invoice; ikut disimpan mock sejak Hari 2. */
   id_unit?: number;
   /** Hanya dipakai halaman invoice/edit. */
   kode_invoice?: string;
@@ -88,7 +87,7 @@ export interface Invoice {
   status_spk: SpkStatus;
   units: Unit;
   packages: Package | null;
-  /** Tidak ada di mock saat ini; halaman invoice/edit & view menanganinya sebagai opsional. */
+  /** Diisi mock sejak Hari 2; halaman invoice/edit & view menanganinya sebagai opsional. */
   parts?: InvoicePart[] | null;
   package_items?: PackageItem[] | null;
 }

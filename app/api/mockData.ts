@@ -43,10 +43,15 @@ export const initialInvoices: Invoice[] = [
     tanggal: "2026-03-12",
     harga: 2450000,
     id_package: 1,
+    id_unit: 1,
     status_invoice: "Lunas",
     status_spk: "Selesai",
     units: initialUnits[0],
-    packages: initialPackages[0]
+    packages: initialPackages[0],
+    parts: [
+      { id_part: 1, name: "Filter Oli Mesin Diesel HD", quantity: 1, total_price: 195000 },
+      { id_part: 4, name: "Fuel Filter Priming Pump", quantity: 2, total_price: 450000 },
+    ],
   },
   {
     id: 2,
@@ -54,10 +59,14 @@ export const initialInvoices: Invoice[] = [
     tanggal: "2026-03-14",
     harga: 4200000,
     id_package: 2,
+    id_unit: 2,
     status_invoice: "Pending",
     status_spk: "Dalam Pengerjaan",
     units: initialUnits[1],
-    packages: initialPackages[1]
+    packages: initialPackages[1],
+    parts: [
+      { id_part: 2, name: "Brake Pad Front Set Heavy", quantity: 1, total_price: 1000000 },
+    ],
   },
   {
     id: 3,
@@ -65,9 +74,13 @@ export const initialInvoices: Invoice[] = [
     tanggal: "2026-03-15",
     harga: 1650000,
     id_package: 3,
+    id_unit: 3,
     status_invoice: "Lunas",
     status_spk: "Selesai",
     units: initialUnits[2],
-    packages: initialPackages[2]
+    packages: initialPackages[2],
+    parts: [
+      { id_part: 3, name: "Clutch Disc / Kampas Kopling", quantity: 1, total_price: 2200000 },
+    ],
   }
 ];

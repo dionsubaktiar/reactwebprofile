@@ -47,3 +47,16 @@ Berikut rincian berkas yang telah diproduksi dan diterapkan langsung ke direktor
 3. Jika diperlukan revisi, gunakan tombol **`⏪ Revert Chat`** di header chat stream untuk membatalkan giliran ini.
 
 _Dokumen ini disusun otomatis oleh Perwakilan Swarm SDLC (Lead Developer & Chief QC Inspector)_
+---
+
+## Hari 2 — Kontrak API mock yang benar (19 Nov 2026)
+
+- **Branch/PR:** `day-2-kontrak-api-mock` → `main` (PR #2). Dikerjakan di atas `main` 63249e6 karena PR #1 sudah di-merge Dion 18 Nov 2026 13.34 WIB.
+- **Yang dikerjakan:**
+  - `app/api/_store.ts` (baru): satu store in-memory per resource (customer, unit, part, package, invoice) + helper `paginate(store, page)`, `getByIdOr404(store, id)`, `nextId()` berbasis counter. Menggantikan salinan store terpisah di tiap `route.ts` yang membuat PUT/DELETE tidak tersimpan.
+  - `app/api/_validate.ts` (baru): validasi minimal POST/PUT (400 bila field wajib kosong) + normalisasi `id_part` form ke `InvoicePart[]` (`qty`/`quantity` → `quantity`, baris kosong dibuang, `name`/`total_price` diisi dari store).
+  - Keempat `route.ts` koleksi + keempat `[id]/route.ts` memakai store bersama: PUT/DELETE benar-benar mengubah store, GET by-id 404 bila tidak ada (fallback ke item `[0]` dihapus), POST 400 bila tidak valid, id baru dari counter (bukan `Date.now()`).
+  - `/packages`, `/getcustomer`, `/getparts`, `/getunit` kini mengembalikan `{ message, data: Paginated<T> }` seperti resource lain; 4 halaman pemakainya diperbarui (`invoice/create`, `invoice/edit`, `units/create`, `units/edit`) — termasuk perbaikan bug lama di `invoice/create` & `invoice/edit` yang membaca `/packages` sebagai array langsung.
+  - Mock `Invoice` kini punya `id_unit` + `parts` (dengan `name`, `quantity`, `total_price`); bug `qty` vs `quantity` di `invoice/edit` diperbaiki (baris baru memakai `quantity`, submit mengirim `quantity`); field legacy `qty` dihapus dari tipe `InvoicePart`.
+- **Verifikasi:** `npm run build` sukses, `npx tsc --noEmit` bersih, 37/37 cek curl lolos (siklus create → GET → PUT → DELETE → GET 404 untuk Part; 404 by-id keempat resource; 400 untuk POST tanpa field wajib; bentuk paginasi keempat endpoint flat; normalisasi parts invoice; 5 halaman terkait me-render 200). Server tes dimatikan setelah pengujian.
+- **Catatan jujur:** form belum diuji klik-ketik di browser sungguhan; validasi status invoice/SPK (transisi) belum ada — itu Hari 6. Field `qty` lokal di form `invoice/create` masih dipakai internal form itu (konsisten di dalamnya) dan dinormalisasi API saat diterima; penyatuan namanya dijadwalkan saat form itu direvamp. Mock store tetap in-memory (hilang saat server restart).

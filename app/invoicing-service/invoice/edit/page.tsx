@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import apiClient from "@/app/lib/api";
-import type { Package, Unit, Part, Invoice } from "@/app/lib/types";
+import type { ApiResponse, Package, Unit, Part, Invoice } from "@/app/lib/types";
 import Navbar from "@/app/components/navbar";
 
 const EditInvoicePage = () => {
@@ -22,16 +22,16 @@ const EditInvoicePage = () => {
 
   useEffect(() => {
     apiClient
-      .get("/getunit")
-      .then((response) => setUnits(response.data.data))
+      .get<ApiResponse<Unit>>("/getunit")
+      .then((response) => setUnits(response.data.data.data))
       .catch(() => {});
     apiClient
-      .get("/packages")
-      .then((response) => setPackages(response.data))
+      .get<ApiResponse<Package>>("/packages")
+      .then((response) => setPackages(response.data.data.data))
       .catch(() => {});
     apiClient
-      .get("/getparts")
-      .then((response) => setParts(response.data.data))
+      .get<ApiResponse<Part>>("/getparts")
+      .then((response) => setParts(response.data.data.data))
       .catch(() => {});
   }, []);
 
@@ -60,9 +60,10 @@ const EditInvoicePage = () => {
       if (!prev) return prev;
 
       const updatedParts = (prev.parts ?? []).map((part, i) =>
-        i === index
-          ? { ...part, [name]: name === "qty" ? Number(value) : Number(value) }
-          : part
+        // `name` di sini "id_part" atau "quantity" — keduanya angka.
+        // Dulu baris baru memakai field `qty` sementara submit membaca
+        // `quantity`, sehingga qty yang ditambah selalu `undefined`.
+        i === index ? { ...part, [name]: Number(value) } : part
       );
 
       return { ...prev, parts: updatedParts };
@@ -72,7 +73,7 @@ const EditInvoicePage = () => {
   const addPart = () => {
     setInvoiceData((prev) => {
       if (!prev) return prev;
-      return { ...prev, parts: [...(prev.parts ?? []), { id_part: 0, qty: 1 }] };
+      return { ...prev, parts: [...(prev.parts ?? []), { id_part: 0, quantity: 1 }] };
     });
   };
 
@@ -114,7 +115,7 @@ const EditInvoicePage = () => {
         id_unit: invoiceData?.id_unit,
         id_part: invoiceData?.parts?.map((part) => ({
           id_part: part.id_part,
-          qty: part.quantity,
+          quantity: part.quantity,
         })),
       };
 

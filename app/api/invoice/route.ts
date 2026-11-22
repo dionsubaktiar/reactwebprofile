@@ -1,47 +1,59 @@
 import { NextRequest, NextResponse } from "next/server";
-import { initialInvoices, Invoice, initialUnits, initialPackages } from "../mockData";
-
-let invoicesStore: Invoice[] = [...initialInvoices];
+import {
+  getByIdOr404,
+  invoicesStore,
+  nextId,
+  packagesStore,
+  paginate,
+  unitsStore,
+} from "../_store";
+import { normalizeInvoiceParts, validateInvoice } from "../_validate";
+import type { Invoice } from "@/app/lib/types";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const page = parseInt(searchParams.get("page") || "1", 10);
-  const perPage = 10;
-  const total = invoicesStore.length;
-  const lastPage = Math.max(1, Math.ceil(total / perPage));
-  const start = (page - 1) * perPage;
-  const pagedData = invoicesStore.slice(start, start + perPage);
+  const perPage = parseInt(searchParams.get("per_page") || "10", 10);
 
   return NextResponse.json({
     message: "Success",
-    data: {
-      current_page: page,
-      data: pagedData,
-      last_page: lastPage,
-      prev_page_url: page > 1 ? `/api/invoice?page=${page - 1}` : null,
-      next_page_url: page < lastPage ? `/api/invoice?page=${page + 1}` : null,
-      total: total
-    }
+    data: paginate(invoicesStore, page, perPage, "/api/invoice"),
   });
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    const error = validateInvoice(body);
+    if (error) {
+      return NextResponse.json({ message: error }, { status: 400 });
+    }
+    const idUnit = Number(body.id_unit);
+    const idPackage = Number(body.id_package);
     const newInvoice: Invoice = {
-      id: Date.now(),
-      kilometer: Number(body.kilometer) || 10000,
-      tanggal: body.tanggal || new Date().toISOString().split("T")[0],
+      id: nextId(invoicesStore),
+      kilometer: Number(body.kilometer),
+      tanggal: body.tanggal,
       harga: Number(body.harga) || 1500000,
-      id_package: Number(body.id_package) || 1,
+      id_package: Number.isFinite(idPackage) && idPackage > 0 ? idPackage : 1,
+      id_unit:
+        Number.isFinite(idUnit) && idUnit > 0 ? idUnit : undefined,
       status_invoice: body.status_invoice || "Pending",
       status_spk: body.status_spk || "Dalam Pengerjaan",
-      units: initialUnits[0],
-      packages: initialPackages[0]
+      units: getByIdOr404(unitsStore, idUnit) ?? unitsStore.items[0],
+      packages:
+        getByIdOr404(packagesStore, idPackage) ?? packagesStore.items[0],
+      parts: normalizeInvoiceParts(body.id_part),
     };
-    invoicesStore.unshift(newInvoice);
-    return NextResponse.json({ message: "Invoice created successfully", data: newInvoice }, { status: 201 });
+    invoicesStore.items.unshift(newInvoice);
+    return NextResponse.json(
+      { message: "Invoice created successfully", data: newInvoice },
+      { status: 201 },
+    );
   } catch {
-    return NextResponse.json({ message: "Failed to create invoice" }, { status: 400 });
+    return NextResponse.json(
+      { message: "Failed to create invoice" },
+      { status: 400 },
+    );
   }
 }

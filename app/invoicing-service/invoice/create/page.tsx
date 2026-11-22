@@ -2,7 +2,7 @@
 
 import Navbar from "@/app/components/navbar";
 import apiClient from "@/app/lib/api";
-import type { Unit, Package, Part } from "@/app/lib/types";
+import type { ApiResponse, Unit, Package, Part } from "@/app/lib/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -27,14 +27,14 @@ const CreateInvoicePage = () => {
     const fetchData = async () => {
       try {
         const [unitResp, partsResp, packagesResp] = await Promise.all([
-          apiClient.get("/getunit"),
-          apiClient.get("/getparts"),
-          apiClient.get("/packages"),
+          apiClient.get<ApiResponse<Unit>>("/getunit"),
+          apiClient.get<ApiResponse<Part>>("/getparts"),
+          apiClient.get<ApiResponse<Package>>("/packages"),
         ]);
 
-        setUnits(unitResp.data.data);
-        setParts(partsResp.data.data);
-        setPackages(packagesResp.data);
+        setUnits(unitResp.data.data.data);
+        setParts(partsResp.data.data.data);
+        setPackages(packagesResp.data.data.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }

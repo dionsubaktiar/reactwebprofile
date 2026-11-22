@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import apiClient from "@/app/lib/api";
-import type { Customer } from "@/app/lib/types";
+import type { ApiResponse, Customer } from "@/app/lib/types";
 import Navbar from "../../../components/navbar";
 import { useRouter } from "next/navigation";
 
@@ -29,8 +29,8 @@ const UnitCreatePage = () => {
 
   useEffect(() => {
     apiClient
-      .get("/getcustomer")
-      .then((response) => setCustomers(response.data.data))
+      .get<ApiResponse<Customer>>("/getcustomer")
+      .then((response) => setCustomers(response.data.data.data))
       .catch((error) => console.error("Error fetching customers:", error));
   }, []);
 

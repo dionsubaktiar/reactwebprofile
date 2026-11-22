@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import apiClient from "@/app/lib/api";
-import type { Unit, Customer } from "@/app/lib/types";
+import type { ApiResponse, Unit, Customer } from "@/app/lib/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import Navbar from "../../../components/navbar";
 
@@ -18,8 +18,8 @@ const UnitEditPage = () => {
 
   useEffect(() => {
     apiClient
-      .get("/getcustomer")
-      .then((response) => setCustomers(response.data.data))
+      .get<ApiResponse<Customer>>("/getcustomer")
+      .then((response) => setCustomers(response.data.data.data))
       .catch((error) => console.error("Error fetching customers:", error));
   }, []);
   useEffect(() => {
