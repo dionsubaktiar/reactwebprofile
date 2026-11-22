@@ -5,7 +5,9 @@ import Navbar from "@/app/components/navbar";
 import apiClient from "@/app/lib/api";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FiTool, FiCheckCircle } from "react-icons/fi";
+import Link from "next/link";
+import { FiArrowLeft, FiTool, FiPlus } from "react-icons/fi";
+import FormField, { formControlClass } from "../../_components/FormField";
 
 const CreatePartsPage = () => {
   const [parts, setParts] = useState({
@@ -49,150 +51,126 @@ const CreatePartsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 font-sans antialiased">
-      <Navbar title="Registrasi Spare Part" subtitle="Tambahkan data komponen suku cadang baru" backUrl="/invoicing-service/parts" />
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
+      <Navbar title="Create Data Part" />
 
-      <main className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-8">
-          <div className="flex items-center gap-3 pb-5 border-b border-slate-100 dark:border-zinc-800">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
-              <FiTool className="h-6 w-6" />
-            </div>
-            <div>
-              <h2 className="text-lg font-bold text-slate-900 dark:text-white">
-                Spesifikasi &amp; Tarif Part
-              </h2>
-              <p className="text-xs text-slate-500 dark:text-zinc-400">
-                Lengkapi nama barang, merk, nomor part, dan estimasi jasa pasang
-              </p>
-            </div>
-          </div>
-
-          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="nama_barang" className="text-xs font-semibold text-slate-700 dark:text-zinc-300">
-                  Nama Barang <span className="text-rose-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="nama_barang"
-                  name="nama_barang"
-                  placeholder="Contoh: Kampas Rem Depan"
-                  value={parts.nama_barang}
-                  onChange={handleChange}
-                  required
-                  className="mt-1 w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="merk" className="text-xs font-semibold text-slate-700 dark:text-zinc-300">
-                  Merk / Manufaktur <span className="text-rose-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="merk"
-                  name="merk"
-                  placeholder="Contoh: Bendix, Denso"
-                  value={parts.merk}
-                  onChange={handleChange}
-                  required
-                  className="mt-1 w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="part_number" className="text-xs font-semibold text-slate-700 dark:text-zinc-300">
-                  Nomor Part (Part Number)
-                </label>
-                <input
-                  type="text"
-                  id="part_number"
-                  name="part_number"
-                  placeholder="Contoh: BD-9182"
-                  value={parts.part_number}
-                  onChange={handleChange}
-                  className="mt-1 w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="kendaraan" className="text-xs font-semibold text-slate-700 dark:text-zinc-300">
-                  Tipe Kendaraan <span className="text-rose-500">*</span>
-                </label>
-                <select
-                  id="kendaraan"
-                  name="kendaraan"
-                  value={parts.kendaraan}
-                  onChange={handleChange}
-                  required
-                  className="mt-1 w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
-                >
-                  <option value="Truck">Truck</option>
-                  <option value="Bus">Bus</option>
-                  <option value="Pickup">Pickup</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="harga" className="text-xs font-semibold text-slate-700 dark:text-zinc-300">
-                  Harga Pokok Part (Rp) <span className="text-rose-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  id="harga"
-                  name="harga"
-                  value={parts.harga}
-                  onChange={handleChange}
-                  required
-                  className="mt-1 w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 font-mono shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="jasa" className="text-xs font-semibold text-slate-700 dark:text-zinc-300">
-                  Biaya Pasang / Jasa Mekanik (Rp) <span className="text-rose-500">*</span>
-                </label>
-                <input
-                  type="number"
-                  id="jasa"
-                  name="jasa"
-                  value={parts.jasa}
-                  onChange={handleChange}
-                  required
-                  className="mt-1 w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 font-mono shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
-                />
-              </div>
-            </div>
-
-            {successMessage && (
-              <div className="flex items-center gap-2 rounded-xl bg-emerald-50 p-4 text-xs font-semibold text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300">
-                <FiCheckCircle className="h-5 w-5 shrink-0" />
-                <span>{successMessage}</span>
-              </div>
-            )}
-            {errorMessage && (
-              <div className="rounded-xl bg-rose-50 p-4 text-xs font-semibold text-rose-700 dark:bg-rose-950/50 dark:text-rose-300">
-                {errorMessage}
-              </div>
-            )}
-
-            <div className="pt-2">
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 py-3 text-xs font-bold text-white shadow-sm shadow-indigo-500/20 hover:from-indigo-700 hover:to-violet-700 transition disabled:opacity-50"
-              >
-                {isSubmitting ? "Menyimpan Data..." : "Daftarkan Spare Part"}
-              </button>
-            </div>
-          </form>
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+        <div className="mb-6">
+          <Link
+            href="/invoicing-service/parts"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition"
+          >
+            <FiArrowLeft /> Kembali ke Katalog Suku Cadang
+          </Link>
+          <h1 className="text-2xl font-extrabold tracking-tight mt-2 flex items-center gap-2">
+            <FiTool className="text-indigo-600 dark:text-indigo-500" /> Form Tambah Suku Cadang
+          </h1>
         </div>
+
+        {successMessage && (
+          <div className="mb-4 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-sm text-emerald-600 dark:text-emerald-400">
+            {successMessage}
+          </div>
+        )}
+        {errorMessage && (
+          <div className="mb-4 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-sm text-red-600 dark:text-red-400">
+            {errorMessage}
+          </div>
+        )}
+
+        <form
+          onSubmit={handleSubmit}
+          className="p-6 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4"
+        >
+          <FormField label="Nama Barang" htmlFor="nama_barang" required>
+            <input
+              type="text"
+              id="nama_barang"
+              name="nama_barang"
+              placeholder="nama barang"
+              value={parts.nama_barang}
+              onChange={handleChange}
+              required
+              className={formControlClass("indigo")}
+            />
+          </FormField>
+
+          <FormField label="Merk" htmlFor="merk" required>
+            <input
+              type="text"
+              id="merk"
+              name="merk"
+              placeholder="masukkan merk"
+              value={parts.merk}
+              onChange={handleChange}
+              required
+              className={formControlClass("indigo")}
+            />
+          </FormField>
+
+          <FormField label="Part Number" htmlFor="part_number">
+            <input
+              type="text"
+              id="part_number"
+              name="part_number"
+              placeholder="masukkan part number"
+              value={parts.part_number}
+              onChange={handleChange}
+              className={formControlClass("indigo")}
+            />
+          </FormField>
+
+          <FormField label="Jenis Kendaraan" htmlFor="kendaraan" required>
+            <select
+              id="kendaraan"
+              name="kendaraan"
+              value={parts.kendaraan}
+              onChange={handleChange}
+              required
+              className={formControlClass("indigo")}
+            >
+              <option value="">Pilih tipe</option>
+              <option value="Pickup">Pickup</option>
+              <option value="Bus">Bus</option>
+              <option value="Truck">Truck</option>
+            </select>
+          </FormField>
+
+          <FormField label="Harga Part" htmlFor="harga" required>
+            <input
+              type="number"
+              id="harga"
+              name="harga"
+              value={parts.harga}
+              onChange={handleChange}
+              required
+              className={formControlClass("indigo")}
+            />
+          </FormField>
+
+          <FormField label="Biaya pasang" htmlFor="jasa" required>
+            <input
+              type="number"
+              id="jasa"
+              name="jasa"
+              value={parts.jasa}
+              onChange={handleChange}
+              required
+              className={formControlClass("indigo")}
+            />
+          </FormField>
+
+          <div className="flex justify-end pt-2">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition shadow-sm disabled:opacity-50"
+            >
+              <FiPlus size={15} />
+              {isSubmitting ? "Submitting..." : "Create Parts"}
+            </button>
+          </div>
+        </form>
       </main>
     </div>
   );

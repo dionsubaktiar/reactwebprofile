@@ -4,9 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Navbar from "../components/navbar";
-import CreatePinjamanButton from "../components/createPinjamanButton";
-import CreateKendaraanButton from "../components/createKendaraanButton";
-import CreateKonsumenButton from "../components/createRegistButton";
+import FloatingActionButton from "../components/FloatingActionButton";
 import { 
   FiDollarSign, 
   FiTruck, 
@@ -591,9 +589,24 @@ const PinjamanPage = () => {
       </main>
 
       {/* Floating Action Buttons */}
-      <CreatePinjamanButton />
-      <CreateKendaraanButton />
-      <CreateKonsumenButton />
+      <FloatingActionButton
+        href="/pengajuan-kredit/create"
+        label="Pengajuan"
+        variant="pill"
+        position="bottom-4 right-6"
+      />
+      <FloatingActionButton
+        href="/pengajuan-kredit/create-kendaraan"
+        label="Kendaraan"
+        variant="pill"
+        position="bottom-20 right-6"
+      />
+      <FloatingActionButton
+        href="/pengajuan-kredit/create-konsumen"
+        label="Konsumen"
+        variant="pill"
+        position="bottom-36 right-6"
+      />
     </div>
   );
 };

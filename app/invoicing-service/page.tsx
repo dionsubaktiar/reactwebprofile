@@ -13,23 +13,25 @@ import type {
   ApiResponse,
 } from "@/app/lib/types";
 import { formatIDR, formatDateId, formatKm } from "@/app/lib/format";
-import { 
-  FiFileText, 
-  FiTruck, 
-  FiUsers, 
-  FiTool, 
-  FiPlus, 
-  FiSearch, 
-  FiActivity, 
-  FiDollarSign, 
-  FiCheckCircle, 
-  FiClock, 
-  FiMoreVertical, 
-  FiEye, 
-  FiEdit2, 
-  FiTrash2, 
-  FiAlertCircle 
+import {
+  FiFileText,
+  FiTruck,
+  FiUsers,
+  FiTool,
+  FiPlus,
+  FiSearch,
+  FiActivity,
+  FiDollarSign,
+  FiCheckCircle,
+  FiClock,
+  FiEye,
+  FiEdit2,
+  FiTrash2,
+  FiAlertCircle,
 } from "react-icons/fi";
+import RowActions from "./_components/RowActions";
+import ConfirmDialog from "./_components/ConfirmDialog";
+import StatusBadge from "./_components/StatusBadge";
 
 // Fallback high-fidelity sample data to guarantee clean rendering if remote API is offline
 const FALLBACK_INVOICES: Invoice[] = [
@@ -151,12 +153,14 @@ const MainPageInvoice = () => {
     prev_page_url: null,
     next_page_url: null
   });
-  const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [dataSource, setDataSource] = useState<"api" | "demo">("demo");
+  const [deleteTarget, setDeleteTarget] = useState<Invoice | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -191,16 +195,23 @@ const MainPageInvoice = () => {
     };
   }, [currentPage]);
 
-  const handleDelete = async (id: number) => {
-    if (confirm(`Yakin ingin menghapus Invoice #${id}?`)) {
-      try {
-        await apiClient.delete(`/invoice/${id}`);
-        setInvoice(prev => prev.filter(inv => inv.id !== id));
-      } catch (error) {
-        console.error("Error deleting invoice:", error);
-        // Optimistic update in UI
-        setInvoice(prev => prev.filter(inv => inv.id !== id));
-      }
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    setDeleteError(null);
+    try {
+      await apiClient.delete(`/invoice/${deleteTarget.id}`);
+      setInvoice((prev) => prev.filter((inv) => inv.id !== deleteTarget.id));
+      setDeleteTarget(null);
+    } catch (error) {
+      console.error("Error deleting invoice:", error);
+      // Rollback: invoice tetap di list, tampilkan error yang terlihat.
+      setDeleteError(
+        `Gagal menghapus Invoice #${deleteTarget.id}. Data tidak dihapus, coba lagi.`
+      );
+      setDeleteTarget(null);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -368,6 +379,12 @@ const MainPageInvoice = () => {
           </div>
         </div>
 
+        {deleteError && (
+          <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-sm text-red-600 dark:text-red-400">
+            {deleteError}
+          </div>
+        )}
+
         {/* Responsive Desktop Table */}
         <div className="bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm overflow-hidden">
           {isLoading ? (
@@ -397,8 +414,6 @@ const MainPageInvoice = () => {
                 </thead>
                 <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
                   {filteredInvoices.map((inv) => {
-                    const isLunas = inv.status_invoice === "Lunas";
-                    const isPending = inv.status_invoice === "Pending";
                     return (
                       <tr 
                         key={inv.id} 
@@ -448,14 +463,7 @@ const MainPageInvoice = () => {
 
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex flex-col gap-1 items-start">
-                            <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
-                              isLunas
-                                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"
-                                : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"
-                            }`}>
-                              {isLunas ? <FiCheckCircle size={11} /> : <FiClock size={11} />}
-                              {inv.status_invoice || "Pending"}
-                            </span>
+                            <StatusBadge status={inv.status_invoice || "Pending"} />
                             <span className="text-[10px] text-zinc-400">
                               SPK: {inv.status_spk || "Pending"}
                             </span>
@@ -463,45 +471,27 @@ const MainPageInvoice = () => {
                         </td>
 
                         <td className="px-6 py-4 whitespace-nowrap text-right text-xs relative">
-                          <div className="relative inline-block text-left">
-                            <button
-                              onClick={() => setOpenDropdown(openDropdown === inv.id ? null : inv.id)}
-                              className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition"
-                              title="Pilihan Aksi"
-                            >
-                              <FiMoreVertical size={16} />
-                            </button>
-
-                            {openDropdown === inv.id && (
-                              <div className="absolute right-0 top-full mt-1 w-44 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl z-50 py-1 divide-y divide-zinc-100 dark:divide-zinc-800">
-                                <div className="py-1">
-                                  <Link
-                                    href={`/invoicing-service/invoice/view?id=${inv.id}`}
-                                    className="flex items-center gap-2 px-3.5 py-2 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800"
-                                  >
-                                    <FiEye size={13} /> Tinjau SPK &amp; Invoice
-                                  </Link>
-                                  <Link
-                                    href={`/invoicing-service/invoice/edit?id=${inv.id}`}
-                                    className="flex items-center gap-2 px-3.5 py-2 text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800"
-                                  >
-                                    <FiEdit2 size={13} /> Edit Data
-                                  </Link>
-                                </div>
-                                <div className="py-1">
-                                  <button
-                                    onClick={() => {
-                                      setOpenDropdown(null);
-                                      handleDelete(inv.id);
-                                    }}
-                                    className="w-full flex items-center gap-2 px-3.5 py-2 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30"
-                                  >
-                                    <FiTrash2 size={13} /> Hapus Faktur
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
+                          <RowActions
+                            label={`Aksi untuk invoice #${inv.id}`}
+                            items={[
+                              {
+                                label: "Tinjau SPK & Invoice",
+                                icon: <FiEye size={13} />,
+                                href: `/invoicing-service/invoice/view?id=${inv.id}`,
+                              },
+                              {
+                                label: "Edit Data",
+                                icon: <FiEdit2 size={13} />,
+                                href: `/invoicing-service/invoice/edit?id=${inv.id}`,
+                              },
+                              {
+                                label: "Hapus Faktur",
+                                icon: <FiTrash2 size={13} />,
+                                danger: true,
+                                onClick: () => setDeleteTarget(inv),
+                              },
+                            ]}
+                          />
                         </td>
                       </tr>
                     );
@@ -538,6 +528,20 @@ const MainPageInvoice = () => {
           </div>
         </div>
       </main>
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        title="Hapus Invoice"
+        message={
+          deleteTarget
+            ? `Yakin ingin menghapus Invoice #${deleteTarget.id}? Tindakan ini tidak bisa dibatalkan.`
+            : ""
+        }
+        confirmLabel="Hapus"
+        isBusy={isDeleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 };

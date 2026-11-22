@@ -5,6 +5,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import apiClient from "@/app/lib/api";
 import type { ApiResponse, Package, Unit, Part, Invoice } from "@/app/lib/types";
 import Navbar from "@/app/components/navbar";
+import Link from "next/link";
+import { FiArrowLeft, FiFileText, FiTrash2, FiAlertCircle } from "react-icons/fi";
+import FormField, { formControlClass } from "../../_components/FormField";
 
 const EditInvoicePage = () => {
   const router = useRouter();
@@ -132,44 +135,86 @@ const EditInvoicePage = () => {
 
   if (loading)
     return (
-      <div className="flex items-center justify-center bg-slate-50 dark:bg-zinc-950 h-full min-h-screen">
-        <p className="text-lg font-semibold text-gray-600 animate-pulse">
-          Loading...
-        </p>
+      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
+        <Navbar title="Edit Invoice" />
+        <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+          <div className="p-16 text-center text-sm text-zinc-500 flex flex-col items-center justify-center gap-3">
+            <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+            Memuat data invoice...
+          </div>
+        </main>
       </div>
     );
   if (error)
     return (
-      <div className="flex items-center justify-center bg-slate-50 dark:bg-zinc-950 h-full min-h-screen">
-        <p className="text-lg font-semibold text-red-500 animate-pulse">
-          Error
-        </p>
+      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
+        <Navbar title="Edit Invoice" />
+        <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+          <div className="p-16 text-center text-sm text-zinc-500 flex flex-col items-center justify-center gap-2">
+            <FiAlertCircle size={28} className="text-zinc-400" />
+            <p className="font-semibold text-zinc-700 dark:text-zinc-300">
+              Gagal memuat invoice.
+            </p>
+            <Link
+              href="/invoicing-service"
+              className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition"
+            >
+              <FiArrowLeft /> Kembali ke Hub Invoicing
+            </Link>
+          </div>
+        </main>
       </div>
     );
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 font-sans antialiased">
-      <div className="max-w-7xl mx-auto p-6">
-        <Navbar title="Edit Invoice" />
-        {successMessage && <p className="text-green-500">{successMessage}</p>}
-        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
+      <Navbar title="Edit Invoice" />
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <label className="block">
-            Kode Invoice:
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+        <div className="mb-6">
+          <Link
+            href="/invoicing-service"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition"
+          >
+            <FiArrowLeft /> Kembali ke Hub Invoicing
+          </Link>
+          <h1 className="text-2xl font-extrabold tracking-tight mt-2 flex items-center gap-2">
+            <FiFileText className="text-indigo-600 dark:text-indigo-500" /> Edit Invoice{" "}
+            {invoiceData?.kode_invoice ?? `#${id}`}
+          </h1>
+        </div>
+
+        {successMessage && (
+          <div className="mb-4 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-sm text-emerald-600 dark:text-emerald-400">
+            {successMessage}
+          </div>
+        )}
+        {errorMessage && (
+          <div className="mb-4 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-sm text-red-600 dark:text-red-400">
+            {errorMessage}
+          </div>
+        )}
+
+        <form
+          onSubmit={handleSubmit}
+          className="p-6 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4"
+        >
+          <FormField label="Kode Invoice" htmlFor="kode_invoice">
             <input
               type="text"
+              id="kode_invoice"
               name="kode_invoice"
               value={invoiceData?.kode_invoice || ""}
               disabled
-              className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
+              className={`${formControlClass("indigo")} disabled:opacity-60`}
             />
-          </label>
-          <label>
-            Select Unit:
+          </FormField>
+
+          <FormField label="Unit" htmlFor="id_unit">
             <select
+              id="id_unit"
               name="id_unit"
-              className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
+              className={formControlClass("indigo")}
               value={invoiceData?.id_unit || ""}
               onChange={handleChange}
             >
@@ -179,35 +224,35 @@ const EditInvoicePage = () => {
                 </option>
               ))}
             </select>
-          </label>
+          </FormField>
 
-          <label>
-            Tanggal:
+          <FormField label="Tanggal" htmlFor="tanggal">
             <input
               type="date"
+              id="tanggal"
               name="tanggal"
               value={invoiceData?.tanggal || ""}
               onChange={handleChange}
-              className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
+              className={formControlClass("indigo")}
             />
-          </label>
+          </FormField>
 
-          <label>
-            Kilometer:
+          <FormField label="Kilometer" htmlFor="kilometer">
             <input
               type="number"
+              id="kilometer"
               name="kilometer"
               value={invoiceData?.kilometer || ""}
               onChange={handleChange}
-              className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
+              className={formControlClass("indigo")}
             />
-          </label>
+          </FormField>
 
-          <label>
-            Select Package:
+          <FormField label="Package" htmlFor="id_package">
             <select
+              id="id_package"
               name="id_package"
-              className="w-full p-2 border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
+              className={formControlClass("indigo")}
               value={invoiceData?.id_package || ""}
               onChange={handleChange}
             >
@@ -217,19 +262,21 @@ const EditInvoicePage = () => {
                 </option>
               ))}
             </select>
-          </label>
+          </FormField>
+
           <div>
+            <span className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+              Parts
+            </span>
             {invoiceData?.parts?.map((part, index) => (
-              <div key={index} className="flex gap-2 items-end">
+              <div key={index} className="flex gap-2 items-end mt-2">
                 <div className="w-3/4">
-                  <label className="text-sm font-medium dark:text-zinc-200">
-                    Parts
-                  </label>
                   <select
                     name="id_part"
                     value={part.id_part || ""}
                     onChange={(e) => handlePartChange(index, e)}
-                    className="p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
+                    className={formControlClass("indigo")}
+                    aria-label={`Part baris ${index + 1}`}
                   >
                     <option value="">Select Part</option>
                     {parts.map((p) => (
@@ -241,25 +288,22 @@ const EditInvoicePage = () => {
                 </div>
 
                 <div className="flex items-end gap-2 w-1/4">
-                  <div className="w-full">
-                    <label className="text-sm font-medium dark:text-zinc-200">
-                      Qty
-                    </label>
-                    <input
-                      type="number"
-                      name="quantity"
-                      value={part.quantity || ""}
-                      onChange={(e) => handlePartChange(index, e)}
-                      className="p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
-                    />
-                  </div>
-
+                  <input
+                    type="number"
+                    name="quantity"
+                    value={part.quantity || ""}
+                    onChange={(e) => handlePartChange(index, e)}
+                    placeholder="Qty"
+                    aria-label={`Jumlah baris ${index + 1}`}
+                    className={formControlClass("indigo")}
+                  />
                   <button
                     type="button"
                     onClick={() => removePart(index)}
-                    className="bg-red-500 text-white py-2 px-3 rounded-lg shadow-md hover:bg-red-600 transition duration-300"
+                    aria-label={`Hapus baris part ${index + 1}`}
+                    className="p-2.5 rounded-xl bg-red-500 text-white shadow-sm hover:bg-red-600 transition"
                   >
-                    X
+                    <FiTrash2 size={15} />
                   </button>
                 </div>
               </div>
@@ -268,24 +312,23 @@ const EditInvoicePage = () => {
             <button
               type="button"
               onClick={addPart}
-              className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white w-full mt-2 px-4 py-2 rounded-lg shadow-md hover:from-indigo-700 hover:to-violet-700"
+              className="w-full mt-3 px-4 py-2.5 text-xs font-bold rounded-xl border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition"
             >
               + Add Part
             </button>
           </div>
-          <div className="flex justify-end">
+
+          <div className="flex justify-end pt-2">
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`${
-                isSubmitting ? "bg-gray-400" : "bg-gradient-to-r from-indigo-600 to-violet-600"
-              } text-white px-4 py-2 rounded-lg shadow-md hover:from-indigo-700 hover:to-violet-700 transition duration-300`}
+              className="px-4 py-2.5 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition shadow-sm disabled:opacity-50"
             >
               {isSubmitting ? "Submitting..." : "Save"}
             </button>
           </div>
         </form>
-      </div>
+      </main>
     </div>
   );
 };

@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Navbar from '../components/navbar';
+import ConfirmDialog from '../invoicing-service/_components/ConfirmDialog';
 import { HiPlus, HiPencil, HiTrash, HiSearch, HiDocumentText } from 'react-icons/hi';
 
 interface Article {
@@ -45,11 +46,16 @@ const initialArticles: Article[] = [
 export default function AuthCrudPage() {
   const [articles, setArticles] = useState<Article[]>(initialArticles);
   const [search, setSearch] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState<Article | null>(null);
 
   const handleDelete = (id: number) => {
-    if (confirm('Apakah Anda yakin ingin menghapus artikel ini?')) {
-      setArticles((prev) => prev.filter((a) => a.id !== id));
-    }
+    setDeleteTarget(articles.find((a) => a.id === id) ?? null);
+  };
+
+  const confirmDelete = () => {
+    if (!deleteTarget) return;
+    setArticles((prev) => prev.filter((a) => a.id !== deleteTarget.id));
+    setDeleteTarget(null);
   };
 
   const filtered = articles.filter((a) =>
@@ -163,6 +169,19 @@ export default function AuthCrudPage() {
           </div>
         </div>
       </main>
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        title="Hapus Artikel"
+        message={
+          deleteTarget
+            ? `Apakah Anda yakin ingin menghapus artikel "${deleteTarget.title}"? Tindakan ini tidak bisa dibatalkan.`
+            : ""
+        }
+        confirmLabel="Hapus"
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }
