@@ -5,6 +5,9 @@ import apiClient from "@/app/lib/api";
 import type { ApiResponse, Unit, Package, Part } from "@/app/lib/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { FiArrowLeft, FiFileText, FiPlus, FiTrash2 } from "react-icons/fi";
+import FormField, { formControlClass } from "../../_components/FormField";
 
 const CreateInvoicePage = () => {
   const [formData, setFormData] = useState({
@@ -50,31 +53,6 @@ const CreateInvoicePage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // const handlePartChange = (
-  //   index: number,
-  //   e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  // ) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prev) => {
-  //     const updatedParts = [...prev.id_part];
-  //     updatedParts[index] = { ...updatedParts[index], [name]: value };
-  //     return { ...prev, id_part: updatedParts };
-  //   });
-  // };
-
-  // const addPart = () => {
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     id_part: [...prev.id_part, { id_part: "", qty: "" }],
-  //   }));
-  // };
-
-  // const removePart = (index: number) => {
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     id_part: prev.id_part.filter((_, i) => i !== index),
-  //   }));
-  // };
   const handlePartChange = (
     index: number,
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -133,22 +111,47 @@ const CreateInvoicePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 font-sans antialiased">
-      <div className="max-w-7xl mx-auto p-6">
-        <Navbar title="Create Invoice" />
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
+      <Navbar title="Create Invoice" />
 
-        {successMessage && <p className="text-green-500">{successMessage}</p>}
-        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-        <form onSubmit={handleSubmit} className="space-y-2">
-          <div>
-            <label className="block text-sm font-medium dark:text-zinc-200">
-              Unit<span className="text-red-500">*</span>
-            </label>
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+        <div className="mb-6">
+          <Link
+            href="/invoicing-service"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition"
+          >
+            <FiArrowLeft /> Kembali ke Hub Invoicing
+          </Link>
+          <h1 className="text-2xl font-extrabold tracking-tight mt-2 flex items-center gap-2">
+            <FiFileText className="text-indigo-600 dark:text-indigo-500" /> Form Buat Invoice
+          </h1>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+            Buat invoice servis baru untuk satu unit armada.
+          </p>
+        </div>
+
+        {successMessage && (
+          <div className="mb-4 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-sm text-emerald-600 dark:text-emerald-400">
+            {successMessage}
+          </div>
+        )}
+        {errorMessage && (
+          <div className="mb-4 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-sm text-red-600 dark:text-red-400">
+            {errorMessage}
+          </div>
+        )}
+
+        <form
+          onSubmit={handleSubmit}
+          className="p-6 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4"
+        >
+          <FormField label="Unit" htmlFor="id_unit" required>
             <select
+              id="id_unit"
               name="id_unit"
               value={formData.id_unit}
               onChange={handleChange}
-              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
+              className={formControlClass("indigo")}
               required
             >
               <option value="">Pilih Unit</option>
@@ -158,44 +161,40 @@ const CreateInvoicePage = () => {
                 </option>
               ))}
             </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium dark:text-zinc-200">
-              Kilometer<span className="text-red-500">*</span>
-            </label>
+          </FormField>
+
+          <FormField label="Kilometer" htmlFor="kilometer" required>
             <input
               type="number"
+              id="kilometer"
               name="kilometer"
               placeholder="1234 (km)"
               value={formData.kilometer}
               onChange={handleChange}
-              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
+              className={formControlClass("indigo")}
               required
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium dark:text-zinc-200">
-              Tanggal<span className="text-red-500">*</span>
-            </label>
+          </FormField>
+
+          <FormField label="Tanggal" htmlFor="tanggal" required>
             <input
               type="date"
+              id="tanggal"
               name="tanggal"
               value={formData.tanggal}
               onChange={handleChange}
-              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
+              className={formControlClass("indigo")}
               required
             />
-          </div>
+          </FormField>
 
-          <div>
-            <label className="block text-sm font-medium dark:text-zinc-200">
-              Package
-            </label>
+          <FormField label="Package" htmlFor="id_package">
             <select
+              id="id_package"
               name="id_package"
               value={formData.id_package}
               onChange={handleChange}
-              className="mt-1 p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
+              className={formControlClass("indigo")}
             >
               <option value="">Select Package</option>
               {packages.map((pkg) => (
@@ -204,21 +203,22 @@ const CreateInvoicePage = () => {
                 </option>
               ))}
             </select>
-          </div>
+          </FormField>
+
           <div>
+            <span className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+              Parts
+            </span>
             {formData.id_part.length > 0 &&
               formData.id_part.map((part, index) => (
-                <div key={index} className="flex gap-2 items-end mt-1">
-                  {/* Parts Select */}
+                <div key={index} className="flex gap-2 items-end mt-2">
                   <div className="w-3/4">
-                    <label className="text-sm font-medium dark:text-zinc-200">
-                      Parts
-                    </label>
                     <select
                       name="id_part"
                       value={part.id_part}
                       onChange={(e) => handlePartChange(index, e)}
-                      className="p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
+                      className={formControlClass("indigo")}
+                      aria-label={`Part baris ${index + 1}`}
                     >
                       <option value="">Select Part</option>
                       {parts.map((p) => (
@@ -229,56 +229,49 @@ const CreateInvoicePage = () => {
                     </select>
                   </div>
 
-                  {/* Qty Input & Remove Button */}
                   <div className="flex items-end gap-2 w-1/4">
-                    <div className="w-full">
-                      <label className="text-sm font-medium dark:text-zinc-200">
-                        Qty
-                      </label>
-                      <input
-                        type="number"
-                        name="qty"
-                        value={part.qty}
-                        onChange={(e) => handlePartChange(index, e)}
-                        className="p-2 w-full border rounded-lg dark:bg-gray-800 dark:text-zinc-200"
-                      />
-                    </div>
-
-                    {/* Remove Button */}
+                    <input
+                      type="number"
+                      name="qty"
+                      value={part.qty}
+                      onChange={(e) => handlePartChange(index, e)}
+                      placeholder="Qty"
+                      aria-label={`Jumlah baris ${index + 1}`}
+                      className={formControlClass("indigo")}
+                    />
                     <button
                       type="button"
                       onClick={() => removePart(index)}
-                      className="bg-red-500 text-white py-2 px-3 rounded-lg shadow-md hover:bg-red-600 transition duration-300 "
+                      aria-label={`Hapus baris part ${index + 1}`}
+                      className="p-2.5 rounded-xl bg-red-500 text-white shadow-sm hover:bg-red-600 transition"
                     >
-                      X
+                      <FiTrash2 size={15} />
                     </button>
                   </div>
                 </div>
               ))}
 
-            {/* Add Part Button */}
             <button
               type="button"
               onClick={addPart}
-              className="bg-gradient-to-r from-indigo-600 to-violet-600 text-white w-full mt-2 px-4 py-2 rounded-lg shadow-md hover:from-indigo-700 hover:to-violet-700 transition duration-300"
+              className="w-full mt-3 px-4 py-2.5 text-xs font-bold rounded-xl border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition"
             >
               + Add Part
             </button>
           </div>
 
-          <div className="flex justify-end">
+          <div className="flex justify-end pt-2">
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`${
-                isSubmitting ? "bg-gray-400" : "bg-gradient-to-r from-indigo-600 to-violet-600"
-              } text-white px-4 py-2 rounded-lg shadow-md hover:from-indigo-700 hover:to-violet-700 transition duration-300`}
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition shadow-sm disabled:opacity-50"
             >
+              <FiPlus size={15} />
               {isSubmitting ? "Submitting..." : "Create Invoice"}
             </button>
           </div>
         </form>
-      </div>
+      </main>
     </div>
   );
 };

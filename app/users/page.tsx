@@ -4,7 +4,8 @@
 import { useEffect, useState, useMemo } from "react";
 import Navbar from "../components/navbar";
 import UserCard from "../components/userCard";
-import CreateUserButton from "../components/createButton";
+import FloatingActionButton from "../components/FloatingActionButton";
+import CreateUserModal from "../components/createModal";
 import axios from "axios";
 import { HiUsers, HiSearch, HiRefresh, HiSparkles } from "react-icons/hi";
 
@@ -30,6 +31,7 @@ const UserPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState("");
   const [isLive, setIsLive] = useState(false);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const fetchUsers = async () => {
     try {
@@ -148,7 +150,14 @@ const UserPage = () => {
         )}
 
         {/* Floating Action Button */}
-        <CreateUserButton />
+        <FloatingActionButton
+          ariaLabel="Tambah user"
+          onClick={() => setIsCreateOpen(true)}
+        />
+        <CreateUserModal
+          isOpen={isCreateOpen}
+          closeModal={() => setIsCreateOpen(false)}
+        />
       </main>
     </div>
   );

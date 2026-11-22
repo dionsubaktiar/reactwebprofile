@@ -4,6 +4,7 @@ import Navbar from "@/app/components/navbar";
 import apiClient from "@/app/lib/api";
 import type { ApiResponse, Customer, Invoice, Unit } from "@/app/lib/types";
 import { formatDateId, formatIDR } from "@/app/lib/format";
+import StatusBadge from "../../_components/StatusBadge";
 import Link from "next/link";
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
@@ -254,13 +255,7 @@ function CustomerDetail() {
                     </td>
                     <td className="px-6 py-3 font-mono text-zinc-700 dark:text-zinc-300">{inv.units?.nopol ?? "-"}</td>
                     <td className="px-6 py-3">
-                      <span className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-semibold ${
-                        inv.status_invoice === "Lunas"
-                          ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                          : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                      }`}>
-                        {inv.status_invoice}
-                      </span>
+                      <StatusBadge status={inv.status_invoice} />
                     </td>
                     <td className="px-6 py-3 text-zinc-700 dark:text-zinc-300">{inv.status_spk}</td>
                     <td className="px-6 py-3 text-right font-mono font-bold text-zinc-900 dark:text-white">

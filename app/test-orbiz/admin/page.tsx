@@ -2,6 +2,7 @@
 "use client";
 
 import Navbar from "@/app/components/navbar";
+import ConfirmDialog from "@/app/invoicing-service/_components/ConfirmDialog";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -33,6 +34,8 @@ const AdminPage = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Book | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -67,6 +70,26 @@ const AdminPage = () => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const handleDelete = (id: number) => {
+    setDeleteTarget(books.find((b) => b.id === id) ?? null);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    try {
+      await axios.delete(`/api/books/${deleteTarget.id}`);
+      setBooks(books.filter((book) => book.id !== deleteTarget.id));
+      setDeleteTarget(null);
+    } catch (error) {
+      console.error("Error deleting customer:", error);
+      // Rollback: buku tetap di list bila DELETE gagal.
+      setDeleteTarget(null);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title || !formData.author) return;
@@ -90,10 +113,6 @@ const AdminPage = () => {
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const handleDelete = (id: number) => {
-    setBooks((prev) => prev.filter((b) => b.id !== id));
   };
 
   return (
@@ -245,6 +264,19 @@ const AdminPage = () => {
           </div>
         </div>
       </main>
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        title="Hapus Buku"
+        message={
+          deleteTarget
+            ? `Are you sure you want to delete "${deleteTarget.title}"? Tindakan ini tidak bisa dibatalkan.`
+            : ""
+        }
+        confirmLabel="Hapus"
+        isBusy={isDeleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 };
