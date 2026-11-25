@@ -3,6 +3,7 @@
 
 import Navbar from "@/app/components/navbar";
 import apiClient from "@/app/lib/api";
+import { applyPartFieldChange, PART_FORM_DEFAULTS } from "@/app/lib/part-form";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
@@ -10,14 +11,7 @@ import { FiArrowLeft, FiTool, FiPlus } from "react-icons/fi";
 import FormField, { formControlClass } from "../../_components/FormField";
 
 const CreatePartsPage = () => {
-  const [parts, setParts] = useState({
-    part_number: "",
-    nama_barang: "",
-    merk: "",
-    kendaraan: "Truck",
-    harga: 250000,
-    jasa: 50000,
-  });
+  const [parts, setParts] = useState(PART_FORM_DEFAULTS);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -34,20 +28,20 @@ const CreatePartsPage = () => {
       setSuccessMessage("Komponen suku cadang berhasil didaftarkan!");
       setTimeout(() => router.push("/invoicing-service/parts"), 1000);
     } catch {
-      setSuccessMessage("(Simulasi) Komponen suku cadang berhasil didaftarkan lokal.");
-      setTimeout(() => router.push("/invoicing-service/parts"), 1200);
+      // Jangan klaim tersimpan bila request gagal — tampilkan error yang terlihat.
+      setErrorMessage(
+        "Gagal menyimpan part. Periksa koneksi atau data isian, lalu coba lagi.",
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
-    const parsedValue =
-      name === "harga" || name === "jasa" ? Number(value) : value;
-    setParts((prev) => ({ ...prev, [name]: parsedValue }));
+    setParts((prev) => applyPartFieldChange(prev, name, value));
   };
 
   return (
@@ -63,7 +57,8 @@ const CreatePartsPage = () => {
             <FiArrowLeft /> Kembali ke Katalog Suku Cadang
           </Link>
           <h1 className="text-2xl font-extrabold tracking-tight mt-2 flex items-center gap-2">
-            <FiTool className="text-indigo-600 dark:text-indigo-500" /> Form Tambah Suku Cadang
+            <FiTool className="text-indigo-600 dark:text-indigo-500" /> Form
+            Tambah Suku Cadang
           </h1>
         </div>
 

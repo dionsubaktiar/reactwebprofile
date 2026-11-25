@@ -2,6 +2,7 @@
 
 import {
   createContext,
+  useCallback,
   useState,
   useContext,
   ReactNode,
@@ -39,6 +40,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isRestoringAuth, setIsRestoringAuth] = useState<boolean>(true);
   const router = useRouter();
 
+  // Dideklarasikan SEBELUM effect restore di bawah (Hari 7): sebelumnya
+  // `logout` dipakai di dalam effect padahal baru dideklarasikan sesudahnya
+  // — bila JSON user tersimpan rusak, pemanggilan itu melempar
+  // ReferenceError (TDZ) dan restore auth gagal total. `useCallback`
+  // supaya identitasnya stabil dan bisa masuk dependency effect.
+  const logout = useCallback(() => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    localStorage.removeItem(AUTH_USER_KEY);
+    router.push("/auth-crud/login");
+  }, [router]);
+
   // Restore authentication state from localStorage on initialization
   useEffect(() => {
     const storedToken = localStorage.getItem(AUTH_TOKEN_KEY);
@@ -48,7 +62,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         setToken(storedToken);
         setUser(JSON.parse(storedUser));
-        console.log("Auth state restored successfully.");
       } catch (error) {
         console.error("Failed to parse stored user:", error);
         logout(); // Clear invalid data
@@ -56,23 +69,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     setIsRestoringAuth(false); // Mark as done restoring auth state
-  }, []);
+  }, [logout]);
 
   const setAuth = (user: User, token: string) => {
     setUser(user);
     setToken(token);
     localStorage.setItem(AUTH_TOKEN_KEY, token);
     localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
-    console.log("Auth state updated and persisted.");
-  };
-
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem(AUTH_TOKEN_KEY);
-    localStorage.removeItem(AUTH_USER_KEY);
-    console.log("Auth state cleared.");
-    router.push("/auth-crud/login");
   };
 
   const loginWithOAuth = async (provider: "google" | "github") => {
