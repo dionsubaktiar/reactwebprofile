@@ -3,6 +3,7 @@
 
 import Navbar from "@/app/components/navbar";
 import apiClient from "@/app/lib/api";
+import { applyPartFieldChange } from "@/app/lib/part-form";
 import type { Part } from "@/app/lib/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
@@ -47,12 +48,10 @@ const EditPartPage = () => {
   }, [id]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
-    const parsedValue =
-      name === "harga" || name === "jasa" ? Number(value) : value;
-    setParts((prev) => (prev ? { ...prev, [name]: parsedValue } : null));
+    setParts((prev) => (prev ? applyPartFieldChange(prev, name, value) : null));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -70,8 +69,10 @@ const EditPartPage = () => {
       setSuccessMessage("Data part berhasil diperbarui!");
       setTimeout(() => router.push("/invoicing-service/parts"), 1000);
     } catch {
-      setSuccessMessage("(Simulasi) Data part berhasil diperbarui lokal.");
-      setTimeout(() => router.push("/invoicing-service/parts"), 1200);
+      // Jangan klaim tersimpan bila request gagal — tampilkan error yang terlihat.
+      setErrorMessage(
+        "Gagal menyimpan perubahan. Periksa koneksi atau data isian, lalu coba lagi.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -90,7 +91,8 @@ const EditPartPage = () => {
             <FiArrowLeft /> Kembali ke Katalog Suku Cadang
           </Link>
           <h1 className="text-2xl font-extrabold tracking-tight mt-2 flex items-center gap-2">
-            <FiTool className="text-indigo-600 dark:text-indigo-500" /> Edit Suku Cadang
+            <FiTool className="text-indigo-600 dark:text-indigo-500" /> Edit
+            Suku Cadang
           </h1>
         </div>
 
@@ -203,7 +205,9 @@ const EditPartPage = () => {
                 disabled={isSubmitting}
                 className="px-4 py-2.5 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition shadow-sm disabled:opacity-50"
               >
-                {isSubmitting ? "Menyimpan Perubahan..." : "Simpan Perubahan Part"}
+                {isSubmitting
+                  ? "Menyimpan Perubahan..."
+                  : "Simpan Perubahan Part"}
               </button>
             </div>
           </form>
