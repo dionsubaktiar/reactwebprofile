@@ -1,148 +1,131 @@
-"use client";
-
+import Image from "next/image";
 import Link from "next/link";
 import {
   FiArrowRight,
-  FiCheckCircle,
   FiGithub,
   FiGitlab,
   FiLinkedin,
   FiMail,
   FiMapPin,
-  FiTerminal,
 } from "react-icons/fi";
 
 export const EnhancedHero = () => {
   return (
-    <section className="relative overflow-hidden pt-28 pb-16 md:pt-36 md:pb-24 border-b border-zinc-200 dark:border-zinc-800/80 bg-gradient-to-b from-zinc-50 via-white to-zinc-50/50 dark:from-zinc-950 dark:via-zinc-900/60 dark:to-zinc-950">
-      {/* Subtle decorative glow */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-indigo-500/10 dark:bg-indigo-600/15 blur-3xl rounded-full"
-      />
+    <section className="py-14 md:py-20 border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-10 items-center">
+          <div className="md:col-span-8 space-y-5">
+            <div className="inline-flex items-center gap-2 text-xs font-medium text-zinc-500 dark:text-zinc-400">
+              <FiMapPin className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+              <span>Surabaya, Indonesia &middot; Fullstack Software Engineer</span>
+            </div>
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="flex flex-col items-center text-center space-y-6">
-          {/* Status Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-medium tracking-wide shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            Available for Senior & Architectural Roles
-          </div>
-
-          {/* Main Title & Role */}
-          <div className="space-y-3 max-w-3xl">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold font-poppins tracking-tight text-zinc-900 dark:text-white">
-              Hi, I&apos;m{" "}
-              <span className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent">
+            <div className="space-y-2.5">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-zinc-900 dark:text-white">
                 Dion Subaktiar
-              </span>
-            </h1>
-            <p className="text-lg sm:text-xl font-medium text-zinc-700 dark:text-zinc-300 font-poppins">
-              Lead Developer & Senior Software Engineer
+              </h1>
+              <p className="text-base sm:text-lg font-medium text-zinc-700 dark:text-zinc-300">
+                Building enterprise logistics systems with .NET, Laravel, and Next.js.
+              </p>
+            </div>
+
+            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-2xl">
+              Middle Developer at PT. Besmart Global Indonesia focusing on core business
+              workflows, shared backend modules, and supply chain platforms spanning
+              order dispatching, shipment telemetry, and customer invoicing.
             </p>
-            <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 font-light leading-relaxed max-w-2xl mx-auto">
-              Specializing in scalable distributed enterprise platforms, microservices architecture,
-              and corporate logistics ecosystems. Bridging high-performance backend systems with
-              clean, accessible modern web and mobile applications.
+
+            <div className="flex flex-wrap items-center gap-3 pt-1">
+              <Link
+                href="#projects"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-colors"
+              >
+                View Projects
+                <FiArrowRight className="h-4 w-4" />
+              </Link>
+              <Link
+                href="/invoicing-service"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-medium text-sm transition-colors"
+              >
+                Open Invoicing Demo
+              </Link>
+            </div>
+
+            <div className="flex items-center gap-2.5 pt-1">
+              <a
+                href="https://github.com/dionsubaktiar"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub Profile"
+                className="p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors bg-white dark:bg-zinc-900"
+              >
+                <FiGithub className="w-4 h-4" />
+              </a>
+              <a
+                href="https://gitlab.clientsolve.com/dion"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitLab Profile"
+                className="p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors bg-white dark:bg-zinc-900"
+              >
+                <FiGitlab className="w-4 h-4" />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/dionsubaktiar"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn Profile"
+                className="p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors bg-white dark:bg-zinc-900"
+              >
+                <FiLinkedin className="w-4 h-4" />
+              </a>
+              <a
+                href="mailto:dionsubaktiar@gmail.com"
+                aria-label="Email Contact"
+                className="p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors bg-white dark:bg-zinc-900"
+              >
+                <FiMail className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+
+          <div className="md:col-span-4 flex justify-start md:justify-end">
+            <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900">
+              <Image
+                src="/assets/images/profile.png"
+                alt="Dion Subaktiar"
+                fill
+                priority
+                className="object-cover"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-zinc-200 dark:border-zinc-800 pt-8 mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div>
+            <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+              Current Role
+            </p>
+            <p className="text-sm font-semibold text-zinc-900 dark:text-white mt-1">
+              Middle Developer, PT. Besmart Global Indonesia
             </p>
           </div>
-
-          {/* Location & Meta */}
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs sm:text-sm text-zinc-500 dark:text-zinc-400">
-            <span className="inline-flex items-center gap-1.5">
-              <FiMapPin className="text-indigo-500" /> Surabaya, Indonesia
-            </span>
-            <span>•</span>
-            <span className="inline-flex items-center gap-1.5">
-              <FiTerminal className="text-indigo-500" /> Fullstack & Systems Architecture
-            </span>
-            <span>•</span>
-            <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
-              <FiCheckCircle /> Enterprise Production Ready
-            </span>
+          <div>
+            <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+              Experience
+            </p>
+            <p className="text-sm font-semibold text-zinc-900 dark:text-white mt-1">
+              Since June 2023 (Backend, Web &amp; Logistics)
+            </p>
           </div>
-
-          {/* CTAs */}
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-            <Link
-              href="#projects"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm transition-all shadow-sm hover:shadow-indigo-500/20 active:scale-95"
-            >
-              View Featured Works
-              <FiArrowRight />
-            </Link>
-            <Link
-              href="/invoicing-service"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700 text-zinc-800 dark:text-zinc-200 font-medium text-sm transition-all shadow-sm active:scale-95"
-            >
-              Live Invoicing Demo
-            </Link>
-          </div>
-
-          {/* Social Links */}
-          <div className="flex items-center gap-3 pt-3">
-            <a
-              href="https://github.com/dionsubaktiar"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub Profile"
-              className="p-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors bg-white dark:bg-zinc-900 shadow-sm"
-            >
-              <FiGithub className="w-4 h-4" />
-            </a>
-            <a
-              href="https://gitlab.clientsolve.com/dion"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitLab Profile"
-              className="p-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors bg-white dark:bg-zinc-900 shadow-sm"
-            >
-              <FiGitlab className="w-4 h-4" />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/dionsubaktiar"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn Profile"
-              className="p-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors bg-white dark:bg-zinc-900 shadow-sm"
-            >
-              <FiLinkedin className="w-4 h-4" />
-            </a>
-            <a
-              href="mailto:dionsubaktiar@gmail.com"
-              aria-label="Email Contact"
-              className="p-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-400 dark:hover:border-zinc-600 transition-colors bg-white dark:bg-zinc-900 shadow-sm"
-            >
-              <FiMail className="w-4 h-4" />
-            </a>
-          </div>
-
-          {/* Quick Metrics / Highlights Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full pt-8 text-left">
-            <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/40 shadow-sm">
-              <p className="text-2xl font-bold font-poppins text-indigo-600 dark:text-indigo-400">5+ Yrs</p>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 font-light">
-                Software Engineering Experience
-              </p>
-            </div>
-            <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/40 shadow-sm">
-              <p className="text-2xl font-bold font-poppins text-indigo-600 dark:text-indigo-400">Enterprise</p>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 font-light">
-                Transport & Logistics Platforms
-              </p>
-            </div>
-            <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/40 shadow-sm">
-              <p className="text-2xl font-bold font-poppins text-indigo-600 dark:text-indigo-400">Microservices</p>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 font-light">
-                Atomic Transactions & Cloud Pipelines
-              </p>
-            </div>
-            <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/40 shadow-sm">
-              <p className="text-2xl font-bold font-poppins text-indigo-600 dark:text-indigo-400">3.40 / 4.0</p>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 font-light">
-                Information Engineering Degree
-              </p>
-            </div>
+          <div>
+            <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+              Education
+            </p>
+            <p className="text-sm font-semibold text-zinc-900 dark:text-white mt-1 tabular-nums">
+              B.Eng. Information Engineering &middot; GPA 3.40
+            </p>
           </div>
         </div>
       </div>

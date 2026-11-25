@@ -1,6 +1,6 @@
 "use client";
 
-import Navbar from "@/app/components/navbar";
+import SubPageHeader from "@/app/components/SubPageHeader";
 import apiClient from "@/app/lib/api";
 import type { Customer, Pagination } from "@/app/lib/types";
 import Link from "next/link";
@@ -23,7 +23,7 @@ import KpiCard from "../_components/KpiCard";
 import SearchBar from "../_components/SearchBar";
 import DataTable from "../_components/DataTable";
 import PaginationControls from "../_components/Pagination";
-import ConfirmDialog from "../_components/ConfirmDialog";
+import ConfirmDialog from "@/app/components/ConfirmDialog";
 
 const FALLBACK_CUSTOMERS: Customer[] = [
   { id: 1, nama_perusahaan: "PT Nusantara Prima Logistics", alamat: "Jl. Margomulyo Indah No. 45, Surabaya", pic: "Budi Santoso", kontak: "0812-3456-7890" },
@@ -124,33 +124,35 @@ export default function CustomerPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
-      <Navbar title="Direktori Pelanggan & Mitra" />
+      <SubPageHeader title="Direktori Pelanggan & Mitra" />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
         <PageHeader
           icon={<FiUsers size={22} />}
           title="Kelola Pelanggan &amp; Mitra Korporat"
           subtitle="Data master entitas korporat, alamat operasional, dan kontak PIC penanggung jawab armada logistik."
-          accent="emerald"
+          accent="indigo"
           actions={
             <>
-              <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${
+              <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border ${
                 dataSource === "api"
                   ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
                   : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30"
               }`}>
-                <span className={`w-2 h-2 rounded-full ${dataSource === "api" ? "bg-emerald-500 animate-pulse" : "bg-amber-400"}`}></span>
+                <span className={`w-2 h-2 rounded-full ${dataSource === "api" ? "bg-emerald-500" : "bg-amber-400"}`}></span>
                 {dataSource === "api" ? "Live Serverless Backend" : "Standalone Client Mode"}
               </span>
-              <Link href="/invoicing-service">
-                <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition shadow-sm">
-                  <FiArrowLeft /> Hub Invoicing
-                </button>
+              <Link
+                href="/invoicing-service"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-sm"
+              >
+                <FiArrowLeft /> Hub Invoicing
               </Link>
-              <Link href="/invoicing-service/customers/create">
-                <button className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm">
-                  <FiPlus size={15} /> Tambah Mitra Baru
-                </button>
+              <Link
+                href="/invoicing-service/customers/create"
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition-colors shadow-sm"
+              >
+                <FiPlus size={15} /> Tambah Mitra Baru
               </Link>
             </>
           }
@@ -162,7 +164,7 @@ export default function CustomerPage() {
             value={<>{stats.totalCount} Perusahaan</>}
             hint="Mitra aktif pada ekosistem invoicing"
             icon={<FiBriefcase />}
-            accent="emerald"
+            accent="indigo"
           />
           <KpiCard
             label="Kontak PIC Valid"
@@ -190,10 +192,10 @@ export default function CustomerPage() {
           value={searchQuery}
           onChange={setSearchQuery}
           placeholder="Cari nama perusahaan, PIC, alamat, atau nomor telepon..."
-          accent="emerald"
+          accent="indigo"
         >
           {dataSource === "demo" && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
               <FiActivity /> Demo Fallback
             </span>
           )}
@@ -211,7 +213,7 @@ export default function CustomerPage() {
           isEmpty={filteredCompanies.length === 0}
           emptyTitle="Tidak ada mitra yang cocok dengan pencarian."
           emptyHint="Ubah kata kunci pencarian atau tambah mitra baru."
-          accent="emerald"
+          accent="indigo"
           footer={
             <PaginationControls
               currentPage={currentPage}
@@ -225,7 +227,7 @@ export default function CustomerPage() {
           }
         >
           <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800 text-left text-sm">
-            <thead className="bg-zinc-50 dark:bg-zinc-950/80 text-zinc-600 dark:text-zinc-400 text-xs font-semibold uppercase tracking-wider">
+            <thead className="bg-zinc-50 dark:bg-zinc-950/80 text-zinc-600 dark:text-zinc-400 text-xs font-semibold">
               <tr>
                 <th className="px-6 py-4">Nama Perusahaan</th>
                 <th className="px-6 py-4">Alamat Operasional</th>
@@ -237,9 +239,9 @@ export default function CustomerPage() {
             <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
               {filteredCompanies.map((company) => (
                 <tr key={company.id} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors">
-                  <td className="px-6 py-4 font-bold text-zinc-900 dark:text-white">
+                  <td className="px-6 py-4 font-semibold text-zinc-900 dark:text-white">
                     <div className="flex items-center gap-2">
-                      <FiBriefcase className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+                      <FiBriefcase className="text-indigo-600 dark:text-indigo-400 shrink-0" />
                       <span>{company.nama_perusahaan}</span>
                     </div>
                   </td>
@@ -255,7 +257,7 @@ export default function CustomerPage() {
                       <span>{company.pic}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-emerald-600 dark:text-emerald-400 font-mono text-[11px]">
+                  <td className="px-6 py-4 text-emerald-600 dark:text-emerald-400 font-mono text-xs">
                     <div className="flex items-center gap-1.5">
                       <FiPhone className="text-emerald-600 dark:text-emerald-500 shrink-0" />
                       <span>{company.kontak}</span>

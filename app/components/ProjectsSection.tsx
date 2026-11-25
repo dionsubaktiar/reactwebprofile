@@ -1,5 +1,3 @@
-"use client";
-
 import { FiExternalLink, FiFolder } from "react-icons/fi";
 
 interface ProjectItem {
@@ -33,38 +31,40 @@ const projects: ProjectItem[] = [
 
 const ProjectsSection = () => {
   return (
-    <section id="projects" className="py-20 border-t border-zinc-200 dark:border-zinc-800">
-      <div className="max-w-4xl mx-auto space-y-12">
-        <div className="space-y-4 text-center">
-          <h2 className="text-3xl font-bold font-poppins text-zinc-900 dark:text-white">
+    <section id="projects" className="py-16 border-t border-zinc-200 dark:border-zinc-800">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        <div className="space-y-1.5">
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-white">
             Featured Projects
           </h2>
-          <div className="w-12 h-1 bg-indigo-500 mx-auto rounded-full"></div>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            Selected production logistics systems and applied research work.
+          </p>
         </div>
 
-        <div className="grid gap-8">
+        <div className="grid gap-6">
           {projects.map((proj, idx) => (
             <div
               key={idx}
-              className="group p-6 md:p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/20 hover:border-indigo-500/50 hover:shadow-lg transition-all duration-300 space-y-6"
+              className="group p-6 md:p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/30 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors space-y-5"
             >
               {/* Project Title Block */}
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
-                    <FiFolder size={20} />
-                    <span className="text-xs font-semibold uppercase tracking-wider font-poppins">
+                    <FiFolder size={18} />
+                    <span className="text-xs font-semibold">
                       Featured Work
                     </span>
                   </div>
-                  <h3 className="text-xl md:text-2xl font-bold text-zinc-900 dark:text-white font-poppins mt-2">
+                  <h3 className="text-lg md:text-xl font-semibold text-zinc-900 dark:text-white mt-1">
                     {proj.title}
                   </h3>
                 </div>
               </div>
 
               {/* Description */}
-              <p className="text-sm md:text-base text-zinc-600 dark:text-zinc-400 font-light leading-relaxed">
+              <p className="text-sm md:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 {proj.description}
               </p>
 

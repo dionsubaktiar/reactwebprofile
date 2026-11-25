@@ -1,11 +1,12 @@
-// Service: reactwebprofile | File: app/pengajuan-kredit/create/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import axios from "axios";
-import Navbar from "../../components/navbar";
-import { useRouter } from "next/navigation";
-import { HiCreditCard } from "react-icons/hi";
+import apiClient from "@/app/lib/api";
+import { formatIDR } from "@/app/lib/format";
+import SubPageHeader from "@/app/components/SubPageHeader";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FiCreditCard } from "react-icons/fi";
 
 interface Kendaraan {
   id: number;
@@ -27,29 +28,22 @@ interface FormData {
   id_user: number;
 }
 
-const currencyFormatter = new Intl.NumberFormat("id-ID", {
-  style: "currency",
-  currency: "IDR",
-  minimumFractionDigits: 0,
-});
+const currencyFormatter = { format: formatIDR };
 
-const CreatePinjamanPage = () => {
+const CreatePinjamanForm = () => {
+  const searchParams = useSearchParams();
+  const dpParam = Number(searchParams.get("dp"));
+  const tenorParam = Number(searchParams.get("tenor"));
+
   const [formData, setFormData] = useState<FormData>({
     asuransi: 5000000,
-    down_payment: 35000000,
-    tenor: 36,
-    id_kendaraan: 1,
-    id_user: 1,
+    down_payment: Number.isFinite(dpParam) && dpParam > 0 ? dpParam : 35000000,
+    tenor: [12, 24, 36, 48, 60].includes(tenorParam) ? tenorParam : 36,
+    id_kendaraan: 10,
+    id_user: 101,
   });
-  const [kendaraanOptions, setKendaraanOptions] = useState<Kendaraan[]>([
-    { id: 1, merk_kendaraan: "Honda", model_kendaraan: "HR-V SE" },
-    { id: 2, merk_kendaraan: "Toyota", model_kendaraan: "Innova Zenix" },
-    { id: 3, merk_kendaraan: "Hyundai", model_kendaraan: "Ioniq 5" },
-  ]);
-  const [konsumenOptions, setKonsumenOptions] = useState<Konsumen[]>([
-    { id: 1, nama: "Dion Subaktiar", email: "dionsubaktiar@gmail.com" },
-    { id: 2, nama: "Bambang Sudiro", email: "bambang.s@logistikprima.co.id" },
-  ]);
+  const [kendaraanOptions, setKendaraanOptions] = useState<Kendaraan[]>([]);
+  const [konsumenOptions, setKonsumenOptions] = useState<Konsumen[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -58,13 +52,22 @@ const CreatePinjamanPage = () => {
     const fetchData = async () => {
       try {
         const [resK, resU] = await Promise.all([
-          axios.get("/api/kendaraan"),
-          axios.get("/api/konsumen"),
+          apiClient.get<{ data?: Kendaraan[] }>("/kendaraan"),
+          apiClient.get<{ data?: Konsumen[] }>("/konsumen"),
         ]);
-        if (Array.isArray(resK.data) && resK.data.length > 0) setKendaraanOptions(resK.data);
-        if (Array.isArray(resU.data) && resU.data.length > 0) setKonsumenOptions(resU.data);
+        const listK = resK.data?.data ?? [];
+        const listU = resU.data?.data ?? [];
+        setKendaraanOptions(listK);
+        setKonsumenOptions(listU);
+        if (listK.length > 0 || listU.length > 0) {
+          setFormData((prev) => ({
+            ...prev,
+            id_kendaraan: listK[0]?.id ?? prev.id_kendaraan,
+            id_user: listU[0]?.id ?? prev.id_user,
+          }));
+        }
       } catch {
-        // Keeps verified fallback selections active
+        setError("Gagal memuat daftar kendaraan dan konsumen.");
       }
     };
     fetchData();
@@ -86,13 +89,15 @@ const CreatePinjamanPage = () => {
     setIsSubmitting(true);
     setError(null);
     try {
-      await axios.get("/api/sanctum/csrf-cookie", { withCredentials: true });
-      await axios.post("/api/pinjaman", formData, { withCredentials: true });
+      await apiClient.get("/sanctum/csrf-cookie");
+      await apiClient.post("/pinjaman", formData);
       router.push("/pengajuan-kredit");
-    } catch {
-      setTimeout(() => {
-        router.push("/pengajuan-kredit");
-      }, 700);
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.data?.message) {
+        setError(String(err.response.data.message));
+      } else {
+        setError("Gagal menyimpan pengajuan pembiayaan. Periksa data isian lalu coba lagi.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -100,13 +105,13 @@ const CreatePinjamanPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 font-sans antialiased">
-      <Navbar title="Formulir Pengajuan Pembiayaan" subtitle="Input parameter kredit kendaraan bermotor" backUrl="/pengajuan-kredit" />
+      <SubPageHeader title="Formulir Pengajuan Pembiayaan" subtitle="Input parameter kredit kendaraan bermotor" backUrl="/pengajuan-kredit" />
 
       <main className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-8">
           <div className="flex items-center gap-3 pb-5 border-b border-slate-100 dark:border-zinc-800">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
-              <HiCreditCard className="h-6 w-6" />
+              <FiCreditCard className="h-6 w-6" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-slate-900 dark:text-white">
@@ -119,7 +124,7 @@ const CreatePinjamanPage = () => {
           </div>
 
           {error && (
-            <div className="mt-4 rounded-xl bg-rose-50 p-4 text-xs font-semibold text-rose-700 dark:bg-rose-950/50 dark:text-rose-300">
+            <div role="alert" className="mt-4 rounded-xl bg-rose-50 p-4 text-xs font-semibold text-rose-700 dark:bg-rose-950/50 dark:text-rose-300">
               {error}
             </div>
           )}
@@ -136,7 +141,7 @@ const CreatePinjamanPage = () => {
                     name="id_kendaraan"
                     value={formData.id_kendaraan}
                     onChange={handleSelectChange}
-                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
+                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
                     required
                   >
                     {kendaraanOptions.map((k) => (
@@ -158,7 +163,7 @@ const CreatePinjamanPage = () => {
                     name="id_user"
                     value={formData.id_user}
                     onChange={handleSelectChange}
-                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
+                    className="w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
                     required
                   >
                     {konsumenOptions.map((c) => (
@@ -182,7 +187,7 @@ const CreatePinjamanPage = () => {
                   name="down_payment"
                   value={currencyFormatter.format(formData.down_payment)}
                   onChange={handleInputChange}
-                  className="mt-1 w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 font-mono shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
+                  className="mt-1 w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 font-mono shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
                   required
                 />
               </div>
@@ -197,7 +202,7 @@ const CreatePinjamanPage = () => {
                   name="asuransi"
                   value={currencyFormatter.format(formData.asuransi)}
                   onChange={handleInputChange}
-                  className="mt-1 w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 font-mono shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
+                  className="mt-1 w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 font-mono shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
                   required
                 />
               </div>
@@ -211,7 +216,7 @@ const CreatePinjamanPage = () => {
                   name="tenor"
                   value={formData.tenor}
                   onChange={handleSelectChange}
-                  className="mt-1 w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
+                  className="mt-1 w-full rounded-xl border border-slate-200 bg-white py-2.5 px-3 text-xs text-slate-900 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
                 >
                   <option value={12}>12 Bulan (1 Tahun)</option>
                   <option value={24}>24 Bulan (2 Tahun)</option>
@@ -226,7 +231,7 @@ const CreatePinjamanPage = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 py-3 text-xs font-bold text-white shadow-sm shadow-indigo-500/20 hover:from-indigo-700 hover:to-violet-700 transition disabled:opacity-50"
+                className="w-full rounded-xl bg-indigo-600 py-3 text-xs font-bold text-white shadow-sm hover:bg-indigo-700 transition disabled:opacity-50"
               >
                 {isSubmitting ? "Memproses Akad..." : "Simpan & Ajukan Pembiayaan"}
               </button>
@@ -238,4 +243,16 @@ const CreatePinjamanPage = () => {
   );
 };
 
-export default CreatePinjamanPage;
+export default function CreatePinjamanPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-zinc-950">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent"></div>
+        </div>
+      }
+    >
+      <CreatePinjamanForm />
+    </Suspense>
+  );
+}

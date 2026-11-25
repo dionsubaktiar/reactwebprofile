@@ -1,32 +1,34 @@
-// Service: reactwebprofile | File: app/auth-crud/register/page.tsx
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import Navbar from "../../components/navbar";
+import apiClient from "@/app/lib/api";
+import SubPageHeader from "@/app/components/SubPageHeader";
 import Link from "next/link";
-import { HiUserAdd, HiUser, HiMail, HiLockClosed } from "react-icons/hi";
+import { FiUserPlus, FiUser, FiMail, FiLock } from "react-icons/fi";
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleRegister = async () => {
+    setError(null);
     try {
       setIsLoading(true);
-      await axios.get("/api/sanctum/csrf-cookie", { withCredentials: true });
-      await axios.post(
-        "/api/register",
-        { name, email, password },
-        { withCredentials: true }
-      );
+      await apiClient.get("/sanctum/csrf-cookie");
+      await apiClient.post("/register", { name, email, password });
       router.push("/auth-crud/login");
-    } catch {
-      router.push("/auth-crud/login");
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.data?.message) {
+        setError(String(err.response.data.message));
+      } else {
+        setError("Pendaftaran gagal. Periksa data isian lalu coba lagi.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -34,15 +36,15 @@ const RegisterPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 text-slate-900 dark:text-zinc-100 font-sans antialiased">
-      <Navbar title="Registrasi Akun Baru" subtitle="Daftarkan akun untuk membuat artikel" backUrl="/auth-crud" />
+      <SubPageHeader title="Registrasi Akun Baru" subtitle="Daftarkan akun untuk membuat artikel" backUrl="/auth-crud" />
 
       <main className="mx-auto flex max-w-md items-center justify-center px-4 py-12 md:py-20">
         <div className="w-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-8">
           <div className="text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
-              <HiUserAdd className="h-6 w-6" />
+              <FiUserPlus className="h-6 w-6" />
             </div>
-            <h1 className="mt-4 text-xl font-extrabold text-slate-900 dark:text-white">
+            <h1 className="mt-4 text-xl font-bold text-slate-900 dark:text-white">
               Buat Akun Penulis
             </h1>
             <p className="mt-1 text-xs text-slate-500 dark:text-zinc-400">
@@ -62,14 +64,14 @@ const RegisterPage = () => {
                 Nama Lengkap
               </label>
               <div className="relative mt-1">
-                <HiUser className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <FiUser className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   id="name"
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-3 text-xs text-slate-900 placeholder-slate-400 shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
+                  className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-3 text-xs text-slate-900 placeholder-slate-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
                   placeholder="Dion Subaktiar"
                 />
               </div>
@@ -80,14 +82,14 @@ const RegisterPage = () => {
                 Alamat Email
               </label>
               <div className="relative mt-1">
-                <HiMail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <FiMail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   id="email"
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-3 text-xs text-slate-900 placeholder-slate-400 shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
+                  className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-3 text-xs text-slate-900 placeholder-slate-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
                   placeholder="penulis@example.com"
                 />
               </div>
@@ -98,23 +100,32 @@ const RegisterPage = () => {
                 Kata Sandi
               </label>
               <div className="relative mt-1">
-                <HiLockClosed className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <FiLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   id="password"
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-3 text-xs text-slate-900 placeholder-slate-400 shadow-xs focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
+                  className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-3 text-xs text-slate-900 placeholder-slate-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-white"
                   placeholder="••••••••"
                 />
               </div>
             </div>
 
+            {error && (
+              <div
+                role="alert"
+                className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs font-medium text-rose-700 dark:border-rose-900/40 dark:bg-rose-950/30 dark:text-rose-300"
+              >
+                {error}
+              </div>
+            )}
+
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 py-3 text-xs font-bold text-white shadow-sm shadow-indigo-500/20 hover:from-indigo-700 hover:to-violet-700 transition disabled:opacity-50"
+              className="w-full rounded-xl bg-indigo-600 py-3 text-xs font-bold text-white shadow-sm hover:bg-indigo-700 transition disabled:opacity-50"
             >
               {isLoading ? "Mendaftarkan Akun..." : "Daftar Akun"}
             </button>

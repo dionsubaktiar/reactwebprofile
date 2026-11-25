@@ -1,20 +1,47 @@
 import { NextRequest, NextResponse } from "next/server";
-
-const mockBooks = [
-  { id: 1, title: "Clean Code", author: "Robert C. Martin", description: "A handbook of agile software craftsmanship", likes_count: 42 },
-  { id: 2, title: "Designing Data-Intensive Applications", author: "Martin Kleppmann", description: "The big ideas behind reliable, scalable, and maintainable systems", likes_count: 68 },
-  { id: 3, title: "Refactoring", author: "Martin Fowler", description: "Improving the design of existing code", likes_count: 35 }
-];
+import { booksStore } from "../_booksStore";
+import { nextId } from "../_store";
 
 export async function GET() {
-  return NextResponse.json({ message: "Success", data: mockBooks });
+  return NextResponse.json({ message: "Success", data: booksStore.items });
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    return NextResponse.json({ message: "Book created", data: { id: Date.now(), ...body } }, { status: 201 });
+    const title = typeof body?.title === "string" ? body.title.trim() : "";
+    const author = typeof body?.author === "string" ? body.author.trim() : "";
+    if (!title || !author) {
+      return NextResponse.json(
+        { message: "Judul dan nama penulis wajib diisi." },
+        { status: 400 },
+      );
+    }
+
+    const newBook = {
+      id: nextId(booksStore),
+      title,
+      author,
+      genre:
+        typeof body?.genre === "string" && body.genre.trim()
+          ? body.genre.trim()
+          : "Engineering",
+      description:
+        typeof body?.description === "string" && body.description.trim()
+          ? body.description.trim()
+          : "Buku referensi arsitektur dan rekayasa perangkat lunak.",
+      likes_count: 0,
+    };
+
+    booksStore.items.unshift(newBook);
+    return NextResponse.json(
+      { message: "Book created", data: newBook },
+      { status: 201 },
+    );
   } catch {
-    return NextResponse.json({ message: "Failed" }, { status: 400 });
+    return NextResponse.json(
+      { message: "Gagal menambahkan buku." },
+      { status: 400 },
+    );
   }
 }

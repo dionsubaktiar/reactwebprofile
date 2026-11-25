@@ -79,13 +79,15 @@ const SkillsSection = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <section id="skills" className="py-20 border-t border-zinc-200 dark:border-zinc-800">
-      <div className="max-w-4xl mx-auto space-y-12">
-        <div className="space-y-4 text-center">
-          <h2 className="text-3xl font-bold font-poppins text-zinc-900 dark:text-white">
+    <section id="skills" className="py-16 border-t border-zinc-200 dark:border-zinc-800">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        <div className="space-y-1.5">
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-white">
             Core Competencies
           </h2>
-          <div className="w-12 h-1 bg-indigo-500 mx-auto rounded-full"></div>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            Backend services, frontend interfaces, infrastructure, and logistics domain workflows.
+          </p>
         </div>
 
         {/* Desktop tabbed / Grid responsive layout */}
@@ -96,7 +98,7 @@ const SkillsSection = () => {
               <button
                 key={index}
                 onClick={() => setActiveTab(index)}
-                className={`px-4 py-2.5 rounded-lg text-sm text-left font-poppins transition-all ${
+                className={`px-4 py-2.5 rounded-lg text-sm text-left transition-colors ${
                   activeTab === index
                     ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/45 dark:text-indigo-400 font-semibold"
                     : "text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200"
@@ -109,7 +111,7 @@ const SkillsSection = () => {
 
           {/* Active category details grid */}
           <div className="md:col-span-2 space-y-6">
-            <h3 className="text-xl font-semibold text-zinc-800 dark:text-zinc-200 font-poppins">
+            <h3 className="text-xl font-semibold text-zinc-800 dark:text-zinc-200">
               {skillCategories[activeTab].title}
             </h3>
             
@@ -117,7 +119,7 @@ const SkillsSection = () => {
               {skillCategories[activeTab].skills.map((skill, idx) => (
                 <div
                   key={idx}
-                  className="p-4 rounded-xl border border-zinc-200/60 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/30 flex items-center gap-3 hover:border-indigo-500/50 hover:shadow-sm transition-all"
+                  className="p-4 rounded-xl border border-zinc-200/80 dark:border-zinc-800 bg-white dark:bg-zinc-900/30 flex items-center gap-3 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
                   <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">

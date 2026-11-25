@@ -1,5 +1,3 @@
-"use client";
-
 import type { ReactNode } from "react";
 import type { HeaderAccent } from "./PageHeader";
 
@@ -12,8 +10,8 @@ const ring: Record<HeaderAccent, string> = {
 };
 
 /** Kelas input/select form invoicing (tema zinc light/dark). */
-export function formControlClass(accent: HeaderAccent = "emerald"): string {
-  return `mt-1 p-2.5 w-full rounded-xl text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-2 ${ring[accent]} transition`;
+export function formControlClass(accent: HeaderAccent = "indigo"): string {
+  return `mt-1 p-2.5 w-full rounded-xl text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-2 ${ring[accent]} transition-colors`;
 }
 
 interface FormFieldProps {
@@ -45,7 +43,7 @@ export default function FormField({
       </label>
       {children}
       {hint && !error ? (
-        <p className="text-[11px] text-zinc-400 mt-1">{hint}</p>
+        <p className="text-xs text-zinc-400 mt-1">{hint}</p>
       ) : null}
       {error ? (
         <p className="text-xs text-red-600 dark:text-red-400 mt-1">{error}</p>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import Navbar from "@/app/components/navbar";
+import SubPageHeader from "@/app/components/SubPageHeader";
 import apiClient from "@/app/lib/api";
 import type { Customer } from "@/app/lib/types";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -16,23 +16,19 @@ function CustomerEditForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
+  const hasValidId = Boolean(id);
 
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(hasValidId);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!id) {
-      setErrorMessage("ID pelanggan tidak ditemukan di URL.");
-      return;
-    }
+    if (!hasValidId || !id) return;
     let isMounted = true;
     const fetchCustomer = async () => {
       try {
-        setIsLoading(true);
-        setErrorMessage(null);
         const response = await apiClient.get(`/customer/${id}`, { timeout: 3500 });
         if (isMounted) {
           if (response.data?.data) {
@@ -53,7 +49,9 @@ function CustomerEditForm() {
     return () => {
       isMounted = false;
     };
-  }, [id]);
+  }, [hasValidId, id]);
+
+  const effectiveError = !hasValidId ? "ID pelanggan tidak ditemukan di URL." : errorMessage;
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -92,11 +90,11 @@ function CustomerEditForm() {
       <div className="mb-6">
         <Link
           href="/invoicing-service/customers"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 transition"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition"
         >
           <FiArrowLeft /> Kembali ke Daftar Pelanggan
         </Link>
-        <h1 className="text-2xl font-extrabold tracking-tight mt-2 flex items-center gap-2">
+        <h1 className="text-2xl font-bold tracking-tight mt-2 flex items-center gap-2">
           <FiEdit2 className="text-sky-600 dark:text-sky-400" /> Edit Data Pelanggan {id ? `#${id}` : ""}
         </h1>
         <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
@@ -105,16 +103,16 @@ function CustomerEditForm() {
       </div>
 
       {successMessage && (
-        <div className="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2">
+        <div className="mb-6 p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-600 dark:text-indigo-400 text-xs flex items-center gap-2">
           <FiCheckCircle className="text-lg shrink-0" />
           <span>{successMessage}</span>
         </div>
       )}
 
-      {errorMessage && (
+      {effectiveError && (
         <div className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs flex items-center gap-2">
           <FiAlertCircle className="text-lg shrink-0" />
-          <span>{errorMessage}</span>
+          <span>{effectiveError}</span>
         </div>
       )}
 
@@ -125,8 +123,8 @@ function CustomerEditForm() {
         </div>
       ) : !customer ? (
         <div className="p-12 text-center text-sm text-zinc-500">
-          {errorMessage ? "Data pelanggan tidak dapat ditampilkan." : "Tidak ada data pelanggan untuk diedit."}{" "}
-          <Link href="/invoicing-service/customers" className="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline">
+          {effectiveError ? "Data pelanggan tidak dapat ditampilkan." : "Tidak ada data pelanggan untuk diedit."}{" "}
+          <Link href="/invoicing-service/customers" className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
             Kembali ke daftar pelanggan
           </Link>
           .
@@ -231,7 +229,7 @@ function CustomerEditForm() {
 export default function EditCustomerPage() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
-      <Navbar title="Edit Pelanggan" />
+      <SubPageHeader title="Edit Pelanggan" />
       <Suspense fallback={<div className="p-8 text-center text-sm text-zinc-500">Loading form...</div>}>
         <CustomerEditForm />
       </Suspense>

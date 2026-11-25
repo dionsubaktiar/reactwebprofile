@@ -1,7 +1,6 @@
-// Service: reactwebprofile | File: app/invoicing-service/parts/create/page.tsx
 "use client";
 
-import Navbar from "@/app/components/navbar";
+import SubPageHeader from "@/app/components/SubPageHeader";
 import apiClient from "@/app/lib/api";
 import { applyPartFieldChange, PART_FORM_DEFAULTS } from "@/app/lib/part-form";
 import { useRouter } from "next/navigation";
@@ -46,7 +45,7 @@ const CreatePartsPage = () => {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
-      <Navbar title="Create Data Part" />
+      <SubPageHeader title="Create Data Part" />
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
         <div className="mb-6">
@@ -56,14 +55,14 @@ const CreatePartsPage = () => {
           >
             <FiArrowLeft /> Kembali ke Katalog Suku Cadang
           </Link>
-          <h1 className="text-2xl font-extrabold tracking-tight mt-2 flex items-center gap-2">
+          <h1 className="text-2xl font-bold tracking-tight mt-2 flex items-center gap-2">
             <FiTool className="text-indigo-600 dark:text-indigo-500" /> Form
             Tambah Suku Cadang
           </h1>
         </div>
 
         {successMessage && (
-          <div className="mb-4 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-sm text-emerald-600 dark:text-emerald-400">
+          <div className="mb-4 p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 text-sm text-indigo-600 dark:text-indigo-400">
             {successMessage}
           </div>
         )}
@@ -162,7 +161,7 @@ const CreatePartsPage = () => {
               className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition shadow-sm disabled:opacity-50"
             >
               <FiPlus size={15} />
-              {isSubmitting ? "Submitting..." : "Create Parts"}
+              {isSubmitting ? "Menyimpan..." : "Simpan Part"}
             </button>
           </div>
         </form>

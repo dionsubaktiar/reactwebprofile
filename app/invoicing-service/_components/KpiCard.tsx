@@ -1,5 +1,3 @@
-"use client";
-
 import type { ReactNode } from "react";
 import type { HeaderAccent } from "./PageHeader";
 
@@ -45,18 +43,18 @@ export default function KpiCard({
   return (
     <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
       <div>
-        <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">
+        <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
           {label}
         </span>
         <div
-          className={`text-2xl font-extrabold mt-1 ${
+          className={`text-2xl font-semibold mt-1 tabular-nums ${
             coloredValue ? accentValue[accent] : ""
           }`}
         >
           {value}
         </div>
         {hint ? (
-          <span className="text-[11px] text-zinc-400">{hint}</span>
+          <span className="text-xs text-zinc-400">{hint}</span>
         ) : null}
       </div>
       <div

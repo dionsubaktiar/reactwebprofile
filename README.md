@@ -59,9 +59,9 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api
 NEXT_PUBLIC_SANCTUM_URL=http://localhost:8000
 ```
 
-Kontrak respons mock (`{ message, data: Paginated<T> }` untuk list,
-`{ message, data: T }` untuk single, 404 bila id tidak ada, 400 bila
-validasi gagal) didokumentasikan di `docs/openapi.yaml`.
+Kontrak respons mock adalah `{ message, data: Paginated<T> }` untuk list,
+`{ message, data: T }` untuk single, `404` bila id tidak ada, dan `400`
+bila validasi gagal.
 
 ## Perintah verifikasi
 
@@ -73,9 +73,7 @@ npm test            # Vitest (unit test)
 npm run format      # Prettier (double quotes, semicolon, 2 spasi)
 ```
 
-Keempat perintah pertama dijalankan otomatis oleh GitHub Actions
-(`.github/workflows/ci.yml`) di setiap push dan pull request — semuanya
-harus hijau sebelum PR di-merge.
+Keempat perintah pertama di atas dijalankan sebelum PR di-merge.
 
 ## Struktur folder
 
@@ -102,7 +100,6 @@ app/
     api-response.ts     # Parsing respons list { message, data: Paginated }
 docs/
   SPRINT_SUMMARY.md     # Catatan jujur per hari roadmap 30 hari
-  openapi.yaml          # Kontrak respons API
 ```
 
 Aturan yang dijaga repo ini (lihat `docs/SPRINT_SUMMARY.md`):

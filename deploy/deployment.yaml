@@ -1,8 +1,0 @@
-deployment:
-  status: SUCCESS
-  category: feat
-  scope: ui
-  target: feat(ui): pada sandbox invoicing, page customers / companies belum
-  cluster: live
-  endpoint: https://4000-agq3ckapsqjtxy5tsb3ptilllm.instabox.tech/dashboard
-  timestamp: 2026-11-17T14:59:16Z

@@ -31,10 +31,28 @@ export default function RowActions({
   label = "Pilihan aksi",
 }: RowActionsProps) {
   const [open, setOpen] = useState(false);
+  const [menuPos, setMenuPos] = useState<{
+    top: number;
+    right: number;
+    openUpward: boolean;
+  } | null>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!open) return;
+    const updatePos = () => {
+      if (!buttonRef.current) return;
+      const rect = buttonRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const openUpward = spaceBelow < 180;
+      setMenuPos({
+        top: openUpward ? Math.max(8, rect.top - 8) : rect.bottom + 4,
+        right: Math.max(8, window.innerWidth - rect.right),
+        openUpward,
+      });
+    };
+    updatePos();
     const onPointerDown = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         setOpen(false);
@@ -43,13 +61,18 @@ export default function RowActions({
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpen(false);
     };
+    const onScrollOrResize = () => setOpen(false);
     document.addEventListener("mousedown", onPointerDown);
     document.addEventListener("keydown", onKeyDown);
+    window.addEventListener("scroll", onScrollOrResize, true);
+    window.addEventListener("resize", onScrollOrResize);
     return () => {
       document.removeEventListener("mousedown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("scroll", onScrollOrResize, true);
+      window.removeEventListener("resize", onScrollOrResize);
     };
-  }, [open ]);
+  }, [open]);
 
   const normal = items.filter((i) => !i.danger);
   const dangerous = items.filter((i) => i.danger);
@@ -96,6 +119,7 @@ export default function RowActions({
   return (
     <div className="relative inline-block text-left" ref={ref}>
       <button
+        ref={buttonRef}
         onClick={() => setOpen((v) => !v)}
         aria-label={label}
         aria-expanded={open}
@@ -104,10 +128,16 @@ export default function RowActions({
       >
         <FiMoreVertical size={16} />
       </button>
-      {open && (
+      {open && menuPos && (
         <div
           role="menu"
-          className="absolute right-0 top-full mt-1 w-40 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl z-50 py-1 divide-y divide-zinc-100 dark:divide-zinc-800"
+          style={{
+            position: "fixed",
+            top: menuPos.top,
+            right: menuPos.right,
+            transform: menuPos.openUpward ? "translateY(-100%)" : undefined,
+          }}
+          className="w-44 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl z-50 py-1 divide-y divide-zinc-100 dark:divide-zinc-800"
         >
           {normal.length > 0 && (
             <div className="py-1">{normal.map(renderItem)}</div>

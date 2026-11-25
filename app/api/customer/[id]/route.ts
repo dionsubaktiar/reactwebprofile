@@ -2,22 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   customersStore,
   getByIdOr404,
+  parsePositiveId,
   removeById,
   replaceById,
 } from "../../_store";
 import { validateCustomer } from "../../_validate";
-
-function parseId(id: string): number | null {
-  const numId = parseInt(id, 10);
-  return Number.isFinite(numId) ? numId : null;
-}
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const numId = parseId(id);
+  const numId = parsePositiveId(id);
   const found = numId === null ? null : getByIdOr404(customersStore, numId);
   if (!found) {
     return NextResponse.json(
@@ -34,7 +30,7 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
-    const numId = parseId(id);
+    const numId = parsePositiveId(id);
     if (numId === null) {
       return NextResponse.json(
         { message: "Customer not found" },
@@ -51,8 +47,15 @@ export async function PUT(
     const body = await request.json();
     const merged = {
       ...existing,
-      ...body,
+      nama_perusahaan:
+        body.nama_perusahaan !== undefined
+          ? String(body.nama_perusahaan)
+          : existing.nama_perusahaan,
+      alamat: body.alamat !== undefined ? String(body.alamat) : existing.alamat,
+      pic: body.pic !== undefined ? String(body.pic) : existing.pic,
+      kontak: body.kontak !== undefined ? String(body.kontak) : existing.kontak,
       id: numId,
+      created_at: existing.created_at,
       updated_at: new Date().toISOString().split("T")[0],
     };
     const error = validateCustomer(merged);
@@ -77,7 +80,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const numId = parseId(id);
+  const numId = parsePositiveId(id);
   if (numId === null || !removeById(customersStore, numId)) {
     return NextResponse.json(
       { message: "Customer not found" },

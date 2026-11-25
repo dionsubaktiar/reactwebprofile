@@ -1,23 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   getByIdOr404,
+  parsePositiveId,
   partsStore,
   removeById,
   replaceById,
 } from "../../_store";
 import { validatePart } from "../../_validate";
 
-function parseId(id: string): number | null {
-  const numId = parseInt(id, 10);
-  return Number.isFinite(numId) ? numId : null;
-}
-
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const numId = parseId(id);
+  const numId = parsePositiveId(id);
   const found = numId === null ? null : getByIdOr404(partsStore, numId);
   if (!found) {
     return NextResponse.json({ message: "Part not found" }, { status: 404 });
@@ -31,7 +27,7 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
-    const numId = parseId(id);
+    const numId = parsePositiveId(id);
     if (numId === null) {
       return NextResponse.json({ message: "Part not found" }, { status: 404 });
     }
@@ -42,7 +38,17 @@ export async function PUT(
     const body = await request.json();
     const merged = {
       ...existing,
-      ...body,
+      part_number:
+        body.part_number !== undefined
+          ? String(body.part_number)
+          : existing.part_number,
+      nama_barang:
+        body.nama_barang !== undefined
+          ? String(body.nama_barang)
+          : existing.nama_barang,
+      kendaraan:
+        body.kendaraan !== undefined ? String(body.kendaraan) : existing.kendaraan,
+      merk: body.merk !== undefined ? String(body.merk) : existing.merk,
       id: numId,
       harga:
         body.harga !== undefined ? Number(body.harga) || 0 : existing.harga,
@@ -70,7 +76,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const numId = parseId(id);
+  const numId = parsePositiveId(id);
   if (numId === null || !removeById(partsStore, numId)) {
     return NextResponse.json({ message: "Part not found" }, { status: 404 });
   }

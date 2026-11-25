@@ -1,6 +1,6 @@
 "use client";
 
-import Navbar from "@/app/components/navbar";
+import SubPageHeader from "@/app/components/SubPageHeader";
 import apiClient from "@/app/lib/api";
 import type { Unit, Pagination, ApiResponse } from "@/app/lib/types";
 import { useState, useEffect, useMemo } from "react";
@@ -22,7 +22,7 @@ import SearchBar from "../_components/SearchBar";
 import DataTable from "../_components/DataTable";
 import PaginationControls from "../_components/Pagination";
 import RowActions from "../_components/RowActions";
-import ConfirmDialog from "../_components/ConfirmDialog";
+import ConfirmDialog from "@/app/components/ConfirmDialog";
 
 const FALLBACK_UNITS: Unit[] = [
   {
@@ -184,30 +184,33 @@ const UnitsPage = () => {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
-      <Navbar title="Manajemen Armada Truk" />
+      <SubPageHeader title="Manajemen Armada Truk" />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
         <PageHeader
           icon={<FiTruck size={22} />}
           title="Armada &amp; Unit Kendaraan Servis"
           subtitle="Data unit truk kargo, driver penanggung jawab, spesifikasi armada, dan pemilik perusahaan."
-          accent="emerald"
+          accent="indigo"
           actions={
             <>
-              <Link href="/invoicing-service">
-                <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition shadow-sm">
-                  <FiArrowLeft /> Hub Invoicing
-                </button>
+              <Link
+                href="/invoicing-service"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-sm"
+              >
+                <FiArrowLeft /> Hub Invoicing
               </Link>
-              <Link href="/invoicing-service/parts">
-                <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition shadow-sm">
-                  Suku Cadang
-                </button>
+              <Link
+                href="/invoicing-service/parts"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-sm"
+              >
+                Suku Cadang
               </Link>
-              <Link href="/invoicing-service/units/create">
-                <button className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm">
-                  <FiPlus size={15} /> Daftarkan Unit Baru
-                </button>
+              <Link
+                href="/invoicing-service/units/create"
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition-colors shadow-sm"
+              >
+                <FiPlus size={15} /> Daftarkan Unit Baru
               </Link>
             </>
           }
@@ -217,9 +220,9 @@ const UnitsPage = () => {
           <KpiCard
             label="Total Armada Aktif"
             value={<>{stats.totalCount} Kendaraan</>}
-            hint="Tergistrasi pada sistem"
+            hint="Teregistrasi pada sistem"
             icon={<FiTruck />}
-            accent="emerald"
+            accent="indigo"
           />
           <KpiCard
             label="Pelanggan Pemilik"
@@ -243,10 +246,10 @@ const UnitsPage = () => {
           value={searchQuery}
           onChange={setSearchQuery}
           placeholder="Cari berdasarkan nopol kendaraan, tipe truk, driver, atau nama perusahaan pemilik..."
-          accent="emerald"
+          accent="indigo"
         >
           {dataSource === "demo" && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
               <FiActivity /> Demo Fallback
             </span>
           )}
@@ -264,11 +267,11 @@ const UnitsPage = () => {
           isEmpty={filteredUnits.length === 0}
           emptyTitle="Tidak ada unit yang sesuai pencarian."
           emptyHint="Coba gunakan kata kunci nomor polisi atau tipe truk lainnya."
-          accent="emerald"
+          accent="indigo"
           footer={
             <PaginationControls
               currentPage={currentPage}
-              hasNext={!!pagination?.next_page_url || dataSource === "api"}
+              hasNext={!!pagination?.next_page_url}
               onPrev={() => setCurrentPage((p) => Math.max(1, p - 1))}
               onNext={() => setCurrentPage((p) => p + 1)}
               summary={
@@ -278,7 +281,7 @@ const UnitsPage = () => {
           }
         >
           <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800 text-left text-sm">
-            <thead className="bg-zinc-50 dark:bg-zinc-950/80 text-zinc-600 dark:text-zinc-400 text-xs font-semibold uppercase tracking-wider">
+            <thead className="bg-zinc-50 dark:bg-zinc-950/80 text-zinc-600 dark:text-zinc-400 text-xs font-semibold">
               <tr>
                 <th className="px-6 py-4">Nomor Polisi</th>
                 <th className="px-6 py-4">Tipe Armada</th>
@@ -293,10 +296,10 @@ const UnitsPage = () => {
                 <tr key={unit.id} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-700 dark:text-zinc-300 font-bold text-xs">
+                      <div className="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-700 dark:text-zinc-300 font-semibold text-xs">
                         <FiTruck size={16} />
                       </div>
-                      <span className="font-mono font-extrabold text-zinc-900 dark:text-white">
+                      <span className="font-mono font-semibold text-zinc-900 dark:text-white">
                         {unit.nopol}
                       </span>
                     </div>

@@ -29,21 +29,42 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: error }, { status: 400 });
     }
     const idUnit = Number(body.id_unit);
+    if (Number.isFinite(idUnit) && idUnit > 0) {
+      const foundUnit = getByIdOr404(unitsStore, idUnit);
+      if (!foundUnit) {
+        return NextResponse.json(
+          { message: "Unit tidak ditemukan" },
+          { status: 400 },
+        );
+      }
+    }
     const idPackage = Number(body.id_package);
+    const hasPackage = Number.isFinite(idPackage) && idPackage > 0;
+    const parts = normalizeInvoiceParts(body.id_part);
+    const partsTotal = parts.reduce((sum, p) => sum + (p.total_price ?? 0), 0);
     const newInvoice: Invoice = {
       id: nextId(invoicesStore),
       kilometer: Number(body.kilometer),
       tanggal: body.tanggal,
-      harga: Number(body.harga) || 1500000,
-      id_package: Number.isFinite(idPackage) && idPackage > 0 ? idPackage : 1,
+      harga:
+        Number(body.harga) > 0
+          ? Number(body.harga)
+          : partsTotal > 0
+            ? partsTotal
+            : 1500000,
+      id_package: hasPackage ? idPackage : 0,
       id_unit:
         Number.isFinite(idUnit) && idUnit > 0 ? idUnit : undefined,
       status_invoice: body.status_invoice || "Pending",
       status_spk: body.status_spk || "Dalam Pengerjaan",
-      units: getByIdOr404(unitsStore, idUnit) ?? unitsStore.items[0],
-      packages:
-        getByIdOr404(packagesStore, idPackage) ?? packagesStore.items[0],
-      parts: normalizeInvoiceParts(body.id_part),
+      units:
+        (Number.isFinite(idUnit) && idUnit > 0
+          ? getByIdOr404(unitsStore, idUnit)
+          : null) ?? unitsStore.items[0],
+      packages: hasPackage
+        ? (getByIdOr404(packagesStore, idPackage) ?? null)
+        : null,
+      parts,
     };
     invoicesStore.items.unshift(newInvoice);
     return NextResponse.json(

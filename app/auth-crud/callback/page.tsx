@@ -2,8 +2,8 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import apiClient from "@/app/lib/api";
 import { useAuth } from "../../context/authContext";
-import { AUTH_TOKEN_KEY, AUTH_USER_KEY } from "@/app/lib/api";
 
 const AuthCallback = () => {
   const router = useRouter();
@@ -22,24 +22,20 @@ const AuthCallback = () => {
 
       try {
         // Fetch user data using the token
-        const response = await fetch("/api/me", {
+        const response = await apiClient.get("/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch user data: ${response.status}`);
+        const user = response.data?.user;
+        if (!user) {
+          throw new Error("Invalid user payload from /api/me");
         }
-
-        const { user } = await response.json();
 
         setAuth(user, token);
 
-        localStorage.setItem(AUTH_TOKEN_KEY, token);
-        localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
-
-        router.replace("/auth-crud/");
+        router.replace("/auth-crud");
       } catch (error) {
         console.error("Error during callback:", error);
         router.replace("/auth-crud/login?error=callback_failed");
@@ -50,7 +46,7 @@ const AuthCallback = () => {
   }, [router, setAuth]);
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex h-screen items-center justify-center bg-slate-50 text-slate-900 dark:bg-zinc-950 dark:text-zinc-100">
       <p className="text-lg font-medium">Authenticating, please wait...</p>
     </div>
   );

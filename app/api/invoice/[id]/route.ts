@@ -3,23 +3,19 @@ import {
   getByIdOr404,
   invoicesStore,
   packagesStore,
+  parsePositiveId,
   removeById,
   replaceById,
   unitsStore,
 } from "../../_store";
 import { normalizeInvoiceParts, validateInvoice, validateInvoiceStatusTransition } from "../../_validate";
 
-function parseId(id: string): number | null {
-  const numId = parseInt(id, 10);
-  return Number.isFinite(numId) ? numId : null;
-}
-
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const numId = parseId(id);
+  const numId = parsePositiveId(id);
   const found = numId === null ? null : getByIdOr404(invoicesStore, numId);
   if (!found) {
     return NextResponse.json(
@@ -36,7 +32,7 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
-    const numId = parseId(id);
+    const numId = parsePositiveId(id);
     if (numId === null) {
       return NextResponse.json(
         { message: "Invoice not found" },
@@ -51,12 +47,24 @@ export async function PUT(
       );
     }
     const body = await request.json();
-    // `id` dan `id_part` bukan field Invoice yang tersimpan — `id_part`
-    // dinormalisasi ke `parts` di bawah, `id` tidak boleh diubah.
-    const { id: _ignoredId, id_part, ...rest } = body;
-    const merged = { ...existing, ...rest, id: numId };
-    if (id_part !== undefined) {
-      merged.parts = normalizeInvoiceParts(id_part);
+    const merged = {
+      ...existing,
+      kode_invoice:
+        body.kode_invoice !== undefined
+          ? String(body.kode_invoice)
+          : existing.kode_invoice,
+      tanggal:
+        body.tanggal !== undefined ? String(body.tanggal) : existing.tanggal,
+      status_invoice:
+        body.status_invoice !== undefined
+          ? body.status_invoice
+          : existing.status_invoice,
+      status_spk:
+        body.status_spk !== undefined ? body.status_spk : existing.status_spk,
+      id: numId,
+    };
+    if (body.id_part !== undefined) {
+      merged.parts = normalizeInvoiceParts(body.id_part);
     }
     if (body.id_unit !== undefined) {
       const unit = getByIdOr404(unitsStore, Number(body.id_unit));
@@ -66,10 +74,16 @@ export async function PUT(
       }
     }
     if (body.id_package !== undefined) {
-      const pkg = getByIdOr404(packagesStore, Number(body.id_package));
-      if (pkg) {
-        merged.packages = pkg;
-        merged.id_package = pkg.id;
+      const pkgId = Number(body.id_package);
+      if (pkgId === 0) {
+        merged.packages = null;
+        merged.id_package = 0;
+      } else {
+        const pkg = getByIdOr404(packagesStore, pkgId);
+        if (pkg) {
+          merged.packages = pkg;
+          merged.id_package = pkg.id;
+        }
       }
     }
     if (body.kilometer !== undefined) {
@@ -106,7 +120,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const numId = parseId(id);
+  const numId = parsePositiveId(id);
   if (numId === null || !removeById(invoicesStore, numId)) {
     return NextResponse.json(
       { message: "Invoice not found" },

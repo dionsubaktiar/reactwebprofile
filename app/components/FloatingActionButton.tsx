@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { IoAdd } from "react-icons/io5";
+import { FiPlus } from "react-icons/fi";
 import type { ReactNode } from "react";
 
 interface FloatingActionButtonProps {
@@ -31,24 +31,24 @@ export default function FloatingActionButton({
   variant = "round",
   icon,
 }: FloatingActionButtonProps) {
-  const className = `fixed ${position} px-4 py-4 bg-green-500 text-white ${
+  const className = `fixed ${position} inline-flex items-center justify-center px-4 py-4 bg-indigo-600 text-white ${
     variant === "round" ? "rounded-full" : "rounded-lg"
-  } shadow-lg hover:bg-green-600 transition-all`;
+  } shadow-lg hover:bg-indigo-700 transition-colors`;
   const content =
     variant === "pill" ? (
       <span className="flex items-center gap-1 text-sm md:text-lg">
-        {icon ?? <IoAdd />}
+        {icon ?? <FiPlus />}
         {label}
       </span>
     ) : (
-      icon ?? <IoAdd />
+      icon ?? <FiPlus />
     );
 
   if (href) {
     return (
       <div className="relative">
-        <Link href={href} aria-label={ariaLabel ?? label}>
-          <button className={className}>{content}</button>
+        <Link href={href} aria-label={ariaLabel ?? label} className={className}>
+          {content}
         </Link>
       </div>
     );
@@ -56,6 +56,7 @@ export default function FloatingActionButton({
   return (
     <div className="relative">
       <button
+        type="button"
         onClick={onClick}
         aria-label={ariaLabel ?? label}
         className={className}

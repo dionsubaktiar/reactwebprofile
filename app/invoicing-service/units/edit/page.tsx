@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import apiClient from "@/app/lib/api";
 import type { ApiResponse, Unit, Customer } from "@/app/lib/types";
 import { useRouter, useSearchParams } from "next/navigation";
-import Navbar from "../../../components/navbar";
+import SubPageHeader from "@/app/components/SubPageHeader";
 import Link from "next/link";
 import { FiArrowLeft, FiTruck, FiAlertCircle } from "react-icons/fi";
 import FormField, { formControlClass } from "../../_components/FormField";
@@ -13,8 +13,11 @@ const UnitEditPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
+  const hasValidId = Boolean(id);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [formData, setFormData] = useState<Unit | null>(null);
+  const [isLoading, setIsLoading] = useState(hasValidId);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -26,13 +29,33 @@ const UnitEditPage = () => {
       .catch((error) => console.error("Error fetching customers:", error));
   }, []);
   useEffect(() => {
-    if (id) {
-      apiClient
-        .get(`/unit/${id}`)
-        .then((response) => setFormData(response.data.data))
-        .catch((error) => console.error("Error fetching unit data:", error));
-    }
-  }, [id]);
+    if (!hasValidId || !id) return;
+    let isMounted = true;
+    apiClient
+      .get(`/unit/${id}`)
+      .then((response) => {
+        if (!isMounted) return;
+        if (response.data?.data) {
+          setFormData(response.data.data);
+        } else {
+          setLoadError("Unit tidak ditemukan.");
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setLoadError("Gagal memuat data unit. Periksa ID atau muat ulang halaman.");
+        }
+      })
+      .finally(() => {
+        if (isMounted) setIsLoading(false);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [hasValidId, id]);
+
+  const effectiveLoading = hasValidId && isLoading;
+  const effectiveLoadError = !hasValidId ? "ID unit tidak ditemukan di URL." : loadError;
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -73,14 +96,35 @@ const UnitEditPage = () => {
     }
   };
 
-  if (!formData)
+  if (effectiveLoading)
     return (
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
-        <Navbar title="Edit Data Unit" />
+        <SubPageHeader title="Edit Data Unit" />
         <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
           <div className="p-16 text-center text-sm text-zinc-500 flex flex-col items-center justify-center gap-3">
-            <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
             Memuat data unit...
+          </div>
+        </main>
+      </div>
+    );
+
+  if (effectiveLoadError || !formData)
+    return (
+      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
+        <SubPageHeader title="Edit Data Unit" />
+        <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
+          <div className="p-16 text-center text-sm text-zinc-500 flex flex-col items-center justify-center gap-2">
+            <FiAlertCircle size={28} className="text-zinc-400" />
+            <p className="font-semibold text-zinc-700 dark:text-zinc-300">
+              {effectiveLoadError ?? "Unit tidak ditemukan."}
+            </p>
+            <Link
+              href="/invoicing-service/units"
+              className="mt-2 inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition"
+            >
+              <FiArrowLeft /> Kembali ke Daftar Unit
+            </Link>
           </div>
         </main>
       </div>
@@ -88,23 +132,23 @@ const UnitEditPage = () => {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
-      <Navbar title="Edit Data Unit" />
+      <SubPageHeader title="Edit Data Unit" />
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
         <div className="mb-6">
           <Link
             href="/invoicing-service/units"
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 transition"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition"
           >
             <FiArrowLeft /> Kembali ke Daftar Unit
           </Link>
-          <h1 className="text-2xl font-extrabold tracking-tight mt-2 flex items-center gap-2">
-            <FiTruck className="text-emerald-600 dark:text-emerald-500" /> Edit Unit {formData.nopol}
+          <h1 className="text-2xl font-bold tracking-tight mt-2 flex items-center gap-2">
+            <FiTruck className="text-indigo-600 dark:text-emerald-500" /> Edit Unit {formData.nopol}
           </h1>
         </div>
 
         {successMessage && (
-          <div className="mb-4 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-sm text-emerald-600 dark:text-emerald-400">
+          <div className="mb-4 p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 text-sm text-indigo-600 dark:text-indigo-400">
             {successMessage}
           </div>
         )}
@@ -124,7 +168,7 @@ const UnitEditPage = () => {
               value={formData.id_customer}
               onChange={handleChange}
               required
-              className={formControlClass("emerald")}
+              className={formControlClass("indigo")}
             >
               {/* Opsi data awal yang sesuai dengan formData.id_customer */}
               {formData.id_customer &&
@@ -151,7 +195,7 @@ const UnitEditPage = () => {
               onChange={handleChange}
               placeholder="A 1234 BCD"
               required
-              className={formControlClass("emerald")}
+              className={formControlClass("indigo")}
             />
           </FormField>
 
@@ -161,7 +205,7 @@ const UnitEditPage = () => {
               value={formData.tipe}
               onChange={handleChange}
               required
-              className={formControlClass("emerald")}
+              className={formControlClass("indigo")}
             >
               {/* Tambahkan opsi hanya jika tipe awal tidak ada dalam daftar */}
               {!["Pickup", "Bus", "Truck"].includes(formData.tipe) && (
@@ -181,10 +225,10 @@ const UnitEditPage = () => {
             <input
               type="text"
               id="no_rangka"
-              value={formData.no_rangka}
+              value={formData.no_rangka ?? ""}
               onChange={handleChange}
               required
-              className={formControlClass("emerald")}
+              className={formControlClass("indigo")}
             />
           </FormField>
 
@@ -192,10 +236,10 @@ const UnitEditPage = () => {
             <input
               type="text"
               id="no_mesin"
-              value={formData.no_mesin}
+              value={formData.no_mesin ?? ""}
               onChange={handleChange}
               required
-              className={formControlClass("emerald")}
+              className={formControlClass("indigo")}
             />
           </FormField>
 
@@ -203,10 +247,10 @@ const UnitEditPage = () => {
             <input
               type="text"
               id="driver"
-              value={formData.driver}
+              value={formData.driver ?? ""}
               onChange={handleChange}
               required
-              className={formControlClass("emerald")}
+              className={formControlClass("indigo")}
             />
           </FormField>
 
@@ -214,10 +258,10 @@ const UnitEditPage = () => {
             <input
               type="text"
               id="tahun"
-              value={formData.tahun}
+              value={formData.tahun ?? ""}
               onChange={handleChange}
               required
-              className={formControlClass("emerald")}
+              className={formControlClass("indigo")}
             />
           </FormField>
 
@@ -229,7 +273,7 @@ const UnitEditPage = () => {
                 value={formData.japo_kir ?? ""}
                 onChange={handleChange}
                 required
-                className={formControlClass("emerald")}
+                className={formControlClass("indigo")}
               />
             </FormField>
 
@@ -240,7 +284,7 @@ const UnitEditPage = () => {
                 value={formData.japo_pajak ?? ""}
                 onChange={handleChange}
                 required
-                className={formControlClass("emerald")}
+                className={formControlClass("indigo")}
               />
             </FormField>
 
@@ -251,7 +295,7 @@ const UnitEditPage = () => {
                 value={formData.japo_stnk ?? ""}
                 onChange={handleChange}
                 required
-                className={formControlClass("emerald")}
+                className={formControlClass("indigo")}
               />
             </FormField>
 
@@ -261,7 +305,7 @@ const UnitEditPage = () => {
                 id="japo_kontrak"
                 value={formData.japo_kontrak || ""}
                 onChange={handleChange}
-                className={formControlClass("emerald")}
+                className={formControlClass("indigo")}
               />
             </FormField>
           </div>
@@ -272,7 +316,7 @@ const UnitEditPage = () => {
               id="status"
               checked={!!formData.status}
               onChange={handleChange}
-              className="w-5 h-5 rounded border-zinc-300 dark:border-zinc-700 text-emerald-600 focus:ring-2 focus:ring-emerald-500 transition"
+              className="w-5 h-5 rounded border-zinc-300 dark:border-zinc-700 text-indigo-600 focus:ring-2 focus:ring-indigo-500 transition"
             />
             <label
               htmlFor="status"
@@ -286,9 +330,9 @@ const UnitEditPage = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2.5 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm disabled:opacity-50"
+              className="px-4 py-2.5 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition shadow-sm disabled:opacity-50"
             >
-              {isSubmitting ? "Submitting..." : "Save"}
+              {isSubmitting ? "Menyimpan..." : "Simpan Perubahan"}
             </button>
           </div>
         </form>

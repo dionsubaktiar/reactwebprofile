@@ -1,7 +1,6 @@
-// Service: reactwebprofile | File: app/invoicing-service/parts/edit/page.tsx
 "use client";
 
-import Navbar from "@/app/components/navbar";
+import SubPageHeader from "@/app/components/SubPageHeader";
 import apiClient from "@/app/lib/api";
 import { applyPartFieldChange } from "@/app/lib/part-form";
 import type { Part } from "@/app/lib/types";
@@ -15,37 +14,42 @@ const EditPartPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
-  const [isLoading, setIsLoading] = useState(false);
+  const hasValidId = Boolean(id);
+  const [isLoading, setIsLoading] = useState(hasValidId);
   const [parts, setParts] = useState<Part | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!id) return;
+    if (!hasValidId || !id) return;
 
+    let isMounted = true;
     const fetchPart = async () => {
       try {
-        setIsLoading(true);
         const response = await apiClient.get(`/part/${id}`);
-        setParts(response.data.data);
+        if (!isMounted) return;
+        if (response.data?.data) {
+          setParts(response.data.data);
+        } else {
+          setErrorMessage("Data suku cadang tidak ditemukan.");
+        }
       } catch {
-        setParts({
-          id: Number(id) || 1,
-          part_number: "FLT-901",
-          nama_barang: "Oil Filter Heavy Duty",
-          merk: "Fleetguard",
-          kendaraan: "Truck",
-          harga: 185000,
-          jasa: 35000,
-        });
+        if (isMounted) {
+          setErrorMessage("Gagal memuat data suku cadang. Periksa ID atau muat ulang halaman.");
+        }
       } finally {
-        setIsLoading(false);
+        if (isMounted) setIsLoading(false);
       }
     };
 
     fetchPart();
-  }, [id]);
+    return () => {
+      isMounted = false;
+    };
+  }, [hasValidId, id]);
+
+  const effectiveError = !hasValidId ? "ID suku cadang tidak ditemukan di URL." : errorMessage;
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
@@ -80,7 +84,7 @@ const EditPartPage = () => {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
-      <Navbar title="Edit Data Part" />
+      <SubPageHeader title="Edit Data Part" />
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
         <div className="mb-6">
@@ -90,20 +94,20 @@ const EditPartPage = () => {
           >
             <FiArrowLeft /> Kembali ke Katalog Suku Cadang
           </Link>
-          <h1 className="text-2xl font-extrabold tracking-tight mt-2 flex items-center gap-2">
+          <h1 className="text-2xl font-bold tracking-tight mt-2 flex items-center gap-2">
             <FiTool className="text-indigo-600 dark:text-indigo-500" /> Edit
             Suku Cadang
           </h1>
         </div>
 
         {successMessage && (
-          <div className="mb-4 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-sm text-emerald-600 dark:text-emerald-400">
+          <div className="mb-4 p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 text-sm text-indigo-600 dark:text-indigo-400">
             {successMessage}
           </div>
         )}
-        {errorMessage && (
+        {effectiveError && (
           <div className="mb-4 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-sm text-red-600 dark:text-red-400 flex items-center gap-2">
-            <FiAlertCircle /> {errorMessage}
+            <FiAlertCircle /> {effectiveError}
           </div>
         )}
 

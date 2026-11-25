@@ -1,2 +1,0 @@
-is Vehicle Credit missing?* Never scaffolded into Next.js App Router, likely only a concept or stuck in backend (`feature_handler.py`).
-        *   *Why is Invoicing broken/unusable as a sandbox?* Fragmented across deep URLs without a unified sandbox dashboard or

@@ -1,60 +1,91 @@
 import { NextRequest, NextResponse } from "next/server";
-
-const mockPinjaman = [
-  {
-    id: 1,
-    nama_konsumen: "Ahmad Subagio",
-    nik: "3578012345670001",
-    telepon: "0812-3456-7890",
-    alamat: "Jl. Rungkut Menanggal Harapan B-12, Surabaya",
-    nama_kendaraan: "Toyota Avanza 1.5 G MT",
-    nomor_polisi: "L 1420 AB",
-    tahun: 2022,
-    harga_kendaraan: 215000000,
-    dp: 43000000,
-    pokok_hutang: 172000000,
-    tenor: 36,
-    bunga_tahunan: 7.5,
-    angsuran_per_bulan: 5847778,
-    status_pengajuan: "APPROVED",
-    created_at: "2026-03-10"
-  },
-  {
-    id: 2,
-    nama_konsumen: "Dewi Lestari",
-    nik: "3171098765430002",
-    telepon: "0813-8899-7711",
-    alamat: "Jl. Tebet Barat Dalam Raya No. 40, Jakarta Selatan",
-    nama_kendaraan: "Honda HR-V 1.5 SE CVT",
-    nomor_polisi: "B 2891 UJK",
-    tahun: 2023,
-    harga_kendaraan: 399000000,
-    dp: 79800000,
-    pokok_hutang: 319200000,
-    tenor: 48,
-    bunga_tahunan: 7.0,
-    angsuran_per_bulan: 8512000,
-    status_pengajuan: "IN_REVIEW",
-    created_at: "2026-03-12"
-  }
-];
+import {
+  kendaraanStore,
+  konsumenStore,
+  pinjamanStore,
+  type PinjamanItem,
+} from "../_creditStore";
+import { getByIdOr404, nextId } from "../_store";
 
 export async function GET() {
   return NextResponse.json({
     status: "success",
-    data: mockPinjaman
+    data: pinjamanStore.items,
   });
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    return NextResponse.json({
-      status: "success",
-      message: "Pengajuan pinjaman berhasil dibuat",
-      data: { id: Date.now(), ...body }
-    }, { status: 201 });
+    const idKendaraan = Number(body?.id_kendaraan);
+    const idUser = Number(body?.id_user);
+    const tenor = Number(body?.tenor);
+    const dp = Math.max(0, Number(body?.down_payment) || 0);
+
+    if (
+      !Number.isFinite(idKendaraan) ||
+      idKendaraan <= 0 ||
+      !Number.isFinite(idUser) ||
+      idUser <= 0 ||
+      !Number.isFinite(tenor) ||
+      tenor <= 0
+    ) {
+      return NextResponse.json(
+        {
+          status: "error",
+          message: "Kendaraan, konsumen, dan tenor (> 0) wajib diisi.",
+        },
+        { status: 400 },
+      );
+    }
+
+    const kendaraan = getByIdOr404(kendaraanStore, idKendaraan);
+    const konsumen = getByIdOr404(konsumenStore, idUser);
+    if (!kendaraan || !konsumen) {
+      return NextResponse.json(
+        {
+          status: "error",
+          message: "Data kendaraan atau konsumen tidak ditemukan.",
+        },
+        { status: 400 },
+      );
+    }
+
+    const otr = Number(kendaraan.harga_kendaraan) || 0;
+    const pokok = Math.max(0, otr - dp);
+    const totalBunga = pokok * 0.075 * (tenor / 12);
+    const computedAngsuran = Math.round((pokok + totalBunga) / tenor);
+
+    const newPinjaman: PinjamanItem = {
+      id: nextId(pinjamanStore),
+      asuransi:
+        body?.asuransi !== undefined && String(body.asuransi).trim() !== ""
+          ? String(body.asuransi)
+          : "5000000",
+      down_payment: String(Math.round(dp)),
+      tenor,
+      angsuran:
+        Number(body?.angsuran) > 0
+          ? String(Math.round(Number(body.angsuran)))
+          : String(computedAngsuran),
+      status: "Dalam Review",
+      kendaraan,
+      konsumen,
+    };
+
+    pinjamanStore.items.unshift(newPinjaman);
+    return NextResponse.json(
+      {
+        status: "success",
+        message: "Pengajuan pinjaman berhasil dibuat",
+        data: newPinjaman,
+      },
+      { status: 201 },
+    );
   } catch {
-    return NextResponse.json({ status: "error", message: "Failed" }, { status: 400 });
+    return NextResponse.json(
+      { status: "error", message: "Gagal membuat pengajuan pinjaman" },
+      { status: 400 },
+    );
   }
 }

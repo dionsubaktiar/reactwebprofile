@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Navbar from "../../components/navbar";
+import Navbar from "../../components/Navbar";
 import { useEffect, useMemo, useState } from "react";
 import apiClient from "@/app/lib/api";
 import type {
@@ -331,7 +331,7 @@ export default function LaporanPage() {
                 Menampilkan {filteredInvoices.length} dari {invoices.length}{" "}
                 invoice yang dimuat
               </span>
-              <span className="text-[11px] text-zinc-400">
+              <span className="text-xs text-zinc-400">
                 Data dari mock store in-memory — angka berubah bila server
                 di-restart atau invoice dibuat/dihapus.
               </span>
@@ -339,7 +339,7 @@ export default function LaporanPage() {
           }
         >
           <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800 text-left text-sm">
-            <thead className="bg-zinc-50 dark:bg-zinc-950/80 text-zinc-600 dark:text-zinc-400 text-xs font-semibold uppercase tracking-wider">
+            <thead className="bg-zinc-50 dark:bg-zinc-950/80 text-zinc-600 dark:text-zinc-400 text-xs font-semibold">
               <tr>
                 <th className="px-6 py-4">Tanggal</th>
                 <th className="px-6 py-4">Nopol / Armada</th>
@@ -356,11 +356,11 @@ export default function LaporanPage() {
                   key={inv.id}
                   className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors"
                 >
-                  <td className="px-6 py-4 whitespace-nowrap text-xs text-zinc-600 dark:text-zinc-400 font-mono">
+                  <td className="px-6 py-4 whitespace-nowrap text-xs text-zinc-600 dark:text-zinc-400 font-mono tabular-nums">
                     {formatDateId(inv.tanggal)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-extrabold text-zinc-900 dark:text-white font-mono">
+                    <div className="font-semibold text-zinc-900 dark:text-white font-mono">
                       {inv.units?.nopol || `UNIT-${inv.id}`}
                     </div>
                     <div className="text-xs text-zinc-500">
@@ -377,13 +377,13 @@ export default function LaporanPage() {
                       {inv.packages?.kode_packages || "ADHOC REPAIR"}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap font-mono font-bold text-zinc-900 dark:text-white">
+                  <td className="px-6 py-4 whitespace-nowrap font-mono font-semibold tabular-nums text-zinc-900 dark:text-white">
                     {formatIDR(inv.harga || 0)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex flex-col gap-1 items-start">
                       <StatusBadge status={inv.status_invoice || "Pending"} />
-                      <span className="text-[10px] text-zinc-400">
+                      <span className="text-xs text-zinc-400">
                         SPK: {inv.status_spk || "Pending"}
                       </span>
                     </div>

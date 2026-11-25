@@ -15,8 +15,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Profile",
-  description: "Created by Dion subaktiar",
+  title: "Dion Subaktiar — Software Engineer",
+  description: "Portfolio and interactive engineering sandboxes by Dion Subaktiar.",
 };
 
 export default function RootLayout({

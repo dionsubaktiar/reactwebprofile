@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import Navbar from "@/app/components/navbar";
+import SubPageHeader from "@/app/components/SubPageHeader";
 import apiClient from "@/app/lib/api";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FiArrowLeft, FiPlus, FiBriefcase, FiMapPin, FiUser, FiPhone, FiAlertCircle } from "react-icons/fi";
 
 const inputClass =
-  "w-full pl-10 pr-4 py-2.5 rounded-xl text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition";
+  "w-full pl-10 pr-4 py-2.5 rounded-xl text-sm bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition";
 const labelClass = "block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5";
 
 export default function CreateCustomerPage() {
@@ -46,18 +46,18 @@ export default function CreateCustomerPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
-      <Navbar title="Tambah Pelanggan Baru" />
+      <SubPageHeader title="Tambah Pelanggan Baru" />
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
         <div className="mb-6">
           <Link
             href="/invoicing-service/customers"
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 transition"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition"
           >
             <FiArrowLeft /> Kembali ke Daftar Pelanggan
           </Link>
-          <h1 className="text-2xl font-extrabold tracking-tight mt-2 flex items-center gap-2">
-            <FiBriefcase className="text-emerald-600 dark:text-emerald-500" /> Form Tambah Data Mitra
+          <h1 className="text-2xl font-bold tracking-tight mt-2 flex items-center gap-2">
+            <FiBriefcase className="text-indigo-600 dark:text-emerald-500" /> Form Tambah Data Mitra
           </h1>
           <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
             Lengkapi data legal dan operasional pelanggan baru untuk integrasi faktur &amp; SPK.
@@ -156,7 +156,7 @@ export default function CreateCustomerPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 transition shadow-sm"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-emerald-500 disabled:opacity-50 transition shadow-sm"
             >
               <FiPlus /> {isSubmitting ? "Menyimpan..." : "Simpan Data Mitra"}
             </button>

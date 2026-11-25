@@ -53,10 +53,17 @@ apiClient.interceptors.response.use(
   (response: AxiosResponse): AxiosResponse => response,
   (error: AxiosError): Promise<never> => {
     if (error.response?.status === 401 && typeof window !== "undefined") {
-      localStorage.removeItem(AUTH_TOKEN_KEY);
+      const requestUrl = error.config?.url ?? "";
+      const isLoginRequest = requestUrl.includes("/login");
+      const isOnLoginPage =
+        window.location.pathname.includes(LOGIN_PATH) ||
+        window.location.pathname.endsWith("/login");
 
-      if (!window.location.pathname.includes(LOGIN_PATH)) {
-        window.location.href = LOGIN_PATH;
+      if (!isLoginRequest) {
+        localStorage.removeItem(AUTH_TOKEN_KEY);
+        if (!isOnLoginPage) {
+          window.location.href = LOGIN_PATH;
+        }
       }
     }
     return Promise.reject(error);

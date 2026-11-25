@@ -1,5 +1,3 @@
-"use client";
-
 import { FiCheckCircle, FiClock } from "react-icons/fi";
 import type { InvoiceStatus, SpkStatus } from "@/app/lib/types";
 
@@ -27,7 +25,7 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
   const Icon = done ? FiCheckCircle : FiClock;
   return (
     <span
-      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${
         tone[status] ?? fallbackTone
       }`}
     >

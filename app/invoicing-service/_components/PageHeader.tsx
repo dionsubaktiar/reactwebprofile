@@ -1,5 +1,3 @@
-"use client";
-
 import type { ReactNode } from "react";
 
 export type HeaderAccent = "indigo" | "emerald" | "sky" | "amber" | "rose";
@@ -40,7 +38,7 @@ export default function PageHeader({
           <span className={`p-2 rounded-xl ${headerAccentIcon[accent]}`}>
             {icon}
           </span>
-          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
             {title}
           </h1>
         </div>

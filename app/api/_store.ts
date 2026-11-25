@@ -87,6 +87,14 @@ export function paginate<T extends { id: number }>(
   };
 }
 
+/** Parse string id menjadi integer positif, atau `null` bila tidak valid. */
+export function parsePositiveId(raw: string): number | null {
+  const trimmed = raw.trim();
+  if (!/^\d+$/.test(trimmed)) return null;
+  const num = Number(trimmed);
+  return Number.isSafeInteger(num) && num > 0 ? num : null;
+}
+
 /**
  * Cari item berdasarkan id. Kembalikan `null` bila tidak ada — route
  * membalas 404, bukan lagi fallback ke item pertama (`initial*[0]`).

@@ -1,17 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import Navbar from "../components/navbar";
+import Navbar from "../components/Navbar";
 import { useEffect, useState, useMemo } from "react";
 import apiClient from "@/app/lib/api";
 import type {
-  Customer,
-  Unit,
-  Package,
   Invoice,
   InvoiceStatus,
   SpkStatus,
-  Pagination,
+  Pagination as PaginationType,
   ApiResponse,
 } from "@/app/lib/types";
 import {
@@ -26,7 +23,6 @@ import {
   FiTool,
   FiBarChart2,
   FiPlus,
-  FiSearch,
   FiActivity,
   FiDollarSign,
   FiCheckCircle,
@@ -34,11 +30,15 @@ import {
   FiEye,
   FiEdit2,
   FiTrash2,
-  FiAlertCircle,
   FiPlay,
 } from "react-icons/fi";
+import DataTable from "./_components/DataTable";
+import KpiCard from "./_components/KpiCard";
+import PageHeader from "./_components/PageHeader";
+import PaginationControls from "./_components/Pagination";
 import RowActions from "./_components/RowActions";
-import ConfirmDialog from "./_components/ConfirmDialog";
+import SearchBar from "./_components/SearchBar";
+import ConfirmDialog from "@/app/components/ConfirmDialog";
 import StatusBadge from "./_components/StatusBadge";
 
 // Fallback high-fidelity sample data to guarantee clean rendering if remote API is offline
@@ -155,7 +155,7 @@ const FALLBACK_INVOICES: Invoice[] = [
 
 const MainPageInvoice = () => {
   const [invoice, setInvoice] = useState<Invoice[]>(FALLBACK_INVOICES);
-  const [pagination, setPagination] = useState<Pagination | null>({
+  const [pagination, setPagination] = useState<PaginationType | null>({
     current_page: 1,
     last_page: 1,
     prev_page_url: null,
@@ -266,7 +266,6 @@ const MainPageInvoice = () => {
         (inv.units?.driver || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
         (inv.packages?.kode_packages || "ADHOC").toLowerCase().includes(searchQuery.toLowerCase());
       
-      const combinedStatus = `${inv.status_invoice} ${inv.status_spk}`.toLowerCase();
       let matchStatus = true;
       if (statusFilter === "Lunas") matchStatus = inv.status_invoice === "Lunas";
       else if (statusFilter === "Pending") matchStatus = inv.status_invoice === "Pending";
@@ -290,141 +289,109 @@ const MainPageInvoice = () => {
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
-        {/* Top Control & Hub Navigation Bar (Harmonized with Landing Page Design) */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200/80 dark:border-zinc-800/80 pb-6">
-          <div>
-            <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-indigo-600 to-violet-500 text-white shadow-md shadow-indigo-500/20">
-                <FiFileText className="text-xl" />
-              </span>
-              <div>
-                <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-                  Invoicing &amp; Armada Service Hub
-                </h1>
-                <p className="text-xs md:text-sm text-slate-500 dark:text-zinc-400 mt-0.5">
-                  Manajemen penerbitan invoice perbaikan armada, surat perintah kerja (SPK), dan riwayat servis pelanggan.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2.5">
-            <Link href="/invoicing-service/units">
-              <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800/80 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 transition shadow-xs">
-                <FiTruck className="text-indigo-500" /> Units
-              </button>
-            </Link>
-            <Link href="/invoicing-service/customers">
-              <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800/80 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 transition shadow-xs">
-                <FiUsers className="text-indigo-500" /> Customers
-              </button>
-            </Link>
-            <Link href="/invoicing-service/parts">
-              <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800/80 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 transition shadow-xs">
-                <FiTool className="text-indigo-500" /> Parts
-              </button>
-            </Link>
-            <Link href="/invoicing-service/laporan">
-              <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800/80 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 transition shadow-xs">
+        <PageHeader
+          icon={<FiFileText size={22} />}
+          title="Invoicing & Armada Service Hub"
+          subtitle="Manajemen penerbitan invoice perbaikan armada, surat perintah kerja (SPK), dan riwayat servis pelanggan."
+          accent="indigo"
+          actions={
+            <>
+              <Link
+                href="/invoicing-service/units"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors shadow-sm"
+              >
+                <FiTruck className="text-indigo-500" /> Unit
+              </Link>
+              <Link
+                href="/invoicing-service/customers"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors shadow-sm"
+              >
+                <FiUsers className="text-indigo-500" /> Pelanggan
+              </Link>
+              <Link
+                href="/invoicing-service/parts"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors shadow-sm"
+              >
+                <FiTool className="text-indigo-500" /> Part
+              </Link>
+              <Link
+                href="/invoicing-service/laporan"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors shadow-sm"
+              >
                 <FiBarChart2 className="text-indigo-500" /> Laporan
-              </button>
-            </Link>
-            <Link href="/invoicing-service/invoice/create">
-              <button className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white transition shadow-md shadow-indigo-500/20">
+              </Link>
+              <Link
+                href="/invoicing-service/invoice/create"
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition-colors shadow-sm"
+              >
                 <FiPlus size={15} /> Buat Invoice Baru
-              </button>
-            </Link>
-          </div>
-        </div>
+              </Link>
+            </>
+          }
+        />
 
         {/* 4-Column Responsive KPI Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
-            <div>
-              <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Total Invoice</span>
-              <div className="text-2xl font-extrabold mt-1">{stats.totalCount} Faktur</div>
-              <span className="text-[11px] text-zinc-400">Tercatat dalam sistem</span>
-            </div>
-            <div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl">
-              <FiFileText />
-            </div>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
-            <div>
-              <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Estimasi Omzet</span>
-              <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1 font-mono">
-                {formatIDR(stats.totalRevenue)}
-              </div>
-              <span className="text-[11px] text-zinc-400">Akumulasi seluruh SPK</span>
-            </div>
-            <div className="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl">
-              <FiDollarSign />
-            </div>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
-            <div>
-              <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Status Lunas</span>
-              <div className="text-2xl font-extrabold text-sky-600 dark:text-sky-400 mt-1">
-                {stats.lunasCount} Faktur
-              </div>
-              <span className="text-[11px] text-zinc-400">Pembayaran selesai</span>
-            </div>
-            <div className="w-12 h-12 rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 flex items-center justify-center text-xl">
-              <FiCheckCircle />
-            </div>
-          </div>
-
-          <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
-            <div>
-              <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Perlu Tindakan</span>
-              <div className="text-2xl font-extrabold text-amber-600 dark:text-amber-400 mt-1">
-                {stats.pendingCount} Pending
-              </div>
-              <span className="text-[11px] text-zinc-400">SPK atau Invoice tertunda</span>
-            </div>
-            <div className="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl">
-              <FiClock />
-            </div>
-          </div>
+          <KpiCard
+            label="Total Invoice"
+            value={`${stats.totalCount} Faktur`}
+            hint="Tercatat dalam sistem"
+            icon={<FiFileText />}
+            accent="indigo"
+          />
+          <KpiCard
+            label="Estimasi Omzet"
+            value={<span className="font-mono">{formatIDR(stats.totalRevenue)}</span>}
+            hint="Akumulasi seluruh SPK"
+            icon={<FiDollarSign />}
+            accent="emerald"
+            coloredValue
+          />
+          <KpiCard
+            label="Status Lunas"
+            value={`${stats.lunasCount} Faktur`}
+            hint="Pembayaran selesai"
+            icon={<FiCheckCircle />}
+            accent="sky"
+            coloredValue
+          />
+          <KpiCard
+            label="Perlu Tindakan"
+            value={`${stats.pendingCount} Pending`}
+            hint="SPK atau Invoice tertunda"
+            icon={<FiClock />}
+            accent="amber"
+            coloredValue
+          />
         </div>
 
         {/* Filter and Search Bar (Desktop-First) */}
-        <div className="p-4 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-          <div className="relative flex-1">
-            <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
-            <input
-              type="text"
-              placeholder="Cari berdasarkan nopol kendaraan, nama perusahaan customer, atau kode paket..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            />
+        <SearchBar
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder="Cari berdasarkan nopol kendaraan, nama perusahaan customer, atau kode paket..."
+          accent="indigo"
+        >
+          <div className="flex items-center gap-1.5 text-xs text-zinc-500">
+            <span>Status:</span>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-2 text-xs rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="All">Semua Status</option>
+              <option value="Lunas">Lunas</option>
+              <option value="Pending">Invoice Pending</option>
+              <option value="SPK Pending">SPK Pending</option>
+            </select>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 text-xs text-zinc-500">
-              <span>Status:</span>
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 text-xs rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              >
-                <option value="All">Semua Status</option>
-                <option value="Lunas">Lunas</option>
-                <option value="Pending">Invoice Pending</option>
-                <option value="SPK Pending">SPK Pending</option>
-              </select>
-            </div>
-
-            {dataSource === "demo" && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
-                <FiActivity /> Demo Fallback
-              </span>
-            )}
-          </div>
-        </div>
+          {dataSource === "demo" && (
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
+              <FiActivity /> Demo Fallback
+            </span>
+          )}
+        </SearchBar>
 
         {deleteError && (
           <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-sm text-red-600 dark:text-red-400">
@@ -441,23 +408,27 @@ const MainPageInvoice = () => {
           </div>
         )}
 
-        {/* Responsive Desktop Table */}
-        <div className="bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm overflow-hidden">
-          {isLoading ? (
-            <div className="p-16 text-center text-sm text-zinc-500 flex flex-col items-center justify-center gap-3">
-              <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-              Memuat data invoice armada...
-            </div>
-          ) : filteredInvoices.length === 0 ? (
-            <div className="p-16 text-center text-sm text-zinc-500 flex flex-col items-center justify-center gap-2">
-              <FiAlertCircle size={28} className="text-zinc-400" />
-              <p className="font-semibold text-zinc-700 dark:text-zinc-300">Tidak ada data invoice yang sesuai kriteria.</p>
-              <p className="text-xs">Coba sesuaikan kata kunci pencarian atau ubah filter status.</p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800 text-left text-sm">
-                <thead className="bg-zinc-50 dark:bg-zinc-950/80 text-zinc-600 dark:text-zinc-400 text-xs font-semibold uppercase tracking-wider">
+        <DataTable
+          isLoading={isLoading}
+          loadingText="Memuat data invoice armada..."
+          isEmpty={filteredInvoices.length === 0}
+          emptyTitle="Tidak ada data invoice yang sesuai kriteria."
+          emptyHint="Coba sesuaikan kata kunci pencarian atau ubah filter status."
+          accent="indigo"
+          footer={
+            <PaginationControls
+              currentPage={currentPage}
+              hasNext={!!pagination?.next_page_url}
+              onPrev={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              onNext={() => setCurrentPage((p) => p + 1)}
+              summary={
+                <>Menampilkan {filteredInvoices.length} dari {invoice.length} entri invoice aktif</>
+              }
+            />
+          }
+        >
+          <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800 text-left text-sm">
+                <thead className="bg-zinc-50 dark:bg-zinc-950/80 text-zinc-600 dark:text-zinc-400 text-xs font-semibold">
                   <tr>
                     <th className="px-6 py-4">Nomor Polisi / Armada</th>
                     <th className="px-6 py-4">Tanggal SPK</th>
@@ -477,11 +448,11 @@ const MainPageInvoice = () => {
                       >
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-300 font-bold text-xs">
+                            <div className="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-300 font-semibold text-xs">
                               <FiTruck size={16} />
                             </div>
                             <div>
-                              <div className="font-extrabold text-zinc-900 dark:text-white font-mono">
+                              <div className="font-semibold text-zinc-900 dark:text-white font-mono">
                                 {inv.units?.nopol || `UNIT-${inv.id}`}
                               </div>
                               <div className="text-xs text-zinc-500">
@@ -491,9 +462,9 @@ const MainPageInvoice = () => {
                           </div>
                         </td>
 
-                        <td className="px-6 py-4 whitespace-nowrap text-xs text-zinc-600 dark:text-zinc-400 font-mono">
+                        <td className="px-6 py-4 whitespace-nowrap text-xs text-zinc-600 dark:text-zinc-400 font-mono tabular-nums">
                           {formatDateId(inv.tanggal)}
-                          <div className="text-[11px] text-zinc-400">
+                          <div className="text-xs text-zinc-400 tabular-nums">
                             {formatKm(inv.kilometer || 0)} Km
                           </div>
                         </td>
@@ -513,14 +484,14 @@ const MainPageInvoice = () => {
                           </span>
                         </td>
 
-                        <td className="px-6 py-4 whitespace-nowrap font-mono font-bold text-zinc-900 dark:text-white">
+                        <td className="px-6 py-4 whitespace-nowrap font-mono font-semibold tabular-nums text-zinc-900 dark:text-white">
                           {formatIDR(inv.harga || 0)}
                         </td>
 
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex flex-col gap-1 items-start">
                             <StatusBadge status={inv.status_invoice || "Pending"} />
-                            <span className="text-[10px] text-zinc-400">
+                            <span className="text-xs text-zinc-400">
                               SPK: {inv.status_spk || "Pending"}
                             </span>
                           </div>
@@ -607,35 +578,7 @@ const MainPageInvoice = () => {
                   })}
                 </tbody>
               </table>
-            </div>
-          )}
-
-          {/* Table Footer with Pagination */}
-          <div className="px-6 py-4 bg-zinc-50 dark:bg-zinc-950/60 border-t border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <span className="text-xs text-zinc-500">
-              Menampilkan {filteredInvoices.length} dari {invoice.length} entri invoice aktif
-            </span>
-            <div className="flex items-center gap-2">
-              <button
-                disabled={currentPage <= 1}
-                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-zinc-300 dark:border-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
-              >
-                Sebelumnya
-              </button>
-              <span className="text-xs font-mono font-bold px-2">
-                Halaman {currentPage}
-              </span>
-              <button
-                disabled={!pagination?.next_page_url && dataSource === "demo"}
-                onClick={() => setCurrentPage(p => p + 1)}
-                className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-zinc-300 dark:border-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
-              >
-                Selanjutnya
-              </button>
-            </div>
-          </div>
-        </div>
+        </DataTable>
       </main>
 
       <ConfirmDialog

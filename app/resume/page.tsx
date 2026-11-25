@@ -1,11 +1,11 @@
-import CardResume from "../components/cardResume";
-import Navbar from "../components/navbar";
+import CardResume from "../components/CardResume";
+import SubPageHeader from "@/app/components/SubPageHeader";
 
 const Resume = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50 font-poppins transition-colors duration-300">
+    <div className="min-h-screen flex flex-col bg-zinc-50 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50 transition-colors duration-200">
       <main className="max-w-xl w-full mx-auto px-4 py-8 flex-grow">
-        <Navbar title="Sandbox Directory" />
+        <SubPageHeader title="Sandbox Directory" />
         <section className="mt-8 space-y-4">
           <CardResume
             title="BMI & BFP Calculator"
@@ -34,7 +34,7 @@ const Resume = () => {
           />
           <CardResume
             title="Nusantara Trans Sentosa"
-            description="Custom touch-swipe sliders and viewport-optimized landing templates for Nusantara Trans using SwiperJS."
+            description="Interactive fleet showcase carousel with autoplay and keyboard-friendly controls."
             href="/nusantaratrans"
           />
         </section>

@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import axios from "axios";
+import apiClient from "@/app/lib/api";
+import { formatIDR } from "@/app/lib/format";
 import { useRouter } from "next/navigation";
-import Navbar from "../components/navbar";
+import SubPageHeader from "@/app/components/SubPageHeader";
 import FloatingActionButton from "../components/FloatingActionButton";
 import { 
   FiDollarSign, 
@@ -16,7 +17,6 @@ import {
   FiArrowRight, 
   FiCheckCircle, 
   FiSliders,
-  FiActivity,
   FiFileText
 } from "react-icons/fi";
 
@@ -46,6 +46,7 @@ interface Pinjaman {
   down_payment: string;
   tenor: number;
   angsuran: string;
+  status?: "Disetujui" | "Dalam Review";
   kendaraan: Kendaraan;
   konsumen: Konsumen;
 }
@@ -157,6 +158,7 @@ const FALLBACK_PINJAMAN: Pinjaman[] = [
 const PinjamanPage = () => {
   const [pinjamanData, setPinjamanData] = useState<Pinjaman[]>(FALLBACK_PINJAMAN);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMerk, setSelectedMerk] = useState("All");
   const [dataSource, setDataSource] = useState<"api" | "demo">("demo");
@@ -168,22 +170,22 @@ const PinjamanPage = () => {
   const [calcTenor, setCalcTenor] = useState<number>(36);
   const [calcRate, setCalcRate] = useState<number>(7.5);
 
-  const baseUrl = "/api/pinjaman";
-
   useEffect(() => {
     let isMounted = true;
     const fetchPinjamanData = async () => {
       setIsLoading(true);
+      setLoadError(null);
       try {
-        const response = await axios.get<Pinjaman[]>(baseUrl, { timeout: 3500 });
-        if (isMounted && Array.isArray(response.data) && response.data.length > 0) {
-          setPinjamanData(response.data);
+        const response = await apiClient.get<{ data?: Pinjaman[] }>("/pinjaman", { timeout: 3500 });
+        const list = response.data?.data;
+        if (isMounted && Array.isArray(list)) {
+          setPinjamanData(list);
           setDataSource("api");
         }
-      } catch (err) {
-        // Fallback to rich structured sample data gracefully
+      } catch {
         if (isMounted) {
           setDataSource("demo");
+          setLoadError("Gagal terhubung ke API pinjaman; menampilkan data contoh.");
         }
       } finally {
         if (isMounted) {
@@ -201,11 +203,7 @@ const PinjamanPage = () => {
   const formatCurrency = (amount: string | number) => {
     const number = typeof amount === "string" ? parseFloat(amount) : amount;
     if (isNaN(number)) return "Rp 0";
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      maximumFractionDigits: 0
-    }).format(number);
+    return formatIDR(number);
   };
 
   // Filtered applications
@@ -234,8 +232,10 @@ const PinjamanPage = () => {
     }, 0);
     const avgTenor = totalPengajuan > 0
       ? Math.round(pinjamanData.reduce((acc, c) => acc + (c.tenor || 0), 0) / totalPengajuan)
-      : 36;
-    return { totalPengajuan, totalPlafon, avgTenor, approvalRate: 94 };
+      : 0;
+    const approvedCount = pinjamanData.filter((p) => (p.status ?? "Disetujui") === "Disetujui").length;
+    const approvalRate = totalPengajuan > 0 ? Math.round((approvedCount / totalPengajuan) * 100) : 0;
+    return { totalPengajuan, totalPlafon, avgTenor, approvalRate };
   }, [pinjamanData]);
 
   // Calculator computations
@@ -250,7 +250,7 @@ const PinjamanPage = () => {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-24">
-      <Navbar title="Sistem Kredit Kendaraan" />
+      <SubPageHeader title="Sistem Kredit Kendaraan" />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
         {/* Header Section (Responsive Desktop-First) */}
@@ -260,7 +260,7 @@ const PinjamanPage = () => {
               <span className="p-2 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
                 <FiTruck size={22} />
               </span>
-              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
+              <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
                 Pengajuan Kredit Kendaraan
               </h1>
             </div>
@@ -271,7 +271,7 @@ const PinjamanPage = () => {
 
           <div className="flex items-center gap-3">
             <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
               {dataSource === "api" ? "Live API Connected" : "Interactive Demo Active"}
             </span>
           </div>
@@ -281,9 +281,9 @@ const PinjamanPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
             <div>
-              <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Total Debitur</span>
-              <div className="text-2xl font-extrabold mt-1">{stats.totalPengajuan} Berkas</div>
-              <span className="text-[11px] text-zinc-400">Pengajuan terverifikasi</span>
+              <span className="text-xs font-medium text-zinc-500">Total Debitur</span>
+              <div className="text-2xl font-bold mt-1">{stats.totalPengajuan} Berkas</div>
+              <span className="text-xs text-zinc-400">Pengajuan terverifikasi</span>
             </div>
             <div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl">
               <FiUser />
@@ -292,11 +292,11 @@ const PinjamanPage = () => {
 
           <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
             <div>
-              <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Total Plafon Cair</span>
-              <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1 font-mono">
+              <span className="text-xs font-medium text-zinc-500">Total Plafon Cair</span>
+              <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1 font-mono">
                 {formatCurrency(stats.totalPlafon)}
               </div>
-              <span className="text-[11px] text-zinc-400">Total pokok pembiayaan</span>
+              <span className="text-xs text-zinc-400">Total pokok pembiayaan</span>
             </div>
             <div className="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl">
               <FiDollarSign />
@@ -305,11 +305,11 @@ const PinjamanPage = () => {
 
           <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
             <div>
-              <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Rata-Rata Tenor</span>
-              <div className="text-2xl font-extrabold text-sky-600 dark:text-sky-400 mt-1">
+              <span className="text-xs font-medium text-zinc-500">Rata-Rata Tenor</span>
+              <div className="text-2xl font-bold text-sky-600 dark:text-sky-400 mt-1">
                 {stats.avgTenor} Bulan
               </div>
-              <span className="text-[11px] text-zinc-400">Pilihan tenor terfavorit</span>
+              <span className="text-xs text-zinc-400">Pilihan tenor terfavorit</span>
             </div>
             <div className="w-12 h-12 rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 flex items-center justify-center text-xl">
               <FiCalendar />
@@ -318,11 +318,11 @@ const PinjamanPage = () => {
 
           <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
             <div>
-              <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Approval Rate</span>
-              <div className="text-2xl font-extrabold text-amber-600 dark:text-amber-400 mt-1">
+              <span className="text-xs font-medium text-zinc-500">Approval Rate</span>
+              <div className="text-2xl font-bold text-amber-600 dark:text-amber-400 mt-1">
                 {stats.approvalRate}%
               </div>
-              <span className="text-[11px] text-zinc-400">Tingkat kelayakan kredit</span>
+              <span className="text-xs text-zinc-400">Tingkat kelayakan kredit</span>
             </div>
             <div className="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl">
               <FiPieChart />
@@ -334,7 +334,12 @@ const PinjamanPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column (8 Cols on Desktop): Pipeline List */}
           <div className="lg:col-span-8 space-y-6">
-            {/* Filter and Search Bar */}
+        {/* Filter and Search Bar */}
+        {loadError && (
+          <div role="alert" className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-700 dark:text-amber-300">
+            {loadError}
+          </div>
+        )}
             <div className="p-4 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col sm:flex-row gap-4 items-stretch sm:items-center justify-between">
               <div className="relative flex-1">
                 <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
@@ -378,7 +383,7 @@ const PinjamanPage = () => {
                 {filteredList.map((pinjaman) => (
                   <div
                     key={pinjaman.id}
-                    className="p-5 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm hover:border-indigo-500/50 hover:shadow-md transition-all flex flex-col justify-between"
+                    className="p-5 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm hover:border-indigo-500/50 hover:shadow-md transition-colors flex flex-col justify-between"
                   >
                     <div className="space-y-4">
                       {/* Card Header: Debitur & Status */}
@@ -391,14 +396,20 @@ const PinjamanPage = () => {
                             <h3 className="font-bold text-sm text-zinc-900 dark:text-white line-clamp-1">
                               {pinjaman.konsumen?.nama || "Debitur"}
                             </h3>
-                            <span className="text-[11px] font-mono text-zinc-400">
+                            <span className="text-xs font-mono text-zinc-400">
                               NIK: {pinjaman.konsumen?.nik || "-"}
                             </span>
                           </div>
                         </div>
 
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                          <FiCheckCircle size={10} /> Disetujui
+                        <span
+                          className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                            (pinjaman.status ?? "Disetujui") === "Disetujui"
+                              ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                              : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+                          }`}
+                        >
+                          <FiCheckCircle size={10} /> {pinjaman.status ?? "Disetujui"}
                         </span>
                       </div>
 
@@ -408,9 +419,9 @@ const PinjamanPage = () => {
                           <span className="font-semibold text-zinc-700 dark:text-zinc-300">
                             {pinjaman.kendaraan?.merk_kendaraan} {pinjaman.kendaraan?.model_kendaraan}
                           </span>
-                          <span className="text-[11px] text-zinc-400">{pinjaman.kendaraan?.warna_kendaraan}</span>
+                          <span className="text-xs text-zinc-400">{pinjaman.kendaraan?.warna_kendaraan}</span>
                         </div>
-                        <div className="text-[11px] text-zinc-500 flex items-center justify-between">
+                        <div className="text-xs text-zinc-500 flex items-center justify-between">
                           <span>Dealer: {pinjaman.kendaraan?.dealer}</span>
                           <span className="font-mono font-bold text-zinc-800 dark:text-zinc-200">
                             OTR {formatCurrency(pinjaman.kendaraan?.harga_kendaraan || "0")}
@@ -421,13 +432,13 @@ const PinjamanPage = () => {
                       {/* Financial Structure Specs */}
                       <div className="grid grid-cols-2 gap-3 text-xs">
                         <div className="p-2.5 rounded-lg bg-zinc-100/50 dark:bg-zinc-800/40">
-                          <span className="text-[10px] text-zinc-500 uppercase block">Uang Muka (DP)</span>
+                          <span className="text-xs text-zinc-500 block">Uang Muka (DP)</span>
                           <span className="font-mono font-bold text-zinc-900 dark:text-white">
                             {formatCurrency(pinjaman.down_payment)}
                           </span>
                         </div>
                         <div className="p-2.5 rounded-lg bg-zinc-100/50 dark:bg-zinc-800/40">
-                          <span className="text-[10px] text-zinc-500 uppercase block">Tenor Pembiayaan</span>
+                          <span className="text-xs text-zinc-500 block">Tenor Pembiayaan</span>
                           <span className="font-bold text-zinc-900 dark:text-white">
                             {pinjaman.tenor} Bulan
                           </span>
@@ -436,14 +447,14 @@ const PinjamanPage = () => {
 
                       <div className="flex items-baseline justify-between pt-1">
                         <span className="text-xs text-zinc-500">Angsuran per Bulan:</span>
-                        <span className="text-base font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">
+                        <span className="text-base font-bold text-indigo-600 dark:text-indigo-400 font-mono">
                           {formatCurrency(pinjaman.angsuran)}
                         </span>
                       </div>
                     </div>
 
                     <div className="pt-4 mt-4 border-t border-zinc-100 dark:border-zinc-800/60 flex items-center justify-between">
-                      <span className="text-[10px] text-zinc-400 flex items-center gap-1">
+                      <span className="text-xs text-zinc-400 flex items-center gap-1">
                         <FiShield /> {pinjaman.asuransi}
                       </span>
                       <button
@@ -467,11 +478,11 @@ const PinjamanPage = () => {
                   <span className="p-2 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
                     <FiSliders size={18} />
                   </span>
-                  <h2 className="font-extrabold text-base text-zinc-900 dark:text-white">
+                  <h2 className="font-bold text-base text-zinc-900 dark:text-white">
                     Kalkulator Kredit
                   </h2>
                 </div>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400">
+                <span className="text-xs font-bold px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400">
                   Instant Simulation
                 </span>
               </div>
@@ -479,13 +490,14 @@ const PinjamanPage = () => {
               {/* Calculator Inputs */}
               <div className="space-y-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex justify-between">
+                  <label htmlFor="calc-otr" className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex justify-between">
                     <span>Harga OTR Kendaraan</span>
-                    <span className="font-mono text-indigo-600 dark:text-indigo-400">
+                    <span className="font-mono tabular-nums text-indigo-600 dark:text-indigo-400">
                       {formatCurrency(calcOtr)}
                     </span>
                   </label>
                   <input
+                    id="calc-otr"
                     type="range"
                     min="100000000"
                     max="1200000000"
@@ -497,13 +509,14 @@ const PinjamanPage = () => {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex justify-between">
+                  <label htmlFor="calc-dp" className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex justify-between">
                     <span>Uang Muka (DP: {calcDpPct}%)</span>
-                    <span className="font-mono text-emerald-600 dark:text-emerald-400">
+                    <span className="font-mono tabular-nums text-emerald-600 dark:text-emerald-400">
                       {formatCurrency(calcResults.dpNominal)}
                     </span>
                   </label>
                   <input
+                    id="calc-dp"
                     type="range"
                     min="10"
                     max="60"
@@ -515,16 +528,16 @@ const PinjamanPage = () => {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                  <span className="block text-xs font-bold text-zinc-700 dark:text-zinc-300">
                     Pilihan Tenor Pembayaran
-                  </label>
+                  </span>
                   <div className="grid grid-cols-5 gap-1.5">
                     {[12, 24, 36, 48, 60].map((t) => (
                       <button
                         key={t}
                         type="button"
                         onClick={() => setCalcTenor(t)}
-                        className={`py-2 text-xs font-bold rounded-xl transition ${
+                        className={`py-2 text-xs font-bold rounded-xl transition-colors ${
                           calcTenor === t
                             ? "bg-indigo-600 text-white shadow-sm"
                             : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200"
@@ -537,11 +550,12 @@ const PinjamanPage = () => {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex justify-between">
+                  <label htmlFor="calc-rate" className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex justify-between">
                     <span>Suku Bunga Flat (p.a.)</span>
-                    <span className="font-mono">{calcRate}%</span>
+                    <span className="font-mono tabular-nums">{calcRate}%</span>
                   </label>
                   <input
+                    id="calc-rate"
                     type="range"
                     min="5"
                     max="14"
@@ -566,10 +580,10 @@ const PinjamanPage = () => {
                   </span>
                 </div>
                 <div className="pt-2 border-t border-indigo-200 dark:border-indigo-900/80 flex items-baseline justify-between">
-                  <span className="text-xs font-extrabold text-indigo-900 dark:text-indigo-200">
+                  <span className="text-xs font-bold text-indigo-900 dark:text-indigo-200">
                     Estimasi Angsuran:
                   </span>
-                  <span className="text-xl font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">
+                  <span className="text-xl font-bold text-indigo-600 dark:text-indigo-400 font-mono">
                     {formatCurrency(calcResults.cicilanBulanan)}
                     <span className="text-xs font-normal text-zinc-500">/bln</span>
                   </span>
@@ -578,7 +592,11 @@ const PinjamanPage = () => {
 
               <button
                 type="button"
-                onClick={() => router.push("/pengajuan-kredit/create")}
+                onClick={() =>
+                  router.push(
+                    `/pengajuan-kredit/create?dp=${Math.round(calcResults.dpNominal)}&tenor=${calcTenor}`
+                  )
+                }
                 className="w-full py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition shadow-sm flex items-center justify-center gap-2"
               >
                 <FiFileText /> Ajukan dengan Simulasi Ini

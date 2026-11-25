@@ -1,98 +1,72 @@
-// Service: reactwebprofile | File: app/bmi/page.tsx
 'use client';
 
 import { useState } from 'react';
-import Navbar from '../components/navbar';
+import SubPageHeader from "@/app/components/SubPageHeader";
+import { calculateBfpBoer, classifyBmi } from '@/app/lib/calculators';
 import { FiActivity, FiUser, FiInfo, FiCheckCircle } from 'react-icons/fi';
 
 const BmiPage = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    gender: 'L' | 'P';
+    tinggi: number;
+    berat: number;
+  }>({
     gender: 'L',
     tinggi: 172,
     berat: 68,
-    umur: 25,
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [bfpResult, setBfpResult] = useState<number | null>(17.2);
   const [bmiResult, setBmiResult] = useState<number | null>(22.99);
   const [classification, setClassification] = useState<string | null>('Normal Weight (Ideal)');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    const { gender, tinggi, berat } = formData;
+    if (tinggi <= 0 || berat <= 0) return;
 
-    try {
-      const { gender, tinggi, berat } = formData;
-      if (!gender || tinggi <= 0 || berat <= 0) return;
-
-      const bmi = berat / (tinggi / 100) ** 2;
-      setBmiResult(parseFloat(bmi.toFixed(2)));
-
-      if (bmi < 18.5) {
-        setClassification('Underweight (Kurus)');
-      } else if (bmi >= 18.5 && bmi <= 24.9) {
-        setClassification('Normal Weight (Ideal)');
-      } else if (bmi >= 25 && bmi <= 29.9) {
-        setClassification('Overweight (Kelebihan Berat)');
-      } else if (bmi >= 30 && bmi <= 34.9) {
-        setClassification('Obese Class I (Obesitas Stadium I)');
-      } else if (bmi >= 35 && bmi <= 39.9) {
-        setClassification('Obese Class II (Obesitas Stadium II)');
-      } else {
-        setClassification('Obese Class III (Obesitas Stadium III)');
-      }
-
-      let lbm: number;
-      if (gender === 'L') {
-        lbm = 0.407 * berat + 0.267 * tinggi - 19.2; // Boer for men
-      } else if (gender === 'P') {
-        lbm = 0.252 * berat + 0.473 * tinggi - 48.3; // Boer for women
-      } else {
-        throw new Error('Invalid gender selected');
-      }
-
-      const bfp = ((berat - lbm) / berat) * 100;
-      setBfpResult(parseFloat(bfp.toFixed(2)));
-    } catch (error) {
-      console.error('Error calculating BFP:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    const bmi = berat / (tinggi / 100) ** 2;
+    setBmiResult(parseFloat(bmi.toFixed(2)));
+    setClassification(classifyBmi(bmi));
+    setBfpResult(calculateBfpBoer(gender, tinggi, berat));
   };
 
-  return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 font-poppins">
-      <Navbar title="BMI & BFP Health Calculator" />
+  const markerPercent =
+    bmiResult !== null
+      ? Math.min(100, Math.max(0, ((bmiResult - 15) / 25) * 100))
+      : 0;
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+  return (
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+      <SubPageHeader title="BMI & BFP Health Calculator" />
+
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         <div className="mb-8">
-          <div className="flex items-center gap-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-1">
+          <div className="flex items-center gap-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400 mb-1">
             <FiActivity /> Developer Sandbox &bull; Responsive Health Analytics
           </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
             Kalkulator Komposisi Tubuh (BMI &amp; BFP)
           </h1>
           <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
-            Kalkulasi Body Mass Index (BMI) dan Body Fat Percentage (Metode Boer) dengan visualisasi dua kolom di desktop.
+            Kalkulasi Body Mass Index (BMI) dan Body Fat Percentage (Metode Boer 1984) secara real-time.
           </p>
         </div>
 
-        {/* Responsive Desktop-First 2-Column Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Left Column: Input Form (5 Cols on Desktop) */}
+          {/* Left Column: Input Form */}
           <div className="lg:col-span-5 p-6 md:p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 shadow-sm space-y-6">
-            <h2 className="text-base font-bold text-zinc-900 dark:text-white flex items-center gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-3">
+            <h2 className="text-base font-semibold text-zinc-900 dark:text-white flex items-center gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-3">
               <FiUser className="text-indigo-500" /> Parameter Biometrik
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Jenis Kelamin</label>
+                <span className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300">Jenis Kelamin</span>
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, gender: 'L' })}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
+                    className={`py-2 px-3 rounded-xl text-xs font-semibold border transition-colors ${
                       formData.gender === 'L'
                         ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
                         : 'bg-zinc-50 dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400'
@@ -103,7 +77,7 @@ const BmiPage = () => {
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, gender: 'P' })}
-                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
+                    className={`py-2 px-3 rounded-xl text-xs font-semibold border transition-colors ${
                       formData.gender === 'P'
                         ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
                         : 'bg-zinc-50 dark:bg-zinc-950 border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400'
@@ -116,8 +90,9 @@ const BmiPage = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Tinggi Badan (cm)</label>
+                  <label htmlFor="bmi-tinggi" className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Tinggi Badan (cm)</label>
                   <input
+                    id="bmi-tinggi"
                     type="number"
                     required
                     min="50"
@@ -128,8 +103,9 @@ const BmiPage = () => {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Berat Badan (kg)</label>
+                  <label htmlFor="bmi-berat" className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Berat Badan (kg)</label>
                   <input
+                    id="bmi-berat"
                     type="number"
                     required
                     min="10"
@@ -141,53 +117,40 @@ const BmiPage = () => {
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Usia (Tahun)</label>
-                <input
-                  type="number"
-                  min="5"
-                  max="120"
-                  value={formData.umur || ''}
-                  onChange={(e) => setFormData({ ...formData, umur: parseInt(e.target.value) || 0 })}
-                  className="w-full p-2.5 border border-zinc-200 dark:border-zinc-800 rounded-xl bg-zinc-50 dark:bg-zinc-950 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
               <button
                 type="submit"
-                disabled={isSubmitting}
                 className="w-full py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition shadow-sm"
               >
-                {isSubmitting ? 'Menghitung...' : 'Hitung Ulang Indeks'}
+                Hitung Ulang Indeks
               </button>
             </form>
           </div>
 
-          {/* Right Column: Visual Dashboard Results (7 Cols on Desktop) */}
+          {/* Right Column: Results */}
           <div className="lg:col-span-7 space-y-6">
             <div className="p-6 md:p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 shadow-sm space-y-6">
               <h2 className="text-base font-bold text-zinc-900 dark:text-white flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
                 <span>Hasil Analisis Komposisi Tubuh</span>
                 <span className="text-xs font-normal text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                  <FiCheckCircle /> Terverifikasi Akurat
+                  <FiCheckCircle /> Formula Boer 1984
                 </span>
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="p-5 rounded-xl bg-zinc-50 dark:bg-zinc-950/70 border border-zinc-200/80 dark:border-zinc-800">
-                  <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Body Mass Index (BMI)</span>
-                  <div className="text-3xl font-extrabold text-indigo-600 dark:text-indigo-400 mt-2 font-mono">
+                  <span className="text-xs font-semibold text-zinc-500">Body Mass Index (BMI)</span>
+                  <div className="text-3xl font-bold text-indigo-600 dark:text-indigo-400 mt-2 font-mono tabular-nums">
                     {bmiResult ?? '--'}
                   </div>
-                  <div className="text-xs font-bold text-zinc-800 dark:text-zinc-200 mt-1">
+                  <div className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 mt-1">
                     {classification ?? 'Belum ada data'}
                   </div>
                 </div>
 
                 <div className="p-5 rounded-xl bg-zinc-50 dark:bg-zinc-950/70 border border-zinc-200/80 dark:border-zinc-800">
-                  <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Body Fat Percentage (BFP)</span>
-                  <div className="text-3xl font-extrabold text-sky-500 mt-2 font-mono">
-                    {bfpResult ? `${bfpResult}%` : '--'}
+                  <span className="text-xs font-semibold text-zinc-500">Body Fat Percentage (BFP)</span>
+                  <div className="text-3xl font-bold text-sky-600 dark:text-sky-400 mt-2 font-mono tabular-nums">
+                    {bfpResult !== null ? `${bfpResult}%` : '--'}
                   </div>
                   <div className="text-xs text-zinc-500 mt-1">Formula Boer 1984</div>
                 </div>
@@ -195,14 +158,26 @@ const BmiPage = () => {
 
               {/* Range Scale Indicator */}
               <div className="space-y-2">
-                <div className="flex justify-between text-xs font-medium text-zinc-500">
+                <div className="flex justify-between text-xs font-medium text-zinc-500 tabular-nums">
                   <span>Kurus (&lt;18.5)</span>
-                  <span className="text-emerald-600 font-semibold">Ideal (18.5 - 24.9)</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Ideal (18.5 - 24.9)</span>
                   <span>Gemuk (25 - 29.9)</span>
                   <span>Obesitas (&ge;30)</span>
                 </div>
-                <div className="w-full h-3 rounded-full bg-gradient-to-r from-sky-400 via-emerald-400 to-amber-500 p-0.5">
-                  <div className="w-full h-full rounded-full bg-transparent"></div>
+                <div className="relative w-full h-3">
+                  <div className="flex h-3 w-full overflow-hidden rounded-full">
+                    <div className="w-[14%] bg-sky-400" />
+                    <div className="w-[26%] bg-emerald-500" />
+                    <div className="w-[20%] bg-amber-400" />
+                    <div className="w-[40%] bg-rose-500" />
+                  </div>
+                  {bmiResult !== null && (
+                    <div
+                      aria-label={`Posisi BMI ${bmiResult}`}
+                      style={{ left: `${markerPercent}%` }}
+                      className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 h-4 w-4 rounded-full border-2 border-white bg-zinc-900 shadow dark:border-zinc-900 dark:bg-white"
+                    />
+                  )}
                 </div>
               </div>
 

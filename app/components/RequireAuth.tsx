@@ -26,10 +26,10 @@ export default function RequireAuth({ children }: { children: ReactNode }) {
 
   if (isRestoringAuth) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-zinc-950">
+      <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-950">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
-          <p className="text-xs text-slate-500 dark:text-zinc-400">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent" />
+          <p className="text-xs text-zinc-500 dark:text-zinc-400">
             Memeriksa sesi login...
           </p>
         </div>

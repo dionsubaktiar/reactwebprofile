@@ -4,6 +4,7 @@ import {
   getByIdOr404,
   nextId,
   paginate,
+  parsePositiveId,
   removeById,
   replaceById,
   type Store,
@@ -97,5 +98,15 @@ describe("replaceById + removeById", () => {
     expect(store.items).toHaveLength(4);
     expect(getByIdOr404(store, 1)).toBeNull();
     expect(removeById(store, 1)).toBe(false);
+  });
+});
+
+describe("parsePositiveId", () => {
+  it("menerima integer positif dan menolak string tidak valid", () => {
+    expect(parsePositiveId("12")).toBe(12);
+    expect(parsePositiveId("12abc")).toBeNull();
+    expect(parsePositiveId("0")).toBeNull();
+    expect(parsePositiveId("-5")).toBeNull();
+    expect(parsePositiveId("")).toBeNull();
   });
 });

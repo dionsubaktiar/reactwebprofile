@@ -1,6 +1,6 @@
 "use client";
 
-import Navbar from "@/app/components/navbar";
+import SubPageHeader from "@/app/components/SubPageHeader";
 import apiClient from "@/app/lib/api";
 import type { Part, Pagination, ApiResponse } from "@/app/lib/types";
 import { formatIDR } from "@/app/lib/format";
@@ -23,7 +23,7 @@ import SearchBar from "../_components/SearchBar";
 import DataTable from "../_components/DataTable";
 import PaginationControls from "../_components/Pagination";
 import RowActions from "../_components/RowActions";
-import ConfirmDialog from "../_components/ConfirmDialog";
+import ConfirmDialog from "@/app/components/ConfirmDialog";
 
 const FALLBACK_PARTS: Part[] = [
   {
@@ -142,6 +142,11 @@ const PartsPage = () => {
     }
   };
 
+  const merkOptions = useMemo(() => {
+    const unique = new Set(parts.map((p) => p.merk).filter(Boolean));
+    return Array.from(unique).sort((a, b) => a.localeCompare(b));
+  }, [parts]);
+
   const filteredParts = useMemo(() => {
     return parts.filter(p => {
       const q = searchQuery.toLowerCase();
@@ -165,7 +170,7 @@ const PartsPage = () => {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
-      <Navbar title="Manajemen Suku Cadang" />
+      <SubPageHeader title="Manajemen Suku Cadang" />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
         <PageHeader
@@ -175,20 +180,23 @@ const PartsPage = () => {
           accent="indigo"
           actions={
             <>
-              <Link href="/invoicing-service">
-                <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition shadow-sm">
-                  <FiArrowLeft /> Hub Invoicing
-                </button>
+              <Link
+                href="/invoicing-service"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-sm"
+              >
+                <FiArrowLeft /> Hub Invoicing
               </Link>
-              <Link href="/invoicing-service/units">
-                <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition shadow-sm">
-                  <FiTruck /> Units
-                </button>
+              <Link
+                href="/invoicing-service/units"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-sm"
+              >
+                <FiTruck /> Unit
               </Link>
-              <Link href="/invoicing-service/parts/create">
-                <button className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition shadow-sm">
-                  <FiPlus size={15} /> Tambah Suku Cadang
-                </button>
+              <Link
+                href="/invoicing-service/parts/create"
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition-colors shadow-sm"
+              >
+                <FiPlus size={15} /> Tambah Suku Cadang
               </Link>
             </>
           }
@@ -232,14 +240,14 @@ const PartsPage = () => {
             className="px-3 py-2 text-xs rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="All">Semua Merk Sparepart</option>
-            <option value="Denso">Denso</option>
-            <option value="Bendix">Bendix</option>
-            <option value="Exedy">Exedy</option>
-            <option value="Sakura">Sakura</option>
-            <option value="Bando">Bando</option>
+            {merkOptions.map((merk) => (
+              <option key={merk} value={merk}>
+                {merk}
+              </option>
+            ))}
           </select>
           {dataSource === "demo" && (
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
               <FiActivity /> Demo Fallback
             </span>
           )}
@@ -261,7 +269,7 @@ const PartsPage = () => {
           footer={
             <PaginationControls
               currentPage={currentPage}
-              hasNext={!!pagination?.next_page_url || dataSource === "api"}
+              hasNext={!!pagination?.next_page_url}
               onPrev={() => setCurrentPage((p) => Math.max(1, p - 1))}
               onNext={() => setCurrentPage((p) => p + 1)}
               summary={
@@ -271,7 +279,7 @@ const PartsPage = () => {
           }
         >
           <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-800 text-left text-sm">
-            <thead className="bg-zinc-50 dark:bg-zinc-950/80 text-zinc-600 dark:text-zinc-400 text-xs font-semibold uppercase tracking-wider">
+            <thead className="bg-zinc-50 dark:bg-zinc-950/80 text-zinc-600 dark:text-zinc-400 text-xs font-semibold">
               <tr>
                 <th className="px-6 py-4">Part Number / SKU</th>
                 <th className="px-6 py-4">Nama Suku Cadang</th>
@@ -285,23 +293,23 @@ const PartsPage = () => {
             <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
               {filteredParts.map((part) => (
                 <tr key={part.id} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors">
-                  <td className="px-6 py-4 whitespace-nowrap font-mono font-bold text-xs text-indigo-600 dark:text-indigo-400">
+                  <td className="px-6 py-4 whitespace-nowrap font-mono font-semibold text-xs text-indigo-600 dark:text-indigo-400">
                     {part.part_number || `SKU-${part.id}`}
                   </td>
-                  <td className="px-6 py-4 font-bold text-zinc-900 dark:text-white">
+                  <td className="px-6 py-4 font-semibold text-zinc-900 dark:text-white">
                     {part.nama_barang}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-xs text-zinc-600 dark:text-zinc-400">
                     <span className="font-semibold text-zinc-800 dark:text-zinc-200">{part.merk}</span>
-                    <div className="text-[11px] text-zinc-500">{part.kendaraan}</div>
+                    <div className="text-xs text-zinc-500">{part.kendaraan}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap font-mono text-zinc-800 dark:text-zinc-200">
+                  <td className="px-6 py-4 whitespace-nowrap font-mono tabular-nums text-zinc-800 dark:text-zinc-200">
                     {formatIDR(part.harga || 0)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap font-mono text-zinc-500">
+                  <td className="px-6 py-4 whitespace-nowrap font-mono tabular-nums text-zinc-500">
                     {formatIDR(part.jasa || 0)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                  <td className="px-6 py-4 whitespace-nowrap font-mono font-semibold tabular-nums text-emerald-600 dark:text-emerald-400">
                     {formatIDR((part.harga || 0) + (part.jasa || 0))}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-xs relative">

@@ -1,6 +1,6 @@
 "use client";
 
-import Navbar from "@/app/components/navbar";
+import SubPageHeader from "@/app/components/SubPageHeader";
 import apiClient from "@/app/lib/api";
 import type { Invoice } from "@/app/lib/types";
 import { formatDateId, formatIDR, formatKm } from "@/app/lib/format";
@@ -24,8 +24,9 @@ import { nextInvoiceStatus } from "@/app/lib/invoice-status";
 const ViewInvoicePage = () => {
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
+  const hasValidId = Boolean(id);
   const [invoice, setInvoice] = useState<Invoice | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(hasValidId);
   const [error, setError] = useState<string | null>(null);
   // Status workflow (Hari 6): menandai invoice lunas dari halaman view.
   const [statusBusy, setStatusBusy] = useState(false);
@@ -52,11 +53,7 @@ const ViewInvoicePage = () => {
   };
 
   useEffect(() => {
-    if (!id) {
-      setError("ID invoice tidak valid.");
-      setIsLoading(false);
-      return;
-    }
+    if (!hasValidId || !id) return;
     let isMounted = true;
     const fetchData = async () => {
       try {
@@ -78,9 +75,12 @@ const ViewInvoicePage = () => {
     return () => {
       isMounted = false;
     };
-  }, [id]);
+  }, [hasValidId, id]);
 
-  if (isLoading)
+  const effectiveLoading = hasValidId && isLoading;
+  const effectiveError = !hasValidId ? "ID invoice tidak valid." : error;
+
+  if (effectiveLoading)
     return (
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         <div className="p-16 text-center text-sm text-zinc-500 flex flex-col items-center justify-center gap-3">
@@ -90,13 +90,13 @@ const ViewInvoicePage = () => {
       </main>
     );
 
-  if (error || !invoice)
+  if (effectiveError || !invoice)
     return (
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         <div className="p-16 text-center text-sm text-zinc-500 flex flex-col items-center justify-center gap-2">
           <FiAlertCircle size={28} className="text-zinc-400" />
           <p className="font-semibold text-zinc-700 dark:text-zinc-300">
-            {error ?? "Invoice tidak ditemukan."}
+            {effectiveError ?? "Invoice tidak ditemukan."}
           </p>
           <Link
             href="/invoicing-service"
@@ -122,7 +122,7 @@ const ViewInvoicePage = () => {
             <span className="p-2 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 print:text-indigo-600">
               <FiFileText size={22} />
             </span>
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
               {invoice.kode_invoice ?? `Invoice #${invoice.id}`}
             </h1>
           </div>
@@ -147,10 +147,11 @@ const ViewInvoicePage = () => {
           >
             <FiPrinter size={15} /> Cetak Invoice
           </button>
-          <Link href={`/invoicing-service/invoice/edit?id=${invoice.id}`}>
-            <button className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-sky-600 hover:bg-sky-700 text-white transition shadow-sm">
-              <FiEdit2 size={15} /> Edit Invoice
-            </button>
+          <Link
+            href={`/invoicing-service/invoice/edit?id=${invoice.id}`}
+            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition-colors shadow-sm"
+          >
+            <FiEdit2 size={15} /> Edit Invoice
           </Link>
         </div>
       </div>
@@ -164,41 +165,41 @@ const ViewInvoicePage = () => {
         </div>
       )}
 
-      <div className="p-6 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm">
-        <h2 className="text-lg font-bold mb-4">Detail Invoice</h2>
+      <div className="invoice-print-card p-6 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm">
+        <h2 className="text-lg font-semibold mb-4">Detail Invoice</h2>
         <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-sm">
           <div>
-            <dt className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Kilometer</dt>
-            <dd className="font-mono font-semibold text-zinc-900 dark:text-white mt-1">
+            <dt className="text-xs font-medium text-zinc-500">Kilometer</dt>
+            <dd className="font-mono font-semibold tabular-nums text-zinc-900 dark:text-white mt-1">
               {formatKm(invoice.kilometer || 0)} KM
             </dd>
           </div>
           <div>
-            <dt className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Tanggal</dt>
+            <dt className="text-xs font-medium text-zinc-500">Tanggal</dt>
             <dd className="text-zinc-700 dark:text-zinc-300 mt-1">
               {invoice.tanggal ? formatDateId(invoice.tanggal) : "-"}
             </dd>
           </div>
           <div>
-            <dt className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Total Harga</dt>
-            <dd className="font-mono font-bold text-zinc-900 dark:text-white mt-1">
+            <dt className="text-xs font-medium text-zinc-500">Total Harga</dt>
+            <dd className="font-mono font-semibold tabular-nums text-zinc-900 dark:text-white mt-1">
               {formatIDR(invoice.harga || 0)}
             </dd>
           </div>
           <div>
-            <dt className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Status Invoice</dt>
+            <dt className="text-xs font-medium text-zinc-500">Status Invoice</dt>
             <dd className="mt-1">
               <StatusBadge status={invoice.status_invoice} />
             </dd>
           </div>
           <div>
-            <dt className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Status SPK</dt>
+            <dt className="text-xs font-medium text-zinc-500">Status SPK</dt>
             <dd className="mt-1">
               <StatusBadge status={invoice.status_spk} />
             </dd>
           </div>
           <div>
-            <dt className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Paket Servis</dt>
+            <dt className="text-xs font-medium text-zinc-500">Paket Servis</dt>
             <dd className="font-semibold text-zinc-900 dark:text-white mt-1">
               {invoice.packages?.kode_packages ?? "ADHOC REPAIR"}
             </dd>
@@ -207,55 +208,55 @@ const ViewInvoicePage = () => {
       </div>
 
       {invoice.units && (
-        <div className="p-6 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm">
-          <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+        <div className="invoice-print-card p-6 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm">
+          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <FiTruck className="text-indigo-600 dark:text-indigo-400" /> Informasi Unit
           </h2>
           <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-sm">
             <div>
-              <dt className="text-xs font-medium text-zinc-500 uppercase tracking-wider">No Polisi</dt>
+              <dt className="text-xs font-medium text-zinc-500">No Polisi</dt>
               <dd className="font-mono font-semibold text-zinc-900 dark:text-white mt-1">
                 {invoice.units.nopol}
               </dd>
             </div>
             <div>
-              <dt className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Tipe</dt>
+              <dt className="text-xs font-medium text-zinc-500">Tipe</dt>
               <dd className="text-zinc-700 dark:text-zinc-300 mt-1">{invoice.units.tipe}</dd>
             </div>
             <div>
-              <dt className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Driver</dt>
+              <dt className="text-xs font-medium text-zinc-500">Driver</dt>
               <dd className="text-zinc-700 dark:text-zinc-300 mt-1">{invoice.units.driver || "-"}</dd>
             </div>
             <div>
-              <dt className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Tahun</dt>
-              <dd className="font-mono text-zinc-700 dark:text-zinc-300 mt-1">{invoice.units.tahun}</dd>
+              <dt className="text-xs font-medium text-zinc-500">Tahun</dt>
+              <dd className="font-mono tabular-nums text-zinc-700 dark:text-zinc-300 mt-1">{invoice.units.tahun}</dd>
             </div>
           </dl>
         </div>
       )}
 
       {invoice.units?.customers && (
-        <div className="p-6 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm">
-          <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+        <div className="invoice-print-card p-6 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm">
+          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <FiBriefcase className="text-indigo-600 dark:text-indigo-400" /> Informasi Customer
           </h2>
           <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-sm">
             <div>
-              <dt className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Nama Perusahaan</dt>
+              <dt className="text-xs font-medium text-zinc-500">Nama Perusahaan</dt>
               <dd className="font-semibold text-zinc-900 dark:text-white mt-1">
                 {invoice.units.customers.nama_perusahaan}
               </dd>
             </div>
             <div>
-              <dt className="text-xs font-medium text-zinc-500 uppercase tracking-wider">PIC</dt>
+              <dt className="text-xs font-medium text-zinc-500">PIC</dt>
               <dd className="text-zinc-700 dark:text-zinc-300 mt-1">{invoice.units.customers.pic}</dd>
             </div>
             <div>
-              <dt className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Alamat</dt>
+              <dt className="text-xs font-medium text-zinc-500">Alamat</dt>
               <dd className="text-zinc-700 dark:text-zinc-300 mt-1">{invoice.units.customers.alamat}</dd>
             </div>
             <div>
-              <dt className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Kontak</dt>
+              <dt className="text-xs font-medium text-zinc-500">Kontak</dt>
               <dd className="font-mono text-emerald-600 dark:text-emerald-400 mt-1">
                 {invoice.units.customers.kontak}
               </dd>
@@ -265,15 +266,15 @@ const ViewInvoicePage = () => {
       )}
 
       {invoice.parts && invoice.parts.length > 0 && (
-        <div className="p-6 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm">
-          <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+        <div className="invoice-print-card p-6 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm">
+          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <FiPackage className="text-indigo-600 dark:text-indigo-400" /> Rincian Part
           </h2>
           <div className="space-y-2">
             {invoice.parts.map((part) => (
               <div
                 key={part.id_part}
-                className="flex items-center justify-between gap-4 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800"
+                className="invoice-print-item flex items-center justify-between gap-4 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800"
               >
                 <p className="font-semibold text-sm text-zinc-900 dark:text-white">
                   {part.name ?? `Part #${part.id_part}`}
@@ -281,7 +282,7 @@ const ViewInvoicePage = () => {
                     <span className="text-zinc-500 font-normal"> × {part.quantity}</span>
                   ) : null}
                 </p>
-                <p className="font-mono font-bold text-sm text-zinc-900 dark:text-white">
+                <p className="font-mono font-semibold tabular-nums text-sm text-zinc-900 dark:text-white">
                   {formatIDR(part.total_price ?? 0)}
                 </p>
               </div>
@@ -291,18 +292,18 @@ const ViewInvoicePage = () => {
       )}
 
       {invoice.package_items && invoice.package_items.length > 0 && (
-        <div className="p-6 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm">
-          <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+        <div className="invoice-print-card p-6 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm">
+          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <FiPackage className="text-indigo-600 dark:text-indigo-400" /> Rincian Paket
           </h2>
           <div className="space-y-2">
             {invoice.package_items.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center justify-between gap-4 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800"
+                className="invoice-print-item flex items-center justify-between gap-4 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800"
               >
                 <p className="font-semibold text-sm text-zinc-900 dark:text-white">{item.sparepart}</p>
-                <p className="font-mono font-bold text-sm text-zinc-900 dark:text-white">
+                <p className="font-mono font-semibold tabular-nums text-sm text-zinc-900 dark:text-white">
                   {formatIDR((item.harga_part || 0) + (item.harga_jasa || 0))}
                 </p>
               </div>
@@ -314,7 +315,7 @@ const ViewInvoicePage = () => {
   );
 };
 
-const SuspenseInvoiceEditPage = () => (
+const SuspenseInvoiceViewPage = () => (
   <Suspense
     fallback={
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
@@ -329,25 +330,10 @@ const SuspenseInvoiceEditPage = () => (
 export default function InvoiceViewPage() {
   return (
     <div className="invoice-print min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16 print:bg-white print:text-zinc-900">
-      {/* Layout cetak (Hari 6): kertas A4, latar terang, dan kartu tanpa
-          bayangan — navbar, tombol aksi, dan banner error tidak ikut
-          tercetak (`print:hidden` di elemennya masing-masing). */}
-      <style>{`
-        @media print {
-          @page { size: A4; margin: 14mm; }
-          body { background: #ffffff !important; }
-          .invoice-print { background: #ffffff !important; color: #111827 !important; }
-          .invoice-print [class*="dark:bg-zinc-900"] { background: #ffffff !important; border-color: #d4d4d8 !important; box-shadow: none !important; }
-          .invoice-print [class*="dark:bg-zinc-950"] { background: #f4f4f5 !important; }
-          .invoice-print [class*="dark:text-white"] { color: #111827 !important; }
-          .invoice-print [class*="dark:text-zinc-300"] { color: #3f3f46 !important; }
-          .invoice-print [class*="dark:text-zinc-400"] { color: #71717a !important; }
-        }
-      `}</style>
       <div className="print:hidden">
-        <Navbar title="Invoice Detail" />
+        <SubPageHeader title="Invoice Detail" />
       </div>
-      <SuspenseInvoiceEditPage />
+      <SuspenseInvoiceViewPage />
     </div>
   );
 }

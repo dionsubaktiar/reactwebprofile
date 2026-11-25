@@ -4,17 +4,12 @@ const config: Config = {
   darkMode: "class",
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       fontFamily: {
         sans: ["var(--font-geist-sans)", "Inter", "sans-serif"],
         mono: ["var(--font-geist-mono)", "monospace"],
-        poppins: ["Poppins", "sans-serif"],
-        burtons: ["burtons", "sans-serif"],
       },
       colors: {
         background: "var(--background)",
@@ -29,15 +24,6 @@ const config: Config = {
           darkBg: "#09090b", // Zinc-950
           darkCard: "#18181b", // Zinc-900
           darkBorder: "#27272a", // Zinc-800
-        },
-        // Fallback mappings for backwards compatibility harmonized with modern theme
-        honeyDew: "#f8fafc",
-        eggplant: "#0f172a",
-        customGreen: {
-          light: "#e0e7ff",
-          DEFAULT: "#6366f1",
-          default: "#6366f1",
-          dark: "#4338ca",
         },
       },
     },

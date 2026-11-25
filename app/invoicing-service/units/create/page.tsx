@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import apiClient from "@/app/lib/api";
 import type { ApiResponse, Customer } from "@/app/lib/types";
-import Navbar from "../../../components/navbar";
+import SubPageHeader from "@/app/components/SubPageHeader";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { FiArrowLeft, FiTruck, FiPlus } from "react-icons/fi";
@@ -65,18 +65,18 @@ const UnitCreatePage = () => {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
-      <Navbar title="Create Data Unit" />
+      <SubPageHeader title="Create Data Unit" />
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 md:py-12">
         <div className="mb-6">
           <Link
             href="/invoicing-service/units"
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 transition"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition"
           >
             <FiArrowLeft /> Kembali ke Daftar Unit
           </Link>
-          <h1 className="text-2xl font-extrabold tracking-tight mt-2 flex items-center gap-2">
-            <FiTruck className="text-emerald-600 dark:text-emerald-500" /> Form Tambah Unit Armada
+          <h1 className="text-2xl font-bold tracking-tight mt-2 flex items-center gap-2">
+            <FiTruck className="text-indigo-600 dark:text-emerald-500" /> Form Tambah Unit Armada
           </h1>
           <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
             Daftarkan unit truk baru beserta data pemilik dan jatuh tempo surat-suratnya.
@@ -84,7 +84,7 @@ const UnitCreatePage = () => {
         </div>
 
         {successMessage && (
-          <div className="mb-4 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-sm text-emerald-600 dark:text-emerald-400">
+          <div className="mb-4 p-4 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 text-sm text-indigo-600 dark:text-indigo-400">
             {successMessage}
           </div>
         )}
@@ -104,7 +104,7 @@ const UnitCreatePage = () => {
               value={formData.id_customer}
               onChange={handleChange}
               required
-              className={formControlClass("emerald")}
+              className={formControlClass("indigo")}
             >
               <option value="">Pilih customer</option>
               {customers.map((customer) => (
@@ -123,7 +123,7 @@ const UnitCreatePage = () => {
               onChange={handleChange}
               placeholder="A 1234 BCD"
               required
-              className={formControlClass("emerald")}
+              className={formControlClass("indigo")}
             />
           </FormField>
 
@@ -133,7 +133,7 @@ const UnitCreatePage = () => {
               value={formData.tipe}
               onChange={handleChange}
               required
-              className={formControlClass("emerald")}
+              className={formControlClass("indigo")}
             >
               <option value="">Pilih tipe</option>
               <option value="Pickup">Pickup</option>
@@ -149,7 +149,7 @@ const UnitCreatePage = () => {
               value={formData.no_rangka}
               onChange={handleChange}
               required
-              className={formControlClass("emerald")}
+              className={formControlClass("indigo")}
             />
           </FormField>
 
@@ -160,7 +160,7 @@ const UnitCreatePage = () => {
               value={formData.no_mesin}
               onChange={handleChange}
               required
-              className={formControlClass("emerald")}
+              className={formControlClass("indigo")}
             />
           </FormField>
 
@@ -171,7 +171,7 @@ const UnitCreatePage = () => {
               value={formData.driver}
               onChange={handleChange}
               required
-              className={formControlClass("emerald")}
+              className={formControlClass("indigo")}
             />
           </FormField>
 
@@ -182,7 +182,7 @@ const UnitCreatePage = () => {
               value={formData.tahun}
               onChange={handleChange}
               required
-              className={formControlClass("emerald")}
+              className={formControlClass("indigo")}
             />
           </FormField>
 
@@ -194,7 +194,7 @@ const UnitCreatePage = () => {
                 value={formData.japo_kir}
                 onChange={handleChange}
                 required
-                className={formControlClass("emerald")}
+                className={formControlClass("indigo")}
               />
             </FormField>
 
@@ -205,7 +205,7 @@ const UnitCreatePage = () => {
                 value={formData.japo_pajak}
                 onChange={handleChange}
                 required
-                className={formControlClass("emerald")}
+                className={formControlClass("indigo")}
               />
             </FormField>
 
@@ -216,7 +216,7 @@ const UnitCreatePage = () => {
                 value={formData.japo_stnk}
                 onChange={handleChange}
                 required
-                className={formControlClass("emerald")}
+                className={formControlClass("indigo")}
               />
             </FormField>
 
@@ -226,7 +226,7 @@ const UnitCreatePage = () => {
                 id="japo_kontrak"
                 value={formData.japo_kontrak}
                 onChange={handleChange}
-                className={formControlClass("emerald")}
+                className={formControlClass("indigo")}
               />
             </FormField>
           </div>
@@ -237,7 +237,7 @@ const UnitCreatePage = () => {
               id="status"
               checked={formData.status}
               onChange={handleChange}
-              className="w-5 h-5 rounded border-zinc-300 dark:border-zinc-700 text-emerald-600 focus:ring-2 focus:ring-emerald-500 transition"
+              className="w-5 h-5 rounded border-zinc-300 dark:border-zinc-700 text-indigo-600 focus:ring-2 focus:ring-indigo-500 transition"
             />
             <label
               htmlFor="status"
@@ -251,10 +251,10 @@ const UnitCreatePage = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs font-bold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition shadow-sm disabled:opacity-50"
             >
               <FiPlus size={15} />
-              {isSubmitting ? "Submitting..." : "Create Unit"}
+              {isSubmitting ? "Menyimpan..." : "Simpan Unit"}
             </button>
           </div>
         </form>

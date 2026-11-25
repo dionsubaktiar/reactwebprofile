@@ -1,13 +1,12 @@
-/* Service: reactwebprofile | File: app/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #fafafa;
+  --foreground: #18181b;
   --card-bg: #ffffff;
-  --border-color: #e2e8f0;
+  --border-color: #e4e4e7;
 }
 
 .dark {
@@ -20,7 +19,7 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   min-height: 100vh;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
@@ -44,37 +43,28 @@ body {
   background: #94a3b8;
 }
 
-/* ========================================================
-   Hermes SDLC Swarm: Enhanced Styling & Design Tokens
-   ======================================================== */
-@layer utilities {
-  .hermes-glass-card {
-    background: rgba(24, 24, 27, 0.75);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
   }
-  .dark .hermes-glass-card {
-    background: rgba(24, 24, 27, 0.85);
-    border-color: rgba(255, 255, 255, 0.08);
+  body {
+    background: #ffffff !important;
+    color: #18181b !important;
   }
-  :root:not(.dark) .hermes-glass-card {
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+  .invoice-print {
+    background: #ffffff !important;
+    color: #18181b !important;
   }
-  .hermes-glow-hover {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  .invoice-print-card {
+    background: #ffffff !important;
+    border-color: #d4d4d8 !important;
+    box-shadow: none !important;
+    color: #18181b !important;
   }
-  .hermes-glow-hover:hover {
-    transform: translateY(-3px);
-    border-color: rgba(99, 102, 241, 0.5);
-    box-shadow: 0 12px 30px rgba(99, 102, 241, 0.15);
-  }
-  .hermes-gradient-text {
-    background: linear-gradient(135deg, #6366f1 0%, #0d9488 50%, #10b981 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+  .invoice-print-item {
+    background: #f4f4f5 !important;
+    border-color: #e4e4e7 !important;
+    color: #18181b !important;
   }
 }

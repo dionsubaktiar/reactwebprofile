@@ -33,6 +33,13 @@ export async function POST(request: NextRequest) {
       tipe: body.tipe || "Truk Standard",
       driver: body.driver || "-",
       tahun: body.tahun || "2024",
+      no_rangka: body.no_rangka || undefined,
+      no_mesin: body.no_mesin || undefined,
+      japo_kir: body.japo_kir || null,
+      japo_pajak: body.japo_pajak || null,
+      japo_stnk: body.japo_stnk || null,
+      japo_kontrak: body.japo_kontrak || null,
+      status: body.status !== undefined ? Boolean(body.status) : undefined,
       id_customer: Number(body.id_customer) || 1,
       customers:
         getByIdOr404(customersStore, Number(body.id_customer)) ?? undefined,
