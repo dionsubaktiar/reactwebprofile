@@ -6,7 +6,7 @@ import type { ApiResponse, Customer, Invoice, Unit } from "@/app/lib/types";
 import { formatDateId, formatIDR } from "@/app/lib/format";
 import StatusBadge from "../../_components/StatusBadge";
 import Link from "next/link";
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   FiArrowLeft,
@@ -18,6 +18,9 @@ import {
   FiTruck,
   FiFileText,
   FiAlertCircle,
+  FiDollarSign,
+  FiCheckCircle,
+  FiClock,
 } from "react-icons/fi";
 
 function CustomerDetail() {
@@ -79,6 +82,23 @@ function CustomerDetail() {
       isMounted = false;
     };
   }, [id, customerId]);
+
+  /**
+   * Ringkasan per-customer (Hari 6): dihitung dari daftar invoice yang
+   * dimuat di halaman ini (`/invoice?per_page=100`), bukan hardcode.
+   * Tunggakan = total nilai invoice yang statusnya masih Pending.
+   */
+  const summary = useMemo(() => {
+    const totalInvoice = invoices.length;
+    const totalNilai = invoices.reduce((acc, inv) => acc + (inv.harga || 0), 0);
+    const lunasCount = invoices.filter(
+      (inv) => inv.status_invoice === "Lunas",
+    ).length;
+    const tunggakan = invoices
+      .filter((inv) => inv.status_invoice === "Pending")
+      .reduce((acc, inv) => acc + (inv.harga || 0), 0);
+    return { totalInvoice, totalNilai, lunasCount, tunggakan };
+  }, [invoices]);
 
   if (isLoading) {
     return (
@@ -178,6 +198,62 @@ function CustomerDetail() {
           ) : null}
         </dl>
       </div>
+
+      {/* Ringkasan invoice pelanggan (Hari 6) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
+          <div>
+            <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Total Invoice</span>
+            <div className="text-2xl font-extrabold mt-1">{summary.totalInvoice} Faktur</div>
+            <span className="text-[11px] text-zinc-400">Milik pelanggan ini</span>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl">
+            <FiFileText />
+          </div>
+        </div>
+
+        <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
+          <div>
+            <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Total Nilai</span>
+            <div className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1 font-mono">
+              {formatIDR(summary.totalNilai)}
+            </div>
+            <span className="text-[11px] text-zinc-400">Akumulasi seluruh invoice</span>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl">
+            <FiDollarSign />
+          </div>
+        </div>
+
+        <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
+          <div>
+            <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Sudah Lunas</span>
+            <div className="text-2xl font-extrabold text-sky-600 dark:text-sky-400 mt-1">
+              {summary.lunasCount} Faktur
+            </div>
+            <span className="text-[11px] text-zinc-400">Pembayaran selesai</span>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 flex items-center justify-center text-xl">
+            <FiCheckCircle />
+          </div>
+        </div>
+
+        <div className="p-5 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center justify-between">
+          <div>
+            <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">Tunggakan</span>
+            <div className="text-2xl font-extrabold text-amber-600 dark:text-amber-400 mt-1 font-mono">
+              {formatIDR(summary.tunggakan)}
+            </div>
+            <span className="text-[11px] text-zinc-400">Invoice masih Pending</span>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl">
+            <FiClock />
+          </div>
+        </div>
+      </div>
+      <p className="-mt-4 text-[11px] text-zinc-400">
+        Ringkasan dihitung dari invoice yang dimuat di halaman ini (maks. 100 invoice terbaru).
+      </p>
 
       {/* Unit milik customer */}
       <div className="bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm overflow-hidden">
