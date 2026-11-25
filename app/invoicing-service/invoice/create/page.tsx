@@ -2,6 +2,7 @@
 
 import Navbar from "@/app/components/navbar";
 import apiClient from "@/app/lib/api";
+import { parsePaginatedResponse } from "@/app/lib/api-response";
 import type { ApiResponse, Unit, Package, Part } from "@/app/lib/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -37,7 +38,10 @@ const CreateInvoicePage = () => {
 
         setUnits(unitResp.data.data.data);
         setParts(partsResp.data.data.data);
-        setPackages(packagesResp.data.data.data);
+        // Validasi bentuk respons /packages di satu tempat (Hari 7):
+        // bentuk lama (array langsung) ditolak dengan error yang jelas,
+        // bukan crash diam-diam saat .map() dipanggil.
+        setPackages(parsePaginatedResponse<Package>(packagesResp.data).data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -47,7 +51,7 @@ const CreateInvoicePage = () => {
   }, []);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -55,7 +59,7 @@ const CreateInvoicePage = () => {
 
   const handlePartChange = (
     index: number,
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => {
@@ -123,7 +127,8 @@ const CreateInvoicePage = () => {
             <FiArrowLeft /> Kembali ke Hub Invoicing
           </Link>
           <h1 className="text-2xl font-extrabold tracking-tight mt-2 flex items-center gap-2">
-            <FiFileText className="text-indigo-600 dark:text-indigo-500" /> Form Buat Invoice
+            <FiFileText className="text-indigo-600 dark:text-indigo-500" /> Form
+            Buat Invoice
           </h1>
           <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
             Buat invoice servis baru untuk satu unit armada.
