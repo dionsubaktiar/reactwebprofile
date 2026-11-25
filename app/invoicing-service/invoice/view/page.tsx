@@ -15,8 +15,11 @@ import {
   FiTruck,
   FiBriefcase,
   FiPackage,
+  FiPrinter,
+  FiCheckCircle,
 } from "react-icons/fi";
 import StatusBadge from "../../_components/StatusBadge";
+import { nextInvoiceStatus } from "@/app/lib/invoice-status";
 
 const ViewInvoicePage = () => {
   const searchParams = useSearchParams();
@@ -24,6 +27,29 @@ const ViewInvoicePage = () => {
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // Status workflow (Hari 6): menandai invoice lunas dari halaman view.
+  const [statusBusy, setStatusBusy] = useState(false);
+  const [statusError, setStatusError] = useState<string | null>(null);
+
+  const markAsPaid = async () => {
+    if (!invoice || invoice.status_invoice === "Lunas") return;
+    setStatusBusy(true);
+    setStatusError(null);
+    try {
+      const response = await apiClient.put(`/invoice/${invoice.id}`, {
+        status_invoice: "Lunas",
+      });
+      const updated = response.data?.data as Invoice | undefined;
+      setInvoice(updated ?? { ...invoice, status_invoice: "Lunas" });
+    } catch {
+      // Rollback: status di halaman tidak berubah, tampilkan error.
+      setStatusError(
+        "Gagal menandai invoice lunas. Status tidak berubah, coba lagi.",
+      );
+    } finally {
+      setStatusBusy(false);
+    }
+  };
 
   useEffect(() => {
     if (!id) {
@@ -84,16 +110,16 @@ const ViewInvoicePage = () => {
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-6 print:border-zinc-300">
         <div>
           <Link
             href="/invoicing-service"
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition mb-2"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 transition mb-2 print:hidden"
           >
             <FiArrowLeft /> Kembali ke Hub Invoicing
           </Link>
           <div className="flex items-center gap-2">
-            <span className="p-2 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+            <span className="p-2 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 print:text-indigo-600">
               <FiFileText size={22} />
             </span>
             <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
@@ -104,12 +130,39 @@ const ViewInvoicePage = () => {
             Detail invoice, unit, pelanggan, dan rincian part/paket servis.
           </p>
         </div>
-        <Link href={`/invoicing-service/invoice/edit?id=${invoice.id}`}>
-          <button className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-sky-600 hover:bg-sky-700 text-white transition shadow-sm">
-            <FiEdit2 size={15} /> Edit Invoice
+        <div className="flex flex-wrap items-center gap-2 print:hidden">
+          {nextInvoiceStatus(invoice.status_invoice) === "Lunas" && (
+            <button
+              onClick={markAsPaid}
+              disabled={statusBusy}
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <FiCheckCircle size={15} />
+              {statusBusy ? "Memproses..." : "Tandai Lunas"}
+            </button>
+          )}
+          <button
+            onClick={() => window.print()}
+            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition shadow-sm"
+          >
+            <FiPrinter size={15} /> Cetak Invoice
           </button>
-        </Link>
+          <Link href={`/invoicing-service/invoice/edit?id=${invoice.id}`}>
+            <button className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-sky-600 hover:bg-sky-700 text-white transition shadow-sm">
+              <FiEdit2 size={15} /> Edit Invoice
+            </button>
+          </Link>
+        </div>
       </div>
+
+      {statusError && (
+        <div
+          role="alert"
+          className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-sm text-red-600 dark:text-red-400"
+        >
+          {statusError}
+        </div>
+      )}
 
       <div className="p-6 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm">
         <h2 className="text-lg font-bold mb-4">Detail Invoice</h2>
@@ -275,8 +328,25 @@ const SuspenseInvoiceEditPage = () => (
 
 export default function InvoiceViewPage() {
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
-      <Navbar title="Invoice Detail" />
+    <div className="invoice-print min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16 print:bg-white print:text-zinc-900">
+      {/* Layout cetak (Hari 6): kertas A4, latar terang, dan kartu tanpa
+          bayangan — navbar, tombol aksi, dan banner error tidak ikut
+          tercetak (`print:hidden` di elemennya masing-masing). */}
+      <style>{`
+        @media print {
+          @page { size: A4; margin: 14mm; }
+          body { background: #ffffff !important; }
+          .invoice-print { background: #ffffff !important; color: #111827 !important; }
+          .invoice-print [class*="dark:bg-zinc-900"] { background: #ffffff !important; border-color: #d4d4d8 !important; box-shadow: none !important; }
+          .invoice-print [class*="dark:bg-zinc-950"] { background: #f4f4f5 !important; }
+          .invoice-print [class*="dark:text-white"] { color: #111827 !important; }
+          .invoice-print [class*="dark:text-zinc-300"] { color: #3f3f46 !important; }
+          .invoice-print [class*="dark:text-zinc-400"] { color: #71717a !important; }
+        }
+      `}</style>
+      <div className="print:hidden">
+        <Navbar title="Invoice Detail" />
+      </div>
       <SuspenseInvoiceEditPage />
     </div>
   );

@@ -8,7 +8,13 @@
  * wajib.
  */
 import { getByIdOr404, partsStore } from "./_store";
-import type { InvoicePart } from "@/app/lib/types";
+import type { Invoice, InvoicePart } from "@/app/lib/types";
+import {
+  INVOICE_STATUS_TRANSITIONS,
+  SPK_STATUS_TRANSITIONS,
+  isValidInvoiceStatusTransition,
+  isValidSpkStatusTransition,
+} from "@/app/lib/invoice-status";
 
 function isNonEmptyString(value: unknown): value is string {
   return typeof value === "string" && value.trim() !== "";
@@ -49,12 +55,64 @@ export function validateUnit(body: unknown): string | null {
 
 export function validateInvoice(body: unknown): string | null {
   if (!body || typeof body !== "object") return "body tidak valid";
-  const invoice = body as { kilometer?: unknown; tanggal?: unknown };
+  const invoice = body as {
+    kilometer?: unknown;
+    tanggal?: unknown;
+    status_invoice?: unknown;
+    status_spk?: unknown;
+  };
   if (!isPresentNumber(invoice.kilometer)) {
     return "kilometer wajib diisi dengan angka";
   }
   if (!isNonEmptyString(invoice.tanggal)) {
     return "tanggal wajib diisi";
+  }
+  // Status hanya boleh berisi nilai dari union type (Hari 6) — string bebas
+  // seperti "LUNAS", "paid", atau "Batal" ditolak dengan 400.
+  if (
+    invoice.status_invoice !== undefined &&
+    !Object.keys(INVOICE_STATUS_TRANSITIONS).includes(
+      String(invoice.status_invoice),
+    )
+  ) {
+    return "status_invoice tidak valid (harus Pending atau Lunas)";
+  }
+  if (
+    invoice.status_spk !== undefined &&
+    !Object.keys(SPK_STATUS_TRANSITIONS).includes(String(invoice.status_spk))
+  ) {
+    return "status_spk tidak valid (harus Pending, Dalam Pengerjaan, atau Selesai)";
+  }
+  return null;
+}
+
+/**
+ * Validasi transisi status invoice/SPK (Hari 6): perubahan status hanya
+ * boleh mengikuti peta di `app/lib/invoice-status.ts`. Status yang tidak
+ * berubah selalu lolos (edit biasa tidak mengirim status, jadi tidak
+ * terganggu). Kembalikan pesan error bila ada transisi yang tidak
+ * diizinkan, atau `null` bila semua perubahan valid.
+ */
+export function validateInvoiceStatusTransition(
+  existing: Invoice,
+  next: Invoice,
+): string | null {
+  if (
+    next.status_invoice !== undefined &&
+    existing.status_invoice !== undefined &&
+    !isValidInvoiceStatusTransition(
+      existing.status_invoice,
+      next.status_invoice,
+    )
+  ) {
+    return `Transisi status invoice "${existing.status_invoice}" → "${next.status_invoice}" tidak diizinkan (hanya Pending → Lunas)`;
+  }
+  if (
+    next.status_spk !== undefined &&
+    existing.status_spk !== undefined &&
+    !isValidSpkStatusTransition(existing.status_spk, next.status_spk)
+  ) {
+    return `Transisi status SPK "${existing.status_spk}" → "${next.status_spk}" tidak diizinkan (hanya Pending → Dalam Pengerjaan → Selesai)`;
   }
   return null;
 }

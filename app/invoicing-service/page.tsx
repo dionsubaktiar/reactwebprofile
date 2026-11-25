@@ -9,15 +9,22 @@ import type {
   Unit,
   Package,
   Invoice,
+  InvoiceStatus,
+  SpkStatus,
   Pagination,
   ApiResponse,
 } from "@/app/lib/types";
+import {
+  nextInvoiceStatus,
+  nextSpkStatus,
+} from "@/app/lib/invoice-status";
 import { formatIDR, formatDateId, formatKm } from "@/app/lib/format";
 import {
   FiFileText,
   FiTruck,
   FiUsers,
   FiTool,
+  FiBarChart2,
   FiPlus,
   FiSearch,
   FiActivity,
@@ -28,6 +35,7 @@ import {
   FiEdit2,
   FiTrash2,
   FiAlertCircle,
+  FiPlay,
 } from "react-icons/fi";
 import RowActions from "./_components/RowActions";
 import ConfirmDialog from "./_components/ConfirmDialog";
@@ -161,6 +169,9 @@ const MainPageInvoice = () => {
   const [deleteTarget, setDeleteTarget] = useState<Invoice | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  // Status workflow (Hari 6): id invoice yang sedang diubah statusnya.
+  const [statusBusyId, setStatusBusyId] = useState<number | null>(null);
+  const [statusError, setStatusError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -212,6 +223,37 @@ const MainPageInvoice = () => {
       setDeleteTarget(null);
     } finally {
       setIsDeleting(false);
+    }
+  };
+
+  /**
+   * Ubah status invoice/SPK satu langkah mengikuti alur Hari 6
+   * (Pending → Lunas; Pending → Dalam Pengerjaan → Selesai). Hanya
+   * mengirim field status — PUT di mock route memvalidasi transisinya
+   * dan menolak (400) bila tidak valid. Bila gagal, status di list
+   * tidak berubah dan muncul pesan error yang terlihat.
+   */
+  const changeStatus = async (
+    inv: Invoice,
+    patch: { status_invoice?: InvoiceStatus; status_spk?: SpkStatus },
+  ) => {
+    setStatusBusyId(inv.id);
+    setStatusError(null);
+    try {
+      const response = await apiClient.put(`/invoice/${inv.id}`, patch);
+      const updated = response.data?.data as Invoice | undefined;
+      setInvoice((prev) =>
+        prev.map((item) =>
+          item.id === inv.id ? { ...item, ...(updated ?? patch) } : item,
+        ),
+      );
+    } catch {
+      // Rollback: status di list tidak berubah, tampilkan error.
+      setStatusError(
+        `Gagal mengubah status Invoice #${inv.id}. Status tidak berubah, coba lagi.`,
+      );
+    } finally {
+      setStatusBusyId(null);
     }
   };
 
@@ -280,6 +322,11 @@ const MainPageInvoice = () => {
             <Link href="/invoicing-service/parts">
               <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800/80 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 transition shadow-xs">
                 <FiTool className="text-indigo-500" /> Parts
+              </button>
+            </Link>
+            <Link href="/invoicing-service/laporan">
+              <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-slate-200/80 dark:border-zinc-800/80 text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-zinc-800/80 hover:text-indigo-600 dark:hover:text-indigo-400 transition shadow-xs">
+                <FiBarChart2 className="text-indigo-500" /> Laporan
               </button>
             </Link>
             <Link href="/invoicing-service/invoice/create">
@@ -385,6 +432,15 @@ const MainPageInvoice = () => {
           </div>
         )}
 
+        {statusError && (
+          <div
+            role="alert"
+            className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-sm text-red-600 dark:text-red-400"
+          >
+            {statusError}
+          </div>
+        )}
+
         {/* Responsive Desktop Table */}
         <div className="bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm overflow-hidden">
           {isLoading ? (
@@ -484,6 +540,59 @@ const MainPageInvoice = () => {
                                 icon: <FiEdit2 size={13} />,
                                 href: `/invoicing-service/invoice/edit?id=${inv.id}`,
                               },
+                              // Aksi status (Hari 6): hanya transisi
+                              // berikutnya yang diizinkan yang ditampilkan.
+                              ...(nextInvoiceStatus(
+                                inv.status_invoice || "Pending",
+                              ) === "Lunas"
+                                ? [
+                                    {
+                                      label:
+                                        statusBusyId === inv.id
+                                          ? "Memproses..."
+                                          : "Tandai Lunas",
+                                      icon: <FiCheckCircle size={13} />,
+                                      onClick: () =>
+                                        changeStatus(inv, {
+                                          status_invoice: "Lunas",
+                                        }),
+                                    },
+                                  ]
+                                : []),
+                              ...(nextSpkStatus(
+                                inv.status_spk || "Pending",
+                              ) === "Dalam Pengerjaan"
+                                ? [
+                                    {
+                                      label:
+                                        statusBusyId === inv.id
+                                          ? "Memproses..."
+                                          : "Mulai Pengerjaan SPK",
+                                      icon: <FiPlay size={13} />,
+                                      onClick: () =>
+                                        changeStatus(inv, {
+                                          status_spk: "Dalam Pengerjaan",
+                                        }),
+                                    },
+                                  ]
+                                : []),
+                              ...(nextSpkStatus(
+                                inv.status_spk || "Pending",
+                              ) === "Selesai"
+                                ? [
+                                    {
+                                      label:
+                                        statusBusyId === inv.id
+                                          ? "Memproses..."
+                                          : "Selesaikan SPK",
+                                      icon: <FiCheckCircle size={13} />,
+                                      onClick: () =>
+                                        changeStatus(inv, {
+                                          status_spk: "Selesai",
+                                        }),
+                                    },
+                                  ]
+                                : []),
                               {
                                 label: "Hapus Faktur",
                                 icon: <FiTrash2 size={13} />,

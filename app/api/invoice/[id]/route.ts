@@ -7,7 +7,7 @@ import {
   replaceById,
   unitsStore,
 } from "../../_store";
-import { normalizeInvoiceParts, validateInvoice } from "../../_validate";
+import { normalizeInvoiceParts, validateInvoice, validateInvoiceStatusTransition } from "../../_validate";
 
 function parseId(id: string): number | null {
   const numId = parseInt(id, 10);
@@ -81,6 +81,12 @@ export async function PUT(
     const error = validateInvoice(merged);
     if (error) {
       return NextResponse.json({ message: error }, { status: 400 });
+    }
+    // Transisi status (Hari 6): hanya mengikuti alur Pending → Lunas
+    // (invoice) dan Pending → Dalam Pengerjaan → Selesai (SPK).
+    const transitionError = validateInvoiceStatusTransition(existing, merged);
+    if (transitionError) {
+      return NextResponse.json({ message: transitionError }, { status: 400 });
     }
     const updated = replaceById(invoicesStore, numId, merged);
     return NextResponse.json({
