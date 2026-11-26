@@ -1,0 +1,27 @@
+# CI — reactwebprofile (Hari 7)
+#
+# Pengaman otomatis minimal: setiap push dan PR menjalankan, berurutan,
+# typecheck → lint → build → test. Urutan ini sama dengan yang diminta
+# roadmap Hari 7. `tsc` jalan sebelum `build` dengan sengaja: di clone
+# segar, `next-env.d.ts` belum ada — typecheck harus tetap hijau tanpa
+# menunggu build (lihat catatan di docs/SPRINT_SUMMARY.md Hari 7).
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm run lint
+      - run: npm run build
+      - run: npm test
