@@ -89,43 +89,43 @@ const ExperienceSection = () => {
   return (
     <section
       id="experience"
-      className="py-16 border-t border-zinc-200 dark:border-zinc-800"
+      className="py-16 border-t border-stone-200 dark:border-stone-800"
     >
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         <div className="space-y-1.5">
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-white">
+          <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-stone-900 dark:text-white">
             Professional Experience
           </h2>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-sm text-stone-500 dark:text-stone-400">
             Timeline of roles across enterprise software, logistics, and freelance delivery.
           </p>
         </div>
 
         {/* Vertical Timeline */}
-        <div className="relative border-l-2 border-zinc-200 dark:border-zinc-800 ml-4 md:ml-6 space-y-10">
+        <div className="relative border-l-2 border-stone-200 dark:border-stone-800 ml-4 md:ml-6 space-y-10">
           {experiences.map((exp, index) => (
             <div key={index} className="relative pl-8 md:pl-10 group">
               {/* Timeline Indicator Dot */}
-              <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full border-2 border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 group-hover:border-indigo-500 group-hover:bg-indigo-500 transition-colors duration-200"></span>
+              <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full border-2 border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-950"></span>
 
               <div className="space-y-3">
                 {/* Header Info */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                   <div>
-                    <h3 className="text-lg sm:text-xl font-semibold text-zinc-900 dark:text-white">
+                    <h3 className="text-lg sm:text-xl font-medium text-stone-900 dark:text-white">
                       {exp.role}
                     </h3>
-                    <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
+                    <p className="text-sm font-medium text-stone-900 dark:text-stone-50">
                       {exp.company}
                     </p>
                   </div>
-                  <span className="inline-block text-xs font-medium text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-900 px-3 py-1 rounded-full w-max tabular-nums">
+                  <span className="inline-block text-xs font-medium text-stone-500 dark:text-stone-400 bg-stone-100 dark:bg-stone-900 px-3 py-1 rounded-md w-max tabular-nums">
                     {exp.period}
                   </span>
                 </div>
 
                 {/* Bullets */}
-                <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed list-disc pl-4">
+                <ul className="space-y-2 text-sm text-stone-600 dark:text-stone-400 leading-relaxed list-disc pl-4">
                   {exp.bullets.map((bullet, idx) => (
                     <li key={idx}>{bullet}</li>
                   ))}
@@ -136,7 +136,7 @@ const ExperienceSection = () => {
                   {exp.tags.map((tag, idx) => (
                     <span
                       key={idx}
-                      className="px-2.5 py-0.5 rounded text-xs font-medium bg-zinc-100 text-zinc-600 dark:bg-zinc-900 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-800"
+                      className="px-2.5 py-0.5 rounded text-xs font-medium bg-stone-100 text-stone-600 dark:bg-stone-900 dark:text-stone-400 border border-stone-200/60 dark:border-stone-800"
                     >
                       {tag}
                     </span>
