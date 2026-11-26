@@ -11,7 +11,7 @@ const projects: ProjectItem[] = [
   {
     title: "End-to-End Digital Logistics & Supply Chain Management System",
     description: 
-      "A massive internal logistics system automating the entire supply chain business cycle. " +
+      "An internal logistics system automating the entire supply chain business cycle. " +
       "The system handles automated order blasting to partner vendor/carrier networks, real-time " +
       "shipment transit tracking, and automated customer billing and invoice reconciliation workflows.",
     tech: [".NET Microservices", "Laravel (PHP)", "React.js", "Next.js", "PostgreSQL"],
@@ -31,13 +31,13 @@ const projects: ProjectItem[] = [
 
 const ProjectsSection = () => {
   return (
-    <section id="projects" className="py-16 border-t border-zinc-200 dark:border-zinc-800">
+    <section id="projects" className="py-16 border-t border-stone-200 dark:border-stone-800">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         <div className="space-y-1.5">
-          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900 dark:text-white">
+          <h2 className="text-2xl sm:text-3xl font-medium tracking-tight text-stone-900 dark:text-white">
             Featured Projects
           </h2>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-sm text-stone-500 dark:text-stone-400">
             Selected production logistics systems and applied research work.
           </p>
         </div>
@@ -46,25 +46,25 @@ const ProjectsSection = () => {
           {projects.map((proj, idx) => (
             <div
               key={idx}
-              className="group p-6 md:p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/30 hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors space-y-5"
+              className="group p-6 md:p-8 rounded-2xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900/30 hover:border-stone-300 dark:hover:border-stone-700 transition-colors space-y-5"
             >
               {/* Project Title Block */}
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-1">
-                  <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
-                    <FiFolder size={18} />
-                    <span className="text-xs font-semibold">
-                      Featured Work
+                  <div className="flex items-center gap-2 text-stone-500 dark:text-stone-400">
+                    <FiFolder size={16} />
+                    <span className="text-xs font-medium">
+                      Featured work
                     </span>
                   </div>
-                  <h3 className="text-lg md:text-xl font-semibold text-zinc-900 dark:text-white mt-1">
+                  <h3 className="text-lg md:text-xl font-medium text-stone-900 dark:text-white mt-1">
                     {proj.title}
                   </h3>
                 </div>
               </div>
 
               {/* Description */}
-              <p className="text-sm md:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              <p className="text-sm md:text-base text-stone-600 dark:text-stone-400 leading-relaxed">
                 {proj.description}
               </p>
 
@@ -73,7 +73,7 @@ const ProjectsSection = () => {
                 {proj.tech.map((t, index) => (
                   <span
                     key={index}
-                    className="px-2.5 py-0.5 rounded text-xs font-medium bg-zinc-100 text-zinc-600 dark:bg-zinc-900 dark:text-zinc-400 border border-zinc-200/40 dark:border-zinc-800/40"
+                    className="px-2.5 py-0.5 rounded text-xs font-medium bg-stone-100 text-stone-600 dark:bg-stone-900 dark:text-stone-400 border border-stone-200/40 dark:border-stone-800/40"
                   >
                     {t}
                   </span>
@@ -82,9 +82,9 @@ const ProjectsSection = () => {
 
               {/* Action Links */}
               {proj.links && proj.links.length > 0 && (
-                <div className="border-t border-zinc-100 dark:border-zinc-800/50 pt-4 flex flex-wrap items-center gap-4">
-                  <span className="text-xs text-zinc-400 dark:text-zinc-500 font-medium">
-                    Live Productions:
+                <div className="border-t border-stone-100 dark:border-stone-800/50 pt-4 flex flex-wrap items-center gap-4">
+                  <span className="text-xs text-stone-400 dark:text-stone-500 font-medium">
+                    Live productions
                   </span>
                   <div className="flex flex-wrap gap-3">
                     {proj.links.map((link, linkIdx) => (
@@ -93,7 +93,7 @@ const ProjectsSection = () => {
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-600 hover:text-indigo-600 dark:text-zinc-400 dark:hover:text-indigo-400 border border-zinc-200 dark:border-zinc-800 px-3 py-1.5 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-900/55 transition-colors"
+                        className="inline-flex items-center gap-1.5 text-xs font-medium text-stone-600 hover:text-emerald-700 dark:text-stone-400 dark:hover:text-emerald-400 border border-stone-200 dark:border-stone-800 px-3 py-1.5 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-900/55 transition-colors"
                       >
                         {link.label}
                         <FiExternalLink size={12} />
