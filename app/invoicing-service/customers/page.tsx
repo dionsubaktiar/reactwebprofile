@@ -2,7 +2,7 @@
 
 import SubPageHeader from "@/app/components/SubPageHeader";
 import apiClient from "@/app/lib/api";
-import type { Customer, Pagination } from "@/app/lib/types";
+import type { ApiResponse, Customer, Pagination } from "@/app/lib/types";
 import Link from "next/link";
 import { useEffect, useState, useMemo } from "react";
 import {
@@ -17,7 +17,15 @@ import {
   FiActivity,
   FiBriefcase,
   FiEye,
+  FiDownload,
 } from "react-icons/fi";
+import {
+  CUSTOMER_CSV_HEADERS,
+  csvFilename,
+  customerToCsvRow,
+  downloadCsv,
+  toCsv,
+} from "@/app/lib/csv";
 import PageHeader from "../_components/PageHeader";
 import KpiCard from "../_components/KpiCard";
 import SearchBar from "../_components/SearchBar";
@@ -37,6 +45,21 @@ const FALLBACK_CUSTOMERS: Customer[] = [
 const isValidKontak = (kontak: string | null | undefined): boolean =>
   (kontak ?? "").replace(/\D/g, "").length >= 9;
 
+/**
+ * Filter pencarian yang sama dipakai tabel dan export CSV (Hari 9):
+ * nama perusahaan / PIC / alamat / kontak. Didefinisikan sekali di tingkat
+ * modul supaya tabel dan export tidak bisa berbeda.
+ */
+function matchesCustomerSearch(c: Customer, searchQuery: string): boolean {
+  const q = searchQuery.toLowerCase();
+  return (
+    (c.nama_perusahaan || "").toLowerCase().includes(q) ||
+    (c.pic || "").toLowerCase().includes(q) ||
+    (c.alamat || "").toLowerCase().includes(q) ||
+    (c.kontak || "").toLowerCase().includes(q)
+  );
+}
+
 export default function CustomerPage() {
   const [companies, setCompanies] = useState<Customer[]>(FALLBACK_CUSTOMERS);
   const [pagination, setPagination] = useState<Pagination | null>({
@@ -52,6 +75,9 @@ export default function CustomerPage() {
   const [deleteTarget, setDeleteTarget] = useState<Customer | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  // Export CSV (Hari 9).
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -101,16 +127,63 @@ export default function CustomerPage() {
     }
   };
 
-  const filteredCompanies = useMemo(() => {
-    return companies.filter((c) => {
-      const q = searchQuery.toLowerCase();
-      return (
-        (c.nama_perusahaan || "").toLowerCase().includes(q) ||
-        (c.pic || "").toLowerCase().includes(q) ||
-        (c.alamat || "").toLowerCase().includes(q) ||
-        (c.kontak || "").toLowerCase().includes(q)
+  /**
+   * Export CSV (Hari 9): memuat SELURUH customer dari mock API (loop halaman
+   * `per_page=100`, pola yang sama dengan laporan Hari 8), terapkan filter
+   * pencarian yang sedang aktif, lalu unduh client-side lewat `Blob`.
+   * Sengaja TIDAK mengekspor data demo fallback: CSV berisi data contoh
+   * akan menyesatkan bila dibuka sebagai daftar sungguhan — bila API tidak
+   * terjangkau, tampilkan error dan jangan unduh apa pun. Filter kosong →
+   * tidak ada file yang diunduh, hanya pesan.
+   */
+  const exportCsv = async () => {
+    setIsExporting(true);
+    setExportError(null);
+    try {
+      const all: Customer[] = [];
+      let page = 1;
+      let lastPage = 1;
+      do {
+        const response = await apiClient.get<ApiResponse<Customer>>(
+          `/customer?page=${page}&per_page=100`,
+          { timeout: 3500 },
+        );
+        const paginated = response.data?.data;
+        if (!paginated || !Array.isArray(paginated.data)) {
+          throw new Error("Respons customer tidak berbentuk paginasi");
+        }
+        all.push(...paginated.data);
+        lastPage = paginated.last_page ?? 1;
+        page += 1;
+      } while (page <= lastPage);
+
+      const filtered = all.filter((c) =>
+        matchesCustomerSearch(c, searchQuery),
       );
-    });
+      if (filtered.length === 0) {
+        setExportError(
+          "Tidak ada pelanggan yang cocok dengan pencarian saat ini — tidak ada yang diekspor.",
+        );
+        return;
+      }
+      downloadCsv(
+        csvFilename("customers"),
+        toCsv(
+          [...CUSTOMER_CSV_HEADERS],
+          filtered.map(customerToCsvRow),
+        ),
+      );
+    } catch {
+      setExportError(
+        "Gagal mengunduh CSV: data pelanggan tidak bisa dimuat dari server. Coba lagi.",
+      );
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const filteredCompanies = useMemo(() => {
+    return companies.filter((c) => matchesCustomerSearch(c, searchQuery));
   }, [companies, searchQuery]);
 
   const stats = useMemo(() => {
@@ -154,6 +227,15 @@ export default function CustomerPage() {
               >
                 <FiPlus size={15} /> Tambah Mitra Baru
               </Link>
+              <button
+                type="button"
+                onClick={exportCsv}
+                disabled={isExporting}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-sm disabled:opacity-60"
+              >
+                <FiDownload className="text-indigo-500" />
+                {isExporting ? "Mengekspor..." : "Export CSV"}
+              </button>
             </>
           }
         />
@@ -204,6 +286,15 @@ export default function CustomerPage() {
         {deleteError && (
           <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-sm text-red-600 dark:text-red-400">
             {deleteError}
+          </div>
+        )}
+
+        {exportError && (
+          <div
+            role="alert"
+            className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-sm text-red-600 dark:text-red-400"
+          >
+            {exportError}
           </div>
         )}
 

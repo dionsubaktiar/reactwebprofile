@@ -129,3 +129,26 @@
   - Mock store tetap in-memory; laporan dihitung dari invoice yang dimuat saat itu.
 - **PR Hari 5, 6, 7, dan 8 belum terbentuk — BLOKIR GitHub write (reauth_required):** remote `main` masih di `caafaa6` (cek live hari ini); PR open tetap #10, #11, #8. Jadwal harian masih tercatat blocked sejak 22 Nov 11.07 WIB dan Dion sudah diberitahu 24 Nov 09.02 WIB. Run ini mencoba `create_branch` Hari 5 SATU kali sebagai probe (hasilnya di catatan run `hari-08.md`); bila gagal dengan pola yang sama, tidak diulang — antrean push/PR kini 4: Hari 5 → 6 → 7 → 8, semuanya menunggu Dion reconnect GitHub.
 - **Keputusan Dion yang masih ditunggu:** (1) reconnect GitHub supaya rantai PR Hari 5–8 bisa dibuat; (2) apakah `main` sengaja dikembalikan ke `caafaa6` (PR #10/#11 tetap tidak redundan); (3) format repo menyeluruh (`chore: format`) setelah rantai PR mendarat, atau tidak.
+
+---
+
+## Hari 9 — Export CSV invoice & customers (26 Nov 2026)
+
+- **Branch/PR:** `day-9-export-csv` → `main` (PR dibuat dari branch ini; lihat catatan di bawah). Dikerjakan di atas `main` terbaru (`fe33cc5`, 25 Nov 2026) — bukan di atas branch Hari 8 — karena `main` sudah berisi seluruh Hari 2–8 (riwayatnya memuat commit Hari 8 `39edd53`); PR Hari 8 (#15) dan rantai Hari 5–7 (#12–#14) kini redundan dan menunggu ditutup Dion, bukan di-merge. PR unslop #17 masih open terhadap `main` dan tidak disentuh hari ini.
+- **Yang dikerjakan:**
+  - `app/lib/csv.ts` (baru): satu-satunya definisi logika CSV — `escapeCsvCell` (kutip bila ada koma/petik/baris baru, petik digandakan), `toCsv` (header + baris, CRLF), `invoiceToCsvRow` / `customerToCsvRow` (kolom memakai nama field yang sama dengan tipe bersama: `id`, `tanggal`, `nopol`, `nama_perusahaan`, `driver`, `kilometer`, `kode_packages`, `harga`, `status_invoice`, `status_spk` untuk invoice; `id`, `nama_perusahaan`, `alamat`, `pic`, `kontak`, `created_at`, `updated_at` untuk customer), `csvFilename` (mis. `invoice-2026-11-26.csv`, tanggal lokal bukan UTC), `downloadCsv` (Blob + `URL.createObjectURL`, BOM UTF-8 supaya Excel membukanya dengan benar).
+  - Tombol "Export CSV" di dashboard invoice (`app/invoicing-service/page.tsx`) dan list customers (`customers/page.tsx`): memuat SELURUH data dari mock API (loop halaman `per_page=100`, pola yang sama dengan laporan Hari 8), menerapkan filter yang sedang aktif (pencarian + status di dashboard; pencarian di customers), lalu mengunduh client-side. Predikat filter diekstrak sekali di tingkat modul (`matchesDashboardFilter`, `matchesCustomerSearch`) supaya tabel dan export tidak bisa berbeda.
+  - Kejujuran export: bila API tidak terjangkau, tampilkan error dan JANGAN unduh apa pun — data demo fallback tidak pernah diekspor sebagai CSV. Filter yang hasilnya kosong juga tidak mengunduh file, hanya pesan.
+  - `app/lib/__tests__/csv.test.ts` (baru): 13 test — escaping koma/petik/baris baru, null/undefined jadi sel kosong, pemetaan baris invoice (termasuk paket null dan relasi kosong), nama perusahaan berkoma tetap satu sel, pemetaan baris customer (termasuk `created_at`/`updated_at` kosong), format nama file bertanggal.
+- **Verifikasi:**
+  - `npx tsc --noEmit`: bersih.
+  - `npm run lint`: exit 0 — **0 error, 0 warning** (main `fe33cc5` sudah membersihkan warning Hari 7; tidak ada warning baru dari file Hari 9).
+  - `npm test`: **65/65 PASS** (9 file; 52 sudah ada di `main` `fe33cc5` + 13 baru CSV).
+  - `npm run build`: sukses; route `/invoicing-service` dan `/invoicing-service/customers` terdaftar.
+  - Smoke test server prod lokal (port 3109): `/invoicing-service` → 200, `/invoicing-service/customers` → 200, `GET /api/invoice?per_page=100` → 200, `GET /api/customer?per_page=100` → 200. Server dimatikan setelah pengujian (port 3109 bebas).
+- **Catatan jujur:**
+  - Unduhan CSV belum bisa diverifikasi lewat curl: tombol export hanya jalan di browser setelah JS berjalan (halaman invoicing juga tertutup `RequireAuth`). Logika CSV-nya dibuktikan unit test; klik tombol di browser sungguhan belum diuji.
+  - Export memuat seluruh halaman dari API saat tombol diklik (bukan memakai halaman yang sedang tampil) — sengaja, supaya CSV berisi semua baris yang cocok dengan filter, bukan hanya halaman 1.
+  - Mock store tetap in-memory; CSV berisi data yang dimuat saat tombol diklik.
+- **PR #10–#15 redundan (koreksi status main 26 Nov 2026):** `main` kini di `fe33cc5` (25 Nov 2026, "refactor: clean up repo slop...") dan sudah berisi seluruh Hari 2–8. PR #12–#15 (Hari 5–8) dan #10–#11 (Hari 3–4) isinya sudah ada di `main` — perlu ditutup Dion, jangan di-merge. File `.github/workflows/ci.yml` tetap belum ada di `main`.
+- **Keputusan Dion yang masih ditunggu:** (1) tutup PR redundan #10–#15 (dan putuskan nasib PR unslop #17); (2) apakah `main` sengaja dipindah ke `fe33cc5` (koreksi 23 Nov soal "PR #10/#11 jangan ditutup" sudah tidak berlaku); (3) tambah `.github/workflows/ci.yml` ke `main` lewat web UI (integrasi GitHub tidak bisa push file workflow); (4) format repo menyeluruh (`chore: format`) setelah rantai PR beres, atau tidak.
