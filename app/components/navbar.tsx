@@ -80,7 +80,7 @@ export default function Navbar({
   if (title) {
     return (
       <header
-        className={`mb-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm backdrop-blur-md dark:border-zinc-800/80 dark:bg-zinc-900/90 ${className}`}
+        className={`mb-6 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-stone-200 bg-white p-4 shadow-sm dark:border-stone-800 dark:bg-stone-900 ${className}`}
       >
         <div className="flex items-center gap-3">
           {shouldShowBack && (
@@ -88,17 +88,17 @@ export default function Navbar({
               type="button"
               onClick={handleBack}
               aria-label="Kembali ke halaman sebelumnya"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-700 transition-colors hover:bg-slate-100 hover:text-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-stone-200 bg-stone-50 text-stone-700 transition-colors hover:bg-stone-100 hover:text-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-700/20 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700 dark:hover:text-stone-50"
             >
-              <HiArrowLeft className="h-5 w-5" />
+              <HiArrowLeft className="h-4 w-4" />
             </button>
           )}
           <div>
-            <h1 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white sm:text-xl">
+            <h1 className="text-lg font-medium tracking-tight text-stone-900 dark:text-stone-50 sm:text-xl">
               {title}
             </h1>
             {subtitle && (
-              <p className="text-xs text-slate-500 dark:text-zinc-400">
+              <p className="text-xs text-stone-500 dark:text-stone-400">
                 {subtitle}
               </p>
             )}
@@ -110,7 +110,7 @@ export default function Navbar({
           <Link
             href="/"
             aria-label="Home Portfolio"
-            className="inline-flex h-10 items-center gap-1.5 rounded-xl border border-slate-200 px-3 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-100 hover:text-indigo-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white"
+            className="inline-flex h-10 items-center gap-1.5 rounded-lg border border-stone-200 px-3 text-xs font-medium text-stone-700 transition-colors hover:bg-stone-100 hover:text-emerald-700 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700 dark:hover:text-stone-50"
           >
             <HiHome className="h-4 w-4" />
             <span className="hidden sm:inline">Home</span>
@@ -119,12 +119,12 @@ export default function Navbar({
             type="button"
             onClick={toggleTheme}
             aria-label="Toggle dark mode"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-600 transition-colors hover:bg-slate-100 hover:text-amber-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700 dark:hover:text-amber-400"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-stone-200 bg-stone-50 text-stone-500 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-400 dark:hover:bg-stone-700 dark:hover:text-stone-50"
           >
             {isDark ? (
-              <HiSun className="h-5 w-5 text-amber-400" />
+              <HiSun className="h-4 w-4" />
             ) : (
-              <HiMoon className="h-5 w-5" />
+              <HiMoon className="h-4 w-4" />
             )}
           </button>
         </div>
@@ -136,7 +136,7 @@ export default function Navbar({
   return (
     <nav
       aria-label="Main navigation"
-      className={`sticky top-0 z-50 w-full border-b border-slate-200/80 bg-white/80 backdrop-blur-md dark:border-zinc-800/80 dark:bg-zinc-950/80 transition-colors duration-300 ${className}`}
+      className={`sticky top-0 z-50 w-full border-b border-stone-200 bg-white dark:border-stone-800 dark:bg-stone-950 transition-colors duration-200 ${className}`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
         {/* Brand / Logo + Tombol Back jika di dalam sandbox */}
@@ -146,26 +146,26 @@ export default function Navbar({
               type="button"
               onClick={handleBack}
               aria-label="Kembali ke halaman sebelumnya"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-slate-100 text-slate-700 transition hover:bg-slate-200 hover:text-indigo-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-stone-200 bg-stone-100 text-stone-700 transition-colors hover:bg-stone-200 hover:text-emerald-700 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300 dark:hover:bg-stone-800 dark:hover:text-stone-50"
             >
               <HiArrowLeft className="h-4 w-4" />
             </button>
           )}
           <Link
             href="/"
-            className="group flex items-center gap-2.5 font-bold tracking-tight text-slate-900 dark:text-white transition-opacity hover:opacity-90"
+            className="flex items-center gap-2.5 font-medium tracking-tight text-stone-900 dark:text-stone-50 transition-colors hover:text-emerald-700 dark:hover:text-emerald-400"
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 text-sm font-black text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-700 text-sm font-semibold text-white">
               DS
             </span>
-            <div className="flex flex-col leading-none">
-              <span className="text-sm font-extrabold tracking-tight text-slate-900 dark:text-white">
+            <span className="flex flex-col leading-none">
+              <span className="text-sm font-semibold tracking-tight text-stone-900 dark:text-stone-50">
                 Dion Subaktiar
               </span>
-              <span className="text-[10px] font-medium tracking-wide text-indigo-600 dark:text-indigo-400">
+              <span className="text-xs font-medium text-stone-500 dark:text-stone-400">
                 Software Engineer
               </span>
-            </div>
+            </span>
           </Link>
         </div>
 
@@ -177,10 +177,10 @@ export default function Navbar({
               <Link
                 key={item.href}
                 href={item.href}
-                className={`rounded-lg px-3 py-1.5 text-xs font-semibold tracking-wide transition-all duration-200 ${
+                className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
                   isActive
-                    ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 font-bold shadow-xs"
-                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+                    ? "bg-stone-100 text-emerald-700 dark:bg-stone-800 dark:text-emerald-400"
+                    : "text-stone-600 hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-50"
                 }`}
               >
                 {item.label}
@@ -195,10 +195,10 @@ export default function Navbar({
             type="button"
             onClick={toggleTheme}
             aria-label="Toggle dark mode"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-600 transition-colors hover:bg-slate-100 hover:text-amber-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-amber-400"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-stone-200 bg-stone-50 text-stone-500 transition-colors hover:bg-stone-100 hover:text-stone-900 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-400 dark:hover:bg-stone-800 dark:hover:text-stone-50"
           >
             {isDark ? (
-              <HiSun className="h-4 w-4 text-amber-400" />
+              <HiSun className="h-4 w-4" />
             ) : (
               <HiMoon className="h-4 w-4" />
             )}
@@ -209,16 +209,16 @@ export default function Navbar({
             type="button"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle navigation menu"
-            className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-100 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-900"
+            className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-stone-200 text-stone-700 hover:bg-stone-100 dark:border-stone-800 dark:text-stone-300 dark:hover:bg-stone-900 transition-colors"
           >
-            {isOpen ? <HiX className="h-5 w-5" /> : <HiMenu className="h-5 w-5" />}
+            {isOpen ? <HiX className="h-4 w-4" /> : <HiMenu className="h-4 w-4" />}
           </button>
         </div>
       </div>
 
       {/* Mobile Drawer Menu */}
       {isOpen && (
-        <div className="md:hidden border-t border-slate-200/80 bg-white/95 px-4 pt-3 pb-5 backdrop-blur-md dark:border-zinc-800/80 dark:bg-zinc-950/95">
+        <div className="md:hidden border-t border-stone-200 bg-white px-4 pt-3 pb-5 dark:border-stone-800 dark:bg-stone-950">
           <div className="flex flex-col gap-1">
             {globalNavItems.map((item) => {
               const isActive = pathname === item.href;
@@ -227,10 +227,10 @@ export default function Navbar({
                   key={item.href}
                   href={item.href}
                   onClick={() => setIsOpen(false)}
-                  className={`rounded-lg px-3 py-2 text-xs font-semibold tracking-wide transition-colors ${
+                  className={`rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
                     isActive
-                      ? "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 font-bold"
-                      : "text-slate-700 hover:bg-slate-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                      ? "bg-stone-100 text-emerald-700 dark:bg-stone-800 dark:text-emerald-400"
+                      : "text-stone-700 hover:bg-stone-100 dark:text-stone-300 dark:hover:bg-stone-800"
                   }`}
                 >
                   {item.label}

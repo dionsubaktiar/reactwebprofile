@@ -10,7 +10,7 @@ import AboutSection from "./components/AboutSection";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 font-sans text-slate-800 dark:text-zinc-200 selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-stone-50 dark:bg-stone-950 font-sans text-stone-700 dark:text-stone-200 selection:bg-emerald-700 selection:text-white">
       {/* Global Navigation Bar: tombol kembali dinonaktifkan di halaman landing */}
       <Navbar showBack={false} />
 
@@ -41,7 +41,7 @@ export default function Home() {
       </main>
 
       {/* Clean Global Footer */}
-      <footer className="border-t border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 py-10 text-center text-xs text-slate-500 dark:text-zinc-400">
+      <footer className="border-t border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-900 py-10 text-center text-xs text-stone-500 dark:text-stone-400">
         <p>© {new Date().getFullYear()} Dion Subaktiar. Architected with Next.js, TypeScript & Tailwind CSS.</p>
       </footer>
     </div>

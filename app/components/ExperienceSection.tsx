@@ -91,41 +91,41 @@ const ExperienceSection = () => {
   return (
     <section
       id="experience"
-      className="py-20 border-t border-zinc-200 dark:border-zinc-800"
+      className="py-20 border-t border-stone-200 dark:border-stone-800"
     >
       <div className="max-w-4xl mx-auto space-y-12">
         <div className="space-y-4 text-center">
-          <h2 className="text-3xl font-bold font-poppins text-zinc-900 dark:text-white">
+          <h2 className="text-3xl font-medium text-stone-900 dark:text-stone-50">
             Professional Experience
           </h2>
-          <div className="w-12 h-1 bg-indigo-500 mx-auto rounded-full"></div>
+          <div className="w-12 h-px bg-stone-300 dark:bg-stone-700 mx-auto"></div>
         </div>
 
         {/* Vertical Timeline */}
-        <div className="relative border-l-2 border-zinc-200 dark:border-zinc-800 ml-4 md:ml-6 space-y-12">
+        <div className="relative border-l-2 border-stone-200 dark:border-stone-800 ml-4 md:ml-6 space-y-12">
           {experiences.map((exp, index) => (
             <div key={index} className="relative pl-8 md:pl-10 group">
               {/* Timeline Indicator Dot */}
-              <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full border-2 border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 group-hover:border-indigo-500 group-hover:bg-indigo-500 transition-all duration-300"></span>
+              <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full border-2 border-stone-200 dark:border-stone-800 bg-white dark:bg-stone-950"></span>
 
               <div className="space-y-3">
                 {/* Header Info */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                   <div>
-                    <h3 className="text-xl font-semibold text-zinc-900 dark:text-white font-poppins">
+                    <h3 className="text-xl font-medium text-stone-900 dark:text-stone-50">
                       {exp.role}
                     </h3>
-                    <p className="text-sm font-medium text-indigo-600 dark:text-indigo-400">
+                    <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
                       {exp.company}
                     </p>
                   </div>
-                  <span className="inline-block text-xs font-medium text-zinc-400 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-900 px-3 py-1 rounded-full w-max">
+                  <span className="inline-block text-xs font-medium text-stone-500 dark:text-stone-400 bg-stone-100 dark:bg-stone-900 px-3 py-1 rounded-md w-max">
                     {exp.period}
                   </span>
                 </div>
 
                 {/* Bullets */}
-                <ul className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400 font-light leading-relaxed list-disc pl-4">
+                <ul className="space-y-2 text-sm text-stone-600 dark:text-stone-400 leading-relaxed list-disc pl-4">
                   {exp.bullets.map((bullet, idx) => (
                     <li key={idx}>{bullet}</li>
                   ))}
@@ -136,7 +136,7 @@ const ExperienceSection = () => {
                   {exp.tags.map((tag, idx) => (
                     <span
                       key={idx}
-                      className="px-2.5 py-0.5 rounded text-[11px] font-medium bg-zinc-100 text-zinc-600 dark:bg-zinc-900 dark:text-zinc-400 border border-zinc-200/50 dark:border-zinc-800/50"
+                      className="px-2.5 py-0.5 rounded text-xs font-medium bg-stone-100 text-stone-600 dark:bg-stone-900 dark:text-stone-400 border border-stone-200/50 dark:border-stone-800/50"
                     >
                       {tag}
                     </span>

@@ -3,29 +3,31 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Unslop direction: paper and ink on a billing desk. Warm stone neutrals,
+   one ink-green accent. No gradients, glows or glass. */
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #fafaf9;
+  --foreground: #1c1917;
   --card-bg: #ffffff;
-  --border-color: #e2e8f0;
+  --border-color: #e7e5e4;
 }
 
 .dark {
-  --background: #09090b;
-  --foreground: #f4f4f5;
-  --card-bg: #18181b;
-  --border-color: #27272a;
+  --background: #0c0a09;
+  --foreground: #fafaf9;
+  --card-bg: #1c1917;
+  --border-color: #292524;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-geist-sans), Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   min-height: 100vh;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Custom sleek scrollbar */
+/* Quiet scrollbar in the stone ramp */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -34,47 +36,37 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 9999px;
+  background: #d6d3d1;
+  border-radius: 8px;
 }
 .dark ::-webkit-scrollbar-thumb {
-  background: #3f3f46;
+  background: #44403c;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #a8a29e;
 }
 
 /* ========================================================
-   Hermes SDLC Swarm: Enhanced Styling & Design Tokens
+   Landing design tokens (unslop): plain surfaces, hairlines.
+   The old hermes-* names are kept so any other page using
+   them keeps working, but their definitions are quiet now:
+   no glass blur, no glow, no gradient text.
    ======================================================== */
 @layer utilities {
   .hermes-glass-card {
-    background: rgba(24, 24, 27, 0.75);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  }
-  .dark .hermes-glass-card {
-    background: rgba(24, 24, 27, 0.85);
-    border-color: rgba(255, 255, 255, 0.08);
-  }
-  :root:not(.dark) .hermes-glass-card {
-    background: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   }
   .hermes-glow-hover {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: border-color 0.15s ease, background-color 0.15s ease;
   }
   .hermes-glow-hover:hover {
-    transform: translateY(-3px);
-    border-color: rgba(99, 102, 241, 0.5);
-    box-shadow: 0 12px 30px rgba(99, 102, 241, 0.15);
+    border-color: rgba(4, 120, 87, 0.4);
   }
   .hermes-gradient-text {
-    background: linear-gradient(135deg, #6366f1 0%, #0d9488 50%, #10b981 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--foreground);
+    background: none;
+    -webkit-text-fill-color: currentColor;
   }
 }
