@@ -31,7 +31,15 @@ import {
   FiEdit2,
   FiTrash2,
   FiPlay,
+  FiDownload,
 } from "react-icons/fi";
+import {
+  INVOICE_CSV_HEADERS,
+  csvFilename,
+  downloadCsv,
+  invoiceToCsvRow,
+  toCsv,
+} from "@/app/lib/csv";
 import DataTable from "./_components/DataTable";
 import KpiCard from "./_components/KpiCard";
 import PageHeader from "./_components/PageHeader";
@@ -153,6 +161,33 @@ const FALLBACK_INVOICES: Invoice[] = [
   }
 ];
 
+/**
+ * Filter yang sama dipakai tabel dan export CSV (Hari 9): pencarian teks
+ * (nopol / perusahaan / driver / kode paket) + filter status. Didefinisikan
+ * sekali di tingkat modul supaya tabel dan export tidak bisa berbeda.
+ */
+function matchesDashboardFilter(
+  inv: Invoice,
+  searchQuery: string,
+  statusFilter: string,
+): boolean {
+  const q = searchQuery.toLowerCase();
+  const matchSearch =
+    (inv.units?.nopol || "").toLowerCase().includes(q) ||
+    (inv.units?.customers?.nama_perusahaan || "").toLowerCase().includes(q) ||
+    (inv.units?.driver || "").toLowerCase().includes(q) ||
+    (inv.packages?.kode_packages || "ADHOC").toLowerCase().includes(q);
+
+  let matchStatus = true;
+  if (statusFilter === "Lunas") matchStatus = inv.status_invoice === "Lunas";
+  else if (statusFilter === "Pending")
+    matchStatus = inv.status_invoice === "Pending";
+  else if (statusFilter === "SPK Pending")
+    matchStatus = inv.status_spk === "Pending";
+
+  return matchSearch && matchStatus;
+}
+
 const MainPageInvoice = () => {
   const [invoice, setInvoice] = useState<Invoice[]>(FALLBACK_INVOICES);
   const [pagination, setPagination] = useState<PaginationType | null>({
@@ -172,6 +207,9 @@ const MainPageInvoice = () => {
   // Status workflow (Hari 6): id invoice yang sedang diubah statusnya.
   const [statusBusyId, setStatusBusyId] = useState<number | null>(null);
   const [statusError, setStatusError] = useState<string | null>(null);
+  // Export CSV (Hari 9).
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -257,22 +295,66 @@ const MainPageInvoice = () => {
     }
   };
 
+  /**
+   * Export CSV (Hari 9): memuat SELURUH invoice dari mock API (loop halaman
+   * `per_page=100`, pola yang sama dengan laporan Hari 8), terapkan filter
+   * yang sedang aktif (pencarian + status), lalu unduh client-side lewat
+   * `Blob`. Sengaja TIDAK mengekspor data demo fallback: CSV berisi angka
+   * contoh akan menyesatkan bila dibuka sebagai laporan sungguhan — bila
+   * API tidak terjangkau, tampilkan error dan jangan unduh apa pun.
+   * Filter kosong → tidak ada file yang diunduh, hanya pesan.
+   */
+  const exportCsv = async () => {
+    setIsExporting(true);
+    setExportError(null);
+    try {
+      const all: Invoice[] = [];
+      let page = 1;
+      let lastPage = 1;
+      do {
+        const response = await apiClient.get<ApiResponse<Invoice>>(
+          `/invoice?page=${page}&per_page=100`,
+          { timeout: 3500 },
+        );
+        const paginated = response.data?.data;
+        if (!paginated || !Array.isArray(paginated.data)) {
+          throw new Error("Respons invoice tidak berbentuk paginasi");
+        }
+        all.push(...paginated.data);
+        lastPage = paginated.last_page ?? 1;
+        page += 1;
+      } while (page <= lastPage);
+
+      const filtered = all.filter((inv) =>
+        matchesDashboardFilter(inv, searchQuery, statusFilter),
+      );
+      if (filtered.length === 0) {
+        setExportError(
+          "Tidak ada invoice yang cocok dengan filter saat ini — tidak ada yang diekspor.",
+        );
+        return;
+      }
+      downloadCsv(
+        csvFilename("invoice"),
+        toCsv(
+          [...INVOICE_CSV_HEADERS],
+          filtered.map(invoiceToCsvRow),
+        ),
+      );
+    } catch {
+      setExportError(
+        "Gagal mengunduh CSV: data invoice tidak bisa dimuat dari server. Coba lagi.",
+      );
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   // Filtered dataset for desktop search and filter
   const filteredInvoices = useMemo(() => {
-    return invoice.filter(inv => {
-      const matchSearch = 
-        (inv.units?.nopol || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (inv.units?.customers?.nama_perusahaan || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (inv.units?.driver || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (inv.packages?.kode_packages || "ADHOC").toLowerCase().includes(searchQuery.toLowerCase());
-      
-      let matchStatus = true;
-      if (statusFilter === "Lunas") matchStatus = inv.status_invoice === "Lunas";
-      else if (statusFilter === "Pending") matchStatus = inv.status_invoice === "Pending";
-      else if (statusFilter === "SPK Pending") matchStatus = inv.status_spk === "Pending";
-
-      return matchSearch && matchStatus;
-    });
+    return invoice.filter((inv) =>
+      matchesDashboardFilter(inv, searchQuery, statusFilter),
+    );
   }, [invoice, searchQuery, statusFilter]);
 
   // Statistics KPIs
@@ -320,6 +402,15 @@ const MainPageInvoice = () => {
               >
                 <FiBarChart2 className="text-indigo-500" /> Laporan
               </Link>
+              <button
+                type="button"
+                onClick={exportCsv}
+                disabled={isExporting}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors shadow-sm disabled:opacity-60"
+              >
+                <FiDownload className="text-indigo-500" />
+                {isExporting ? "Mengekspor..." : "Export CSV"}
+              </button>
               <Link
                 href="/invoicing-service/invoice/create"
                 className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white transition-colors shadow-sm"
@@ -405,6 +496,15 @@ const MainPageInvoice = () => {
             className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-sm text-red-600 dark:text-red-400"
           >
             {statusError}
+          </div>
+        )}
+
+        {exportError && (
+          <div
+            role="alert"
+            className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-sm text-red-600 dark:text-red-400"
+          >
+            {exportError}
           </div>
         )}
 
