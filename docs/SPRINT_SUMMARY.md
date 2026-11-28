@@ -152,3 +152,30 @@
   - Mock store tetap in-memory; CSV berisi data yang dimuat saat tombol diklik.
 - **PR #10–#15 redundan (koreksi status main 26 Nov 2026):** `main` kini di `fe33cc5` (25 Nov 2026, "refactor: clean up repo slop...") dan sudah berisi seluruh Hari 2–8. PR #12–#15 (Hari 5–8) dan #10–#11 (Hari 3–4) isinya sudah ada di `main` — perlu ditutup Dion, jangan di-merge. File `.github/workflows/ci.yml` tetap belum ada di `main`.
 - **Keputusan Dion yang masih ditunggu:** (1) tutup PR redundan #10–#15 (dan putuskan nasib PR unslop #17); (2) apakah `main` sengaja dipindah ke `fe33cc5` (koreksi 23 Nov soal "PR #10/#11 jangan ditutup" sudah tidak berlaku); (3) tambah `.github/workflows/ci.yml` ke `main` lewat web UI (integrasi GitHub tidak bisa push file workflow); (4) format repo menyeluruh (`chore: format`) setelah rantai PR beres, atau tidak.
+
+---
+
+## Hari 10 — Pencarian & filter lanjutan parts & units (27 Nov 2026)
+
+- **Branch/PR:** `day-10-filter-parts-units` → `day-9-export-csv` (PR Hari 9 #18 masih open — lihat catatan di bawah). Dikerjakan di atas branch Hari 9 (commit `6c76a86`) karena isi Hari 9 belum di-merge ke mana pun.
+- **Yang dikerjakan:**
+  - `app/lib/list-filter.ts` (baru): satu-satunya definisi logika filter/paginasi list — `distinctStrings`/`distinctPartMerks`/`distinctPartKendaraan`/`distinctUnitCustomers`/`distinctUnitYears` (opsi filter dari SELURUH data, bukan hardcode dan bukan halaman aktif), `parsePriceBound` (input kosong/bukan angka/negatif = tidak ada batas), `matchesPartFilter`/`matchesUnitFilter` (satu predikat per halaman untuk pencarian + semua filter), `paginateItems` (potong hasil filter per halaman, halaman di luar jangkauan dijepit ke halaman terakhir), `summarizeParts`/`summarizeUnits` (KPI dari seluruh data).
+  - Halaman `parts/page.tsx`: filter merk sudah dari data sejak `main` `fe33cc5` (tidak ada lagi hardcode 5 merk — yang dihapus roadmap di `parts/page.tsx:281-292` sudah tidak ada di code terbaru; opsi kini diambil dari seluruh katalog, bukan halaman aktif). Baru: filter tipe kendaraan (dropdown dari data) dan rentang harga komponen `harga` (input Min–Maks Rp, batas inklusif; input salah ketik tidak menolak semua baris). Tombol "Reset Filter".
+  - Halaman `units/page.tsx`: baru filter customer pemilik (dropdown nama perusahaan dari data, satu entri per `id_customer`) dan tahun rakit (dropdown dari data, terbaru dulu). Tombol "Reset Filter".
+  - Kedua halaman kini memuat SELURUH data dari mock API (loop halaman `per_page=100`, pola yang sama dengan laporan Hari 8 dan export Hari 9), lalu filter + KPI + paginasi dihitung di client. Alasan perubahan ini dicatat di header `list-filter.ts`: opsi filter dan KPI harus mencakup seluruh katalog, dan bug pagination Hari 1–2 hilang secara struktural (halaman kosong = irisan kosong, bukan respons `data: []` yang diabaikan karena guard `length > 0`).
+  - Perilaku yang berubah dan dicatat jujur: paginasi kedua halaman tidak lagi memakai `next_page_url` server — "Selanjutnya" aktif selama `currentPage < totalPages` hasil filter. Maksud roadmap ("tombol Selanjutnya nonaktif di halaman terakhir") tetap terpenuhi; mekanismenya berubah karena datanya sudah dimuat semua. Bila katalog tumbuh besar, paginasi server perlu kembali (catatan di `list-filter.ts`).
+  - Ringkasan footer paginasi kini jujur: "Menampilkan 1–5 dari 5 item" dan "(difilter dari N total)" bila filter aktif; filter kosong menampilkan empty state dengan petunjuk menyesuaikan filter. Mengganti filter apa pun mengembalikan ke halaman 1.
+  - `app/lib/__tests__/list-filter.test.ts` (baru): 29 test — opsi filter dari data, parse batas harga, predikat filter parts/units (termasuk min > max = kosong, kombinasi filter), paginasi (halaman di luar jangkauan dijepit, daftar kosong = satu halaman kosong bukan data lama), KPI dari seluruh data (termasuk data kosong = nol, bukan NaN).
+- **Verifikasi:**
+  - `npx tsc --noEmit`: bersih.
+  - `npm run lint`: exit 0 — **0 error, 0 warning**.
+  - `npm test`: **94/94 PASS** (10 file; 65 lama + 29 baru list-filter).
+  - `npm run build`: sukses, 64/64 halaman.
+  - Smoke test server prod lokal (port 3110): `/invoicing-service/parts` → 200, `/invoicing-service/units` → 200, `GET /api/part?per_page=100` → 200, `GET /api/unit?per_page=100` → 200. Server dimatikan setelah pengujian (port 3110 bebas).
+  - Prettier: hanya 4 file yang disentuh Hari 10 yang diformat; file lain tidak disentuh.
+- **Catatan jujur:**
+  - Rentang harga parts memakai field `harga` (Harga Komponen) — bukan `jasa` dan bukan total `harga + jasa`. Roadmap menulis "rentang harga (`harga`/`jasa`)"; satu rentang untuk total akan membingungkan karena tabel memisahkan kedua kolom itu. Bila Dion mau rentang untuk jasa juga, itu penambahan kecil (satu pasang input + satu kondisi di `matchesPartFilter`).
+  - Filter parts/units belum bisa diverifikasi lewat curl: isi halaman tidak ada di HTML hasil SSR karena `RequireAuth` (Hari 5) me-render spinner sebelum JS jalan — sama seperti halaman invoicing lain. Logika filter/KPI/paginasi dibuktikan unit test dengan data yang sama persis dengan mock; klik-ketik filter di browser sungguhan belum diuji.
+  - Mock store tetap in-memory; filter menghitung dari data yang dimuat saat halaman dibuka. Bila Dion membuat part/unit baru di tab lain, list ini perlu refresh untuk melihatnya (sama seperti halaman list lain).
+- **PR Hari 9 (#18) masih open — dependensi Hari 10:** PR #18 (`day-9-export-csv` → `main`) masih open saat run ini (cek live 27 Nov 09.00 WIB), jadi PR Hari 10 dibuat bertumpuk ke `day-9-export-csv`, bukan ke `main`. Urutan merge: #18 dulu, baru PR Hari 10.
+- **Keputusan Dion yang masih ditunggu:** (1) tutup PR redundan #10–#15 (dan putuskan nasib PR unslop #17); (2) merge PR #18 lalu PR Hari 10, atau beri tahu bila urutannya mau diubah; (3) tambah `.github/workflows/ci.yml` ke `main` lewat web UI (integrasi GitHub tidak bisa push file workflow); (4) format repo menyeluruh (`chore: format`) setelah rantai PR beres, atau tidak.

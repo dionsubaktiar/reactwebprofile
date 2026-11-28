@@ -2,7 +2,18 @@
 
 import SubPageHeader from "@/app/components/SubPageHeader";
 import apiClient from "@/app/lib/api";
-import type { Unit, Pagination, ApiResponse } from "@/app/lib/types";
+import type { Unit, ApiResponse } from "@/app/lib/types";
+import {
+  DEFAULT_UNIT_FILTER,
+  FILTER_SEMUA,
+  LIST_PAGE_SIZE,
+  distinctUnitCustomers,
+  distinctUnitYears,
+  matchesUnitFilter,
+  paginateItems,
+  summarizeUnits,
+  type UnitFilter,
+} from "@/app/lib/list-filter";
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import {
@@ -15,6 +26,7 @@ import {
   FiEye,
   FiActivity,
   FiCheckCircle,
+  FiRotateCcw,
 } from "react-icons/fi";
 import PageHeader from "../_components/PageHeader";
 import KpiCard from "../_components/KpiCard";
@@ -39,8 +51,8 @@ const FALLBACK_UNITS: Unit[] = [
       pic: "Hendro Wibowo",
       kontak: "081234567890",
       created_at: "2024-01-10",
-      updated_at: "2026-10-01"
-    }
+      updated_at: "2026-10-01",
+    },
   },
   {
     id: 2,
@@ -56,8 +68,8 @@ const FALLBACK_UNITS: Unit[] = [
       pic: "Rudi Hartono",
       kontak: "081987654321",
       created_at: "2024-03-12",
-      updated_at: "2026-09-15"
-    }
+      updated_at: "2026-09-15",
+    },
   },
   {
     id: 3,
@@ -73,8 +85,8 @@ const FALLBACK_UNITS: Unit[] = [
       pic: "Siti Rahma",
       kontak: "082133445566",
       created_at: "2023-11-05",
-      updated_at: "2026-11-01"
-    }
+      updated_at: "2026-11-01",
+    },
   },
   {
     id: 4,
@@ -90,22 +102,24 @@ const FALLBACK_UNITS: Unit[] = [
       pic: "Hendro Wibowo",
       kontak: "081234567890",
       created_at: "2024-01-10",
-      updated_at: "2026-10-01"
-    }
-  }
+      updated_at: "2026-10-01",
+    },
+  },
 ];
 
+const selectClassName =
+  "px-3 py-2 text-xs rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500";
+
 const UnitsPage = () => {
+  // Seluruh armada (bukan hanya halaman aktif) — lihat app/lib/list-filter.ts.
   const [units, setUnits] = useState<Unit[]>(FALLBACK_UNITS);
-  const [pagination, setPagination] = useState<Pagination | null>({
-    current_page: 1,
-    last_page: 1,
-    prev_page_url: null,
-    next_page_url: null
-  });
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCustomer, setSelectedCustomer] = useState<
+    number | typeof FILTER_SEMUA
+  >(FILTER_SEMUA);
+  const [selectedTahun, setSelectedTahun] = useState(FILTER_SEMUA);
   const [dataSource, setDataSource] = useState<"api" | "demo">("demo");
   const [deleteTarget, setDeleteTarget] = useState<Unit | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -113,16 +127,27 @@ const UnitsPage = () => {
 
   useEffect(() => {
     let isMounted = true;
-    const fetchUnits = async (page = 1) => {
+    const fetchAllUnits = async () => {
       setIsLoading(true);
       try {
-        const response = await apiClient.get<ApiResponse<Unit>>(
-          `/unit?page=${page}`,
-          { timeout: 3500 }
-        );
-        if (isMounted && response.data?.data?.data && response.data.data.data.length > 0) {
-          setUnits(response.data.data.data);
-          setPagination(response.data.data);
+        const all: Unit[] = [];
+        let page = 1;
+        let lastPage = 1;
+        do {
+          const response = await apiClient.get<ApiResponse<Unit>>(
+            `/unit?page=${page}&per_page=100`,
+            { timeout: 3500 },
+          );
+          const paginated = response.data?.data;
+          if (!paginated || !Array.isArray(paginated.data)) {
+            throw new Error("Respons unit tidak berbentuk paginasi");
+          }
+          all.push(...paginated.data);
+          lastPage = paginated.last_page ?? 1;
+          page += 1;
+        } while (page <= lastPage);
+        if (isMounted) {
+          setUnits(all);
           setDataSource("api");
         }
       } catch (error) {
@@ -132,16 +157,15 @@ const UnitsPage = () => {
       } finally {
         if (isMounted) {
           setIsLoading(false);
-          setCurrentPage(page);
         }
       }
     };
 
-    fetchUnits(currentPage);
+    fetchAllUnits();
     return () => {
       isMounted = false;
     };
-  }, [currentPage]);
+  }, []);
 
   const confirmDelete = async () => {
     if (!deleteTarget) return;
@@ -155,7 +179,7 @@ const UnitsPage = () => {
       console.error("Error deleting unit:", error);
       // Rollback: unit tetap di list, tampilkan error yang terlihat.
       setDeleteError(
-        `Gagal menghapus unit ${deleteTarget.nopol}. Data tidak dihapus, coba lagi.`
+        `Gagal menghapus unit ${deleteTarget.nopol}. Data tidak dihapus, coba lagi.`,
       );
       setDeleteTarget(null);
     } finally {
@@ -163,24 +187,45 @@ const UnitsPage = () => {
     }
   };
 
-  const filteredUnits = useMemo(() => {
-    return units.filter(u => {
-      const q = searchQuery.toLowerCase();
-      return (
-        (u.nopol || "").toLowerCase().includes(q) ||
-        (u.tipe || "").toLowerCase().includes(q) ||
-        (u.driver || "").toLowerCase().includes(q) ||
-        (u.customers?.nama_perusahaan || "").toLowerCase().includes(q)
-      );
-    });
-  }, [units, searchQuery]);
+  const customerOptions = useMemo(() => distinctUnitCustomers(units), [units]);
+  const tahunOptions = useMemo(() => distinctUnitYears(units), [units]);
 
-  const stats = useMemo(() => {
-    const totalCount = units.length;
-    const uniqueCustomers = new Set(units.map(u => u.id_customer)).size;
-    const youngUnits = units.filter(u => parseInt(u.tahun) >= 2022).length;
-    return { totalCount, uniqueCustomers, youngUnits };
-  }, [units]);
+  const filter: UnitFilter = useMemo(
+    () => ({
+      ...DEFAULT_UNIT_FILTER,
+      query: searchQuery,
+      customerId: selectedCustomer,
+      tahun: selectedTahun,
+    }),
+    [searchQuery, selectedCustomer, selectedTahun],
+  );
+
+  const filteredUnits = useMemo(
+    () => units.filter((u) => matchesUnitFilter(u, filter)),
+    [units, filter],
+  );
+
+  // KPI dihitung dari SELURUH armada, bukan halaman aktif (roadmap Hari 10).
+  const stats = useMemo(() => summarizeUnits(units), [units]);
+
+  // Paginasi client-side atas hasil filter — halaman kosong adalah irisan
+  // kosong (empty state), bukan data halaman sebelumnya (bug Hari 1–2).
+  const page = useMemo(
+    () => paginateItems(filteredUnits, currentPage, LIST_PAGE_SIZE),
+    [filteredUnits, currentPage],
+  );
+
+  const isFilterActive =
+    searchQuery.trim() !== "" ||
+    selectedCustomer !== FILTER_SEMUA ||
+    selectedTahun !== FILTER_SEMUA;
+
+  const resetFilters = () => {
+    setSearchQuery("");
+    setSelectedCustomer(FILTER_SEMUA);
+    setSelectedTahun(FILTER_SEMUA);
+    setCurrentPage(1);
+  };
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100 transition-colors pb-16">
@@ -244,7 +289,10 @@ const UnitsPage = () => {
 
         <SearchBar
           value={searchQuery}
-          onChange={setSearchQuery}
+          onChange={(value) => {
+            setSearchQuery(value);
+            setCurrentPage(1);
+          }}
           placeholder="Cari berdasarkan nopol kendaraan, tipe truk, driver, atau nama perusahaan pemilik..."
           accent="indigo"
         >
@@ -255,6 +303,70 @@ const UnitsPage = () => {
           )}
         </SearchBar>
 
+        {/* Filter lanjutan (Hari 10): customer pemilik + tahun rakit */}
+        <div className="p-4 rounded-2xl bg-white dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 shadow-sm flex flex-col md:flex-row md:flex-wrap items-stretch md:items-center gap-3">
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor="units-customer"
+              className="text-xs font-semibold text-zinc-500 whitespace-nowrap"
+            >
+              Customer
+            </label>
+            <select
+              id="units-customer"
+              value={String(selectedCustomer)}
+              onChange={(e) => {
+                setSelectedCustomer(
+                  e.target.value === FILTER_SEMUA
+                    ? FILTER_SEMUA
+                    : Number(e.target.value),
+                );
+                setCurrentPage(1);
+              }}
+              className={selectClassName}
+            >
+              <option value={FILTER_SEMUA}>Semua Customer</option>
+              {customerOptions.map((customer) => (
+                <option key={customer.id} value={customer.id}>
+                  {customer.nama}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor="units-tahun"
+              className="text-xs font-semibold text-zinc-500 whitespace-nowrap"
+            >
+              Tahun Rakit
+            </label>
+            <select
+              id="units-tahun"
+              value={selectedTahun}
+              onChange={(e) => {
+                setSelectedTahun(e.target.value);
+                setCurrentPage(1);
+              }}
+              className={selectClassName}
+            >
+              <option value={FILTER_SEMUA}>Semua Tahun</option>
+              {tahunOptions.map((tahun) => (
+                <option key={tahun} value={tahun}>
+                  {tahun}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button
+            type="button"
+            onClick={resetFilters}
+            disabled={!isFilterActive}
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl border border-zinc-300 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <FiRotateCcw size={13} /> Reset Filter
+          </button>
+        </div>
+
         {deleteError && (
           <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-sm text-red-600 dark:text-red-400">
             {deleteError}
@@ -264,18 +376,28 @@ const UnitsPage = () => {
         <DataTable
           isLoading={isLoading}
           loadingText="Memuat data armada kendaraan..."
-          isEmpty={filteredUnits.length === 0}
+          isEmpty={page.pageItems.length === 0}
           emptyTitle="Tidak ada unit yang sesuai pencarian."
-          emptyHint="Coba gunakan kata kunci nomor polisi atau tipe truk lainnya."
+          emptyHint="Coba gunakan kata kunci lain atau sesuaikan filter customer dan tahun."
           accent="indigo"
           footer={
             <PaginationControls
-              currentPage={currentPage}
-              hasNext={!!pagination?.next_page_url}
+              currentPage={page.currentPage}
+              hasNext={page.currentPage < page.totalPages}
               onPrev={() => setCurrentPage((p) => Math.max(1, p - 1))}
               onNext={() => setCurrentPage((p) => p + 1)}
               summary={
-                <>Menampilkan {filteredUnits.length} dari {units.length} unit armada</>
+                page.total === 0 ? (
+                  <>Menampilkan 0 dari 0 unit armada</>
+                ) : (
+                  <>
+                    Menampilkan {page.startIndex + 1}–{page.endIndex} dari{" "}
+                    {page.total} unit armada
+                    {page.total !== units.length
+                      ? ` (difilter dari ${units.length} total)`
+                      : ""}
+                  </>
+                )
               }
             />
           }
@@ -292,8 +414,11 @@ const UnitsPage = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
-              {filteredUnits.map((unit) => (
-                <tr key={unit.id} className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors">
+              {page.pageItems.map((unit) => (
+                <tr
+                  key={unit.id}
+                  className="hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 transition-colors"
+                >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-700 dark:text-zinc-300 font-semibold text-xs">
